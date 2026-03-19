@@ -85,7 +85,12 @@ INSERT INTO produtos (id, nome, descricao, categoria, preco, tamanhos, cores, im
 ('550e8400-e29b-41d4-a716-446655440001', 'Tênis Branco Esportivo', 'Tênis branco esportivo ultra confortável', 'Tênis', 129.90, '33,34,35,36,37,38,39,40', 'Branco,Rosa', 'https://via.placeholder.com/300x300?text=Tenis+Branco', 40),
 ('550e8400-e29b-41d4-a716-446655440002', 'Scarpin Preto Elegante', 'Scarpin preto elegante para ocasiões especiais', 'Scarpins', 179.90, '33,34,35,36,37,38,39,40', 'Preto,Vermelho', 'https://via.placeholder.com/300x300?text=Scarpin+Preto', 30),
 ('550e8400-e29b-41d4-a716-446655440003', 'Bota Marrom Cano Longo', 'Bota marrom com cano longo e salto', 'Botas', 199.90, '33,34,35,36,37,38,39,40', 'Marrom,Preto', 'https://via.placeholder.com/300x300?text=Bota+Marrom', 25),
-('550e8400-e29b-41d4-a716-446655440004', 'Sapatilha Cinza Casual', 'Sapatilha cinza para look casual', 'Sapatilhas', 99.90, '33,34,35,36,37,38,39,40', 'Cinza,Rosa,Preto', 'https://via.placeholder.com/300x300?text=Sapatilha+Cinza', 45);
+('550e8400-e29b-41d4-a716-446655440004', 'Sapatilha Cinza Casual', 'Sapatilha cinza para look casual', 'Sapatilhas', 99.90, '33,34,35,36,37,38,39,40', 'Cinza,Rosa,Preto', 'https://via.placeholder.com/300x300?text=Sapatilha+Cinza', 45),
+('550e8400-e29b-41d4-a716-446655440005', 'Mocassim Couro Marrom', 'Mocassim casual em couro legítimo', 'Mocassins', 149.90, '38,39,40,41,42', 'Marrom,Preto', 'https://via.placeholder.com/300x300?text=Mocassim+Couro', 35),
+('550e8400-e29b-41d4-a716-446655440006', 'Sandália Plataforma', 'Sandália com plataforma confortável', 'Sandálias', 99.90, '35,36,37,38,39,40', 'Bege,Branco', 'https://via.placeholder.com/300x300?text=Sandalia+Plataforma', 45),
+('550e8400-e29b-41d4-a716-446655440007', 'Tênis Casual Azul', 'Tênis casual azul para o dia a dia', 'Tênis', 119.90, '38,39,40,41,42', 'Azul,Branco', 'https://via.placeholder.com/300x300?text=Tenis+Azul', 60),
+('550e8400-e29b-41d4-a716-446655440008', 'Bota de Cano Curto', 'Bota de cano curto com solado robusto', 'Botas', 189.90, '38,39,40,41,42', 'Preto,Marrom', 'https://via.placeholder.com/300x300?text=Bota+Curta', 20),
+('550e8400-e29b-41d4-a716-446655440009', 'Rasteirinha Feminina', 'Rasteirinha leve e confortável para o verão', 'Sandálias', 59.90, '34,35,36,37,38,39', 'Dourado,Prata', 'https://via.placeholder.com/300x300?text=Rasteirinha', 70);
 
 -- Criar índices
 CREATE INDEX idx_usuarios_email ON usuarios(email);
