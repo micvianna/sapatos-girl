@@ -1,0 +1,74 @@
+{
+  "common": {
+    "appName": "ShoeStyle - Women's Shoes",
+    "home": "Home",
+    "products": "Products",
+    "cart": "Cart",
+    "account": "My Account",
+    "logout": "Logout",
+    "login": "Sign In",
+    "register": "Sign Up",
+    "search": "Search",
+    "categories": "Categories"
+  },
+  "product": {
+    "addToCart": "Add to Cart",
+    "size": "Size",
+    "color": "Color",
+    "price": "Price",
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock",
+    "quantity": "Quantity",
+    "description": "Description",
+    "details": "Details",
+    "reviews": "Reviews"
+  },
+  "cart": {
+    "title": "My Cart",
+    "empty": "Your cart is empty",
+    "subtotal": "Subtotal",
+    "shipping": "Shipping",
+    "total": "Total",
+    "continue": "Continue Shopping",
+    "checkout": "Checkout",
+    "remove": "Remove",
+    "update": "Update"
+  },
+  "checkout": {
+    "shippingInfo": "Shipping Information",
+    "address": "Address",
+    "city": "City",
+    "state": "State",
+    "zipCode": "Zip Code",
+    "phone": "Phone",
+    "paymentMethod": "Payment Method",
+    "creditCard": "Credit Card",
+    "debit": "Debit",
+    "paypal": "PayPal",
+    "pix": "PIX",
+    "orderSummary": "Order Summary",
+    "placeOrder": "Place Order",
+    "orderConfirmed": "Order Confirmed!"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "name": "Full Name",
+    "register": "Register",
+    "login": "Login",
+    "createAccount": "Create Account",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Don't have an account?",
+    "forgotPassword": "Forgot your password?",
+    "rememberMe": "Remember me",
+    "signIn": "Sign In",
+    "signUp": "Sign Up"
+  },
+  "messages": {
+    "success": "Operation completed successfully",
+    "error": "Error processing request",
+    "addedToCart": "Product added to cart",
+    "removedFromCart": "Product removed from cart",
+    "logoutSuccess": "You have been logged out"
+  }
+}

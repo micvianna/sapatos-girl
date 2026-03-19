@@ -1,0 +1,74 @@
+{
+  "common": {
+    "appName": "ShoeStyle - Sapatos Femininos",
+    "home": "Início",
+    "products": "Produtos",
+    "cart": "Carrinho",
+    "account": "Minha Conta",
+    "logout": "Sair",
+    "login": "Entrar",
+    "register": "Cadastrar",
+    "search": "Buscar",
+    "categories": "Categorias"
+  },
+  "product": {
+    "addToCart": "Adicionar ao Carrinho",
+    "size": "Tamanho",
+    "color": "Cor",
+    "price": "Preço",
+    "inStock": "Em Estoque",
+    "outOfStock": "Fora de Estoque",
+    "quantity": "Quantidade",
+    "description": "Descrição",
+    "details": "Detalhes",
+    "reviews": "Avaliações"
+  },
+  "cart": {
+    "title": "Meu Carrinho",
+    "empty": "Seu carrinho está vazio",
+    "subtotal": "Subtotal",
+    "shipping": "Frete",
+    "total": "Total",
+    "continue": "Continuar Comprando",
+    "checkout": "Finalizar Compra",
+    "remove": "Remover",
+    "update": "Atualizar"
+  },
+  "checkout": {
+    "shippingInfo": "Informações de Entrega",
+    "address": "Endereço",
+    "city": "Cidade",
+    "state": "Estado",
+    "zipCode": "CEP",
+    "phone": "Telefone",
+    "paymentMethod": "Método de Pagamento",
+    "creditCard": "Cartão de Crédito",
+    "debit": "Débito",
+    "paypal": "PayPal",
+    "pix": "PIX",
+    "orderSummary": "Resumo do Pedido",
+    "placeOrder": "Confirmar Pedido",
+    "orderConfirmed": "Pedido Confirmado!"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Senha",
+    "name": "Nome Completo",
+    "register": "Cadastro",
+    "login": "Login",
+    "createAccount": "Criar Conta",
+    "alreadyHaveAccount": "Já tem uma conta?",
+    "dontHaveAccount": "Não tem uma conta?",
+    "forgotPassword": "Esqueceu sua senha?",
+    "rememberMe": "Lembrar-me",
+    "signIn": "Entrar",
+    "signUp": "Cadastrar"
+  },
+  "messages": {
+    "success": "Operação realizada com sucesso",
+    "error": "Erro ao processar solicitação",
+    "addedToCart": "Produto adicionado ao carrinho",
+    "removedFromCart": "Produto removido do carrinho",
+    "logoutSuccess": "Você foi desconectado"
+  }
+}
