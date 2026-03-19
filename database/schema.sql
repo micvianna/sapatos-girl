@@ -81,16 +81,16 @@ CREATE TABLE itens_pedido (
 
 -- Inserir dados de exemplo
 INSERT INTO produtos (id, nome, descricao, categoria, preco, tamanhos, cores, imagem, estoque) VALUES
-('550e8400-e29b-41d4-a716-446655440000', 'Sandália Feminina Rosa', 'Sandália confortável em tons rosa claro', 'Sandálias', 89.90, '33,34,35,36,37,38,39,40', 'Rosa,Nude', 'https://via.placeholder.com/300x300?text=Sandalia+Rosa', 50),
-('550e8400-e29b-41d4-a716-446655440001', 'Tênis Branco Esportivo', 'Tênis branco esportivo ultra confortável', 'Tênis', 129.90, '33,34,35,36,37,38,39,40', 'Branco,Rosa', 'https://via.placeholder.com/300x300?text=Tenis+Branco', 40),
-('550e8400-e29b-41d4-a716-446655440002', 'Scarpin Preto Elegante', 'Scarpin preto elegante para ocasiões especiais', 'Scarpins', 179.90, '33,34,35,36,37,38,39,40', 'Preto,Vermelho', 'https://via.placeholder.com/300x300?text=Scarpin+Preto', 30),
-('550e8400-e29b-41d4-a716-446655440003', 'Bota Marrom Cano Longo', 'Bota marrom com cano longo e salto', 'Botas', 199.90, '33,34,35,36,37,38,39,40', 'Marrom,Preto', 'https://via.placeholder.com/300x300?text=Bota+Marrom', 25),
-('550e8400-e29b-41d4-a716-446655440004', 'Sapatilha Cinza Casual', 'Sapatilha cinza para look casual', 'Sapatilhas', 99.90, '33,34,35,36,37,38,39,40', 'Cinza,Rosa,Preto', 'https://via.placeholder.com/300x300?text=Sapatilha+Cinza', 45),
-('550e8400-e29b-41d4-a716-446655440005', 'Mocassim Couro Marrom', 'Mocassim casual em couro legítimo', 'Mocassins', 149.90, '38,39,40,41,42', 'Marrom,Preto', 'https://via.placeholder.com/300x300?text=Mocassim+Couro', 35),
-('550e8400-e29b-41d4-a716-446655440006', 'Sandália Plataforma', 'Sandália com plataforma confortável', 'Sandálias', 99.90, '35,36,37,38,39,40', 'Bege,Branco', 'https://via.placeholder.com/300x300?text=Sandalia+Plataforma', 45),
-('550e8400-e29b-41d4-a716-446655440007', 'Tênis Casual Azul', 'Tênis casual azul para o dia a dia', 'Tênis', 119.90, '38,39,40,41,42', 'Azul,Branco', 'https://via.placeholder.com/300x300?text=Tenis+Azul', 60),
-('550e8400-e29b-41d4-a716-446655440008', 'Bota de Cano Curto', 'Bota de cano curto com solado robusto', 'Botas', 189.90, '38,39,40,41,42', 'Preto,Marrom', 'https://via.placeholder.com/300x300?text=Bota+Curta', 20),
-('550e8400-e29b-41d4-a716-446655440009', 'Rasteirinha Feminina', 'Rasteirinha leve e confortável para o verão', 'Sandálias', 59.90, '34,35,36,37,38,39', 'Dourado,Prata', 'https://via.placeholder.com/300x300?text=Rasteirinha', 70);
+('550e8400-e29b-41d4-a716-446655440000', 'Sandália Feminina Rosa', 'Sandália confortável em tons rosa claro', 'Sandálias', 89.90, '33,34,35,36,37,38,39,40', 'Rosa,Nude', 'https://images.unsplash.com/photo-1528701800484-346abe03f320?auto=format&fit=crop&w=400&h=400&q=80', 50),
+('550e8400-e29b-41d4-a716-446655440001', 'Sandália Plataforma Nude', 'Sandália com plataforma confortável', 'Sandálias', 99.90, '35,36,37,38,39,40', 'Bege,Branco', 'https://images.unsplash.com/photo-1515548211230-973d8fa6c24d?auto=format&fit=crop&w=400&h=400&q=80', 45),
+('550e8400-e29b-41d4-a716-446655440002', 'Sandália Anabela Preta', 'Sandália anabela elegante para o dia a dia', 'Sandálias', 129.90, '35,36,37,38,39,40', 'Preto,Marrom', 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=400&h=400&q=80', 40),
+('550e8400-e29b-41d4-a716-446655440003', 'Sandália Espadrille Estampada', 'Sandália com solado de corda e estampas vibrantes', 'Sandálias', 119.90, '35,36,37,38,39,40', 'Azul,Branco', 'https://images.unsplash.com/photo-1503341455253-b2e723bb3dbb?auto=format&fit=crop&w=400&h=400&q=80', 35),
+('550e8400-e29b-41d4-a716-446655440004', 'Sandália Rasteira Cinza', 'Sandália rasteira casual para o dia a dia', 'Sandálias', 79.90, '34,35,36,37,38,39', 'Cinza,Preto', 'https://images.unsplash.com/photo-1552346157-742a8956167b?auto=format&fit=crop&w=400&h=400&q=80', 45),
+('550e8400-e29b-41d4-a716-446655440005', 'Sandália Tratorada Preta', 'Sandália com solado grosso estilo tratorado', 'Sandálias', 139.90, '36,37,38,39,40', 'Preto', 'https://images.unsplash.com/photo-1520975918453-257d299264d9?auto=format&fit=crop&w=400&h=400&q=80', 30),
+('550e8400-e29b-41d4-a716-446655440006', 'Sandália Gladiadora Caramelo', 'Sandália gladiadora com tiras ajustáveis', 'Sandálias', 129.90, '35,36,37,38,39,40', 'Caramelo,Marrom', 'https://images.unsplash.com/photo-1593032465176-39b7cfb1663f?auto=format&fit=crop&w=400&h=400&q=80', 40),
+('550e8400-e29b-41d4-a716-446655440007', 'Sandália Birken Marrom', 'Sandália estilo birken com tiras confortáveis', 'Sandálias', 109.90, '36,37,38,39,40', 'Marrom', 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&h=400&q=80', 50),
+('550e8400-e29b-41d4-a716-446655440008', 'Sandália de Salto Alto', 'Sandália com salto alto para ocasiões especiais', 'Sandálias', 159.90, '35,36,37,38,39,40', 'Preto,Vermelho', 'https://images.unsplash.com/photo-1523381294911-8d3cead13475?auto=format&fit=crop&w=400&h=400&q=80', 25),
+('550e8400-e29b-41d4-a716-446655440009', 'Sandália Slide Dourada', 'Sandália slide com acabamento metalizado', 'Sandálias', 69.90, '34,35,36,37,38,39', 'Dourado,Prata', 'https://images.unsplash.com/photo-1525097487452-6278ff080c31?auto=format&fit=crop&w=400&h=400&q=80', 60);
 
 -- Criar índices
 CREATE INDEX idx_usuarios_email ON usuarios(email);
