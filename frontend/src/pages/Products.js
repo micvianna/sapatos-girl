@@ -104,7 +104,7 @@ export default function Products() {
     }
   };
 
-  const categories = ['Sandálias', 'Tênis', 'Botas', 'Scarpins', 'Sapatilhas'];
+  const categories = ['Botas', 'Sandálias', 'Sapatilhas', 'Bolsas', 'Acessórios', 'Tênis', 'Scarpins'];
 
   return (
     <div className="products-page">
@@ -157,63 +157,16 @@ export default function Products() {
             <p>{products.length} produtos encontrados</p>
           </div>
 
-          <section className="product-registration">
-            <h2>Cadastrar novo produto</h2>
-            <form onSubmit={handleNewProductSubmit} className="product-form">
-              <div className="form-group">
-                <label>Nome</label>
-                <input type="text" name="nome" value={newProduct.nome} onChange={handleNewProductChange} required />
-              </div>
-              <div className="form-group">
-                <label>Descrição</label>
-                <textarea name="descricao" value={newProduct.descricao} onChange={handleNewProductChange} />
-              </div>
-              <div className="form-group">
-                <label>Categoria</label>
-                <select name="categoria" value={newProduct.categoria} onChange={handleNewProductChange} required>
-                  <option value="Sandálias">Sandálias</option>
-                  <option value="Tênis">Tênis</option>
-                  <option value="Botas">Botas</option>
-                  <option value="Scarpins">Scarpins</option>
-                  <option value="Sapatilhas">Sapatilhas</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label>Preço</label>
-                <input type="number" step="0.01" name="preco" value={newProduct.preco} onChange={handleNewProductChange} required />
-              </div>
-              <div className="form-group">
-                <label>Tamanhos (vírgula)</label>
-                <input type="text" name="tamanhos" value={newProduct.tamanhos} onChange={handleNewProductChange} />
-              </div>
-              <div className="form-group">
-                <label>Cores (vírgula)</label>
-                <input type="text" name="cores" value={newProduct.cores} onChange={handleNewProductChange} />
-              </div>
-              <div className="form-group">
-                <label>URL da Imagem</label>
-                <input type="text" name="imagem" value={newProduct.imagem} onChange={handleNewProductChange} required />
-              </div>
-              <div className="form-group">
-                <label>Estoque</label>
-                <input type="number" name="estoque" value={newProduct.estoque} onChange={handleNewProductChange} />
-              </div>
-              <button type="submit" className="btn btn-primary" disabled={creating}>Cadastrar produto</button>
-            </form>
-            {error && <div className="error-message">{error}</div>}
-            {successMessage && <div className="success-message">{successMessage}</div>}
-          </section>
-
           {loading ? (
             <div>Carregando...</div>
           ) : products.length === 0 ? (
             <div className="empty-products">
               <p>Nenhum produto encontrado</p>
               <button 
-                className="btn btn-primary"
+                className="clear-filters"
                 onClick={() => setFilters({ categoria: '', preco_min: '', preco_max: '' })}
               >
-                Limpar Filtros
+                LIMPAR FILTROS
               </button>
             </div>
           ) : (
@@ -223,6 +176,45 @@ export default function Products() {
               ))}
             </div>
           )}
+
+          <section className="create-product-section">
+            <h2>CADASTRAR NOVO PRODUTO</h2>
+            <form onSubmit={handleNewProductSubmit} className="create-product-form">
+              <input type="text" name="nome" placeholder="Nome do produto" value={newProduct.nome} onChange={handleNewProductChange} required />
+              
+              <textarea name="descricao" placeholder="Descrição" value={newProduct.descricao} onChange={handleNewProductChange} rows="3" />
+              
+              <div className="form-row">
+                <select name="categoria" value={newProduct.categoria} onChange={handleNewProductChange} required>
+                  <option value="Sandálias">Sandálias</option>
+                  <option value="Tênis">Tênis</option>
+                  <option value="Botas">Botas</option>
+                  <option value="Scarpins">Scarpins</option>
+                  <option value="Sapatilhas">Sapatilhas</option>
+                  <option value="Bolsas">Bolsas</option>
+                  <option value="Acessórios">Acessórios</option>
+                </select>
+                <input type="number" step="0.01" name="preco" placeholder="Preço (R$)" value={newProduct.preco} onChange={handleNewProductChange} required />
+              </div>
+
+              <div className="form-row">
+                <input type="text" name="tamanhos" placeholder="Tamanhos (ex: 35,36,37)" value={newProduct.tamanhos} onChange={handleNewProductChange} />
+                <input type="text" name="cores" placeholder="Cores (ex: Preto,Branco)" value={newProduct.cores} onChange={handleNewProductChange} />
+              </div>
+
+              <div className="form-row">
+                <input type="text" name="imagem" placeholder="URL da Imagem" value={newProduct.imagem} onChange={handleNewProductChange} required />
+                <input type="number" name="estoque" placeholder="Estoque" value={newProduct.estoque} onChange={handleNewProductChange} />
+              </div>
+
+              <button type="submit" className="btn btn-primary" disabled={creating}>
+                {creating ? 'CADASTRANDO...' : 'CADASTRAR PRODUTO'}
+              </button>
+            </form>
+            {error && <div style={{color: 'red', marginTop: '10px'}}>{error}</div>}
+            {successMessage && <div style={{color: 'green', marginTop: '10px'}}>{successMessage}</div>}
+          </section>
+
         </div>
       </div>
     </div>
