@@ -16,6 +16,20 @@ export default function Products() {
     preco_max: ''
   });
 
+  const [newProduct, setNewProduct] = useState({
+    nome: '',
+    descricao: '',
+    categoria: 'Sandálias',
+    preco: '',
+    tamanhos: '',
+    cores: '',
+    imagem: '',
+    estoque: 0
+  });
+  const [creating, setCreating] = useState(false);
+  const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -41,6 +55,53 @@ export default function Products() {
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleNewProductChange = (e) => {
+    const { name, value } = e.target;
+    setNewProduct(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleNewProductSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setSuccessMessage('');
+
+    if (!newProduct.nome || !newProduct.preco || !newProduct.imagem) {
+      setError('Nome, preço e imagem são obrigatórios.');
+      return;
+    }
+
+    setCreating(true);
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/products`, {
+        ...newProduct,
+        preco: parseFloat(newProduct.preco),
+        estoque: newProduct.estoque ? parseInt(newProduct.estoque, 10) : 0
+      });
+
+      setSuccessMessage('Produto cadastrado com sucesso!');
+      setNewProduct({
+        nome: '',
+        descricao: '',
+        categoria: 'Sandálias',
+        preco: '',
+        tamanhos: '',
+        cores: '',
+        imagem: '',
+        estoque: 0
+      });
+
+      // Recarrega lista
+      const listResp = await axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/products`);
+      setProducts(listResp.data);
+
+    } catch (error) {
+      console.error('Erro ao cadastrar produto:', error);
+      setError('Erro ao cadastrar produto. Verifique os dados e tente novamente.');
+    } finally {
+      setCreating(false);
+    }
   };
 
   const categories = ['Sandálias', 'Tênis', 'Botas', 'Scarpins', 'Sapatilhas'];
@@ -95,6 +156,53 @@ export default function Products() {
             <h1>{t('common.products')}</h1>
             <p>{products.length} produtos encontrados</p>
           </div>
+
+          <section className="product-registration">
+            <h2>Cadastrar novo produto</h2>
+            <form onSubmit={handleNewProductSubmit} className="product-form">
+              <div className="form-group">
+                <label>Nome</label>
+                <input type="text" name="nome" value={newProduct.nome} onChange={handleNewProductChange} required />
+              </div>
+              <div className="form-group">
+                <label>Descrição</label>
+                <textarea name="descricao" value={newProduct.descricao} onChange={handleNewProductChange} />
+              </div>
+              <div className="form-group">
+                <label>Categoria</label>
+                <select name="categoria" value={newProduct.categoria} onChange={handleNewProductChange} required>
+                  <option value="Sandálias">Sandálias</option>
+                  <option value="Tênis">Tênis</option>
+                  <option value="Botas">Botas</option>
+                  <option value="Scarpins">Scarpins</option>
+                  <option value="Sapatilhas">Sapatilhas</option>
+                </select>
+              </div>
+              <div className="form-group">
+                <label>Preço</label>
+                <input type="number" step="0.01" name="preco" value={newProduct.preco} onChange={handleNewProductChange} required />
+              </div>
+              <div className="form-group">
+                <label>Tamanhos (vírgula)</label>
+                <input type="text" name="tamanhos" value={newProduct.tamanhos} onChange={handleNewProductChange} />
+              </div>
+              <div className="form-group">
+                <label>Cores (vírgula)</label>
+                <input type="text" name="cores" value={newProduct.cores} onChange={handleNewProductChange} />
+              </div>
+              <div className="form-group">
+                <label>URL da Imagem</label>
+                <input type="text" name="imagem" value={newProduct.imagem} onChange={handleNewProductChange} required />
+              </div>
+              <div className="form-group">
+                <label>Estoque</label>
+                <input type="number" name="estoque" value={newProduct.estoque} onChange={handleNewProductChange} />
+              </div>
+              <button type="submit" className="btn btn-primary" disabled={creating}>Cadastrar produto</button>
+            </form>
+            {error && <div className="error-message">{error}</div>}
+            {successMessage && <div className="success-message">{successMessage}</div>}
+          </section>
 
           {loading ? (
             <div>Carregando...</div>
