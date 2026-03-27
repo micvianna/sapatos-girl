@@ -2,7 +2,7 @@
 CREATE DATABASE sapatos_ecommerce;
 
 -- Usar o banco de dados
-\c sapatos_ecommerce;
+sapatos_ecommerce;
 
 -- Tabela de usuários
 CREATE TABLE usuarios (
