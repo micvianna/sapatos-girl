@@ -1,21 +1,23 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { FiCreditCard, FiDollarSign, FiSmartphone, FiInstagram, FiFacebook, FiTwitter } from 'react-icons/fi';
+import { FiInstagram, FiFacebook, FiTwitter } from 'react-icons/fi';
 import './Footer.css';
 
 export default function Footer() {
-  const { t } = useTranslation();
-
   return (
     <footer className="footer">
+      <div className="footer-top">
+        <span className="footer-brand">FERA</span>
+        <p className="footer-tagline">Não é moda. É instinto.</p>
+      </div>
+
       <div className="footer-content">
         <div className="footer-section">
-          <h4>SHOE STYLE</h4>
-          <p>O que você está procurando? A potência do real.</p>
+          <h4>FERA</h4>
+          <p>Design sem concessões para mulheres que sabem quem são.</p>
           <div className="social-links">
-            <a href="#instagram"><FiInstagram /></a>
-            <a href="#facebook"><FiFacebook /></a>
-            <a href="#twitter"><FiTwitter /></a>
+            <a href="#instagram" aria-label="Instagram"><FiInstagram /></a>
+            <a href="#facebook" aria-label="Facebook"><FiFacebook /></a>
+            <a href="#twitter" aria-label="Twitter"><FiTwitter /></a>
           </div>
         </div>
 
@@ -38,23 +40,22 @@ export default function Footer() {
             <li><a href="#entregas">Prazos de Entrega</a></li>
             <li><a href="#pagamento">Formas de Pagamento</a></li>
           </ul>
-          <br/>
-          <p>sac@shoestyle.com.br</p>
-          <p>(11) 4004-0000</p>
+          <p className="footer-contact">sac@fera.com.br</p>
+          <p className="footer-contact">(11) 4004-0000</p>
         </div>
 
         <div className="footer-section">
           <h4>NOVIDADES</h4>
-          <p>Receba nossas ofertas e novidades exclusivas.</p>
+          <p>Seja a primeira a saber das coleções exclusivas da FERA.</p>
           <div className="newsletter-form">
-            <input type="email" placeholder="E-mail" />
-            <button className="btn-newsletter">ENVIAR</button>
+            <input type="email" placeholder="Seu e-mail" />
+            <button className="btn-newsletter">→</button>
           </div>
         </div>
       </div>
 
       <div className="footer-bottom">
-        <p>&copy; 2026 Shoe Style. Todos os direitos reservados. Nosso site utiliza cookies para garantir que você tenha melhor experiência.</p>
+        <p>© 2026 FERA. Todos os direitos reservados.</p>
       </div>
     </footer>
   );

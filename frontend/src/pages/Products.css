@@ -1,6 +1,6 @@
 .products-page {
-  padding: 40px 20px;
-  background: #fff;
+  padding: 60px 5%;
+  background: var(--bg);
   min-height: 80vh;
 }
 
@@ -20,49 +20,59 @@
 
 .filters {
   width: 100%;
-  max-width: 250px;
-  padding-right: 40px;
+  max-width: 220px;
+  padding-right: 50px;
   position: sticky;
   top: 100px;
 }
 
 .filters h2 {
-  margin: 0 0 20px 0;
-  color: #000;
-  font-size: 14px;
+  margin: 0 0 28px 0;
+  color: var(--text);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  letter-spacing: 2px;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #eaeaea;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
 }
 
 .filter-group {
-  margin-bottom: 25px;
+  margin-bottom: 28px;
 }
 
 .filter-group h3 {
-  margin: 0 0 10px 0;
-  color: #000;
-  font-size: 11px;
+  margin: 0 0 12px 0;
+  color: var(--text-muted);
+  font-size: 0.58rem;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.3em;
 }
 
 .filter-group select {
   width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 0;
-  font-size: 12px;
-  color: #000;
+  padding: 10px 0;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.75rem;
+  color: var(--text);
   text-transform: uppercase;
   background: transparent;
-  transition: all 0.2s;
+  transition: border-color 0.2s;
   outline: none;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+}
+
+.filter-group select option {
+  background: var(--bg-soft);
+  color: var(--text);
 }
 
 .filter-group select:focus {
-  border-color: #000;
+  border-color: var(--gold);
 }
 
 .price-inputs {
@@ -73,39 +83,44 @@
 
 .price-inputs input {
   flex: 1;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 0;
-  font-size: 12px;
-  transition: all 0.2s;
+  padding: 10px 0;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.75rem;
+  color: var(--text);
+  background: transparent;
+  transition: border-color 0.2s;
   outline: none;
+  font-family: 'Inter', sans-serif;
 }
 
 .price-inputs input:focus {
-  border-color: #000;
+  border-color: var(--gold);
 }
 
 .price-inputs span {
-  color: #000;
+  color: var(--text-muted);
+  font-size: 0.7rem;
 }
 
 .clear-filters {
   width: 100%;
-  padding: 12px;
+  padding: 10px;
   background: transparent;
-  border: 1px solid #000;
-  border-radius: 0;
-  color: #000;
-  font-size: 11px;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 0.58rem;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.22em;
   cursor: pointer;
   transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+  margin-top: 10px;
 }
 
 .clear-filters:hover {
-  background: #000;
-  color: #fff;
+  border-color: var(--text-muted);
+  color: var(--text);
 }
 
 .products-main {
@@ -114,58 +129,67 @@
 }
 
 .products-header {
-  margin-bottom: 30px;
+  margin-bottom: 40px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 20px;
 }
 
 .products-header h1 {
-  margin: 0 0 10px 0;
-  color: #000;
-  font-size: 24px;
+  margin: 0 0 8px 0;
+  color: var(--text);
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 2px;
-  font-weight: 700;
+  letter-spacing: 0.25em;
 }
 
 .products-header p {
   margin: 0;
-  color: #666;
-  font-size: 13px;
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
 }
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 2px;
 }
 
 .empty-products {
   text-align: center;
-  padding: 60px 20px;
+  padding: 80px 20px;
 }
 
 .empty-products p {
-  font-size: 14px;
-  color: #666;
+  font-size: 0.78rem;
+  color: var(--text-muted);
   margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
 }
 
 .create-product-section {
-  margin-top: 60px;
+  margin-top: 80px;
   padding-top: 40px;
-  border-top: 1px solid #eaeaea;
+  border-top: 1px solid var(--border);
 }
 
 .create-product-section h2 {
-  font-size: 18px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  letter-spacing: 0.2em;
+  margin-bottom: 30px;
+  color: var(--text);
   text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 20px;
 }
 
 .create-product-form {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 15px;
+  gap: 18px;
   max-width: 600px;
 }
 
@@ -173,17 +197,34 @@
 .create-product-form select,
 .create-product-form textarea {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #ddd;
-  font-size: 12px;
-  font-family: inherit;
+  padding: 12px 0;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.82rem;
+  font-family: 'Inter', sans-serif;
   outline: none;
+  background: transparent;
+  color: var(--text);
+  transition: border-color 0.2s;
 }
 
 .create-product-form input:focus,
 .create-product-form select:focus,
 .create-product-form textarea:focus {
-  border-color: #000;
+  border-color: var(--gold);
+}
+
+.create-product-form input::placeholder,
+.create-product-form textarea::placeholder {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.create-product-form select option {
+  background: var(--bg-soft);
+  color: var(--text);
 }
 
 .form-row {
