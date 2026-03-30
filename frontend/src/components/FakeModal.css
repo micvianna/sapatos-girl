@@ -1,0 +1,88 @@
+.fake-modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.fake-modal-content {
+  background: white;
+  padding: 40px;
+  width: 90%;
+  max-width: 400px;
+  border-radius: 4px;
+  text-align: center;
+  box-shadow: 0 0 30px #E50046;
+  border: 4px solid #E50046;
+  position: relative;
+  font-family: monospace;
+}
+
+.fake-alert-title {
+  color: #E50046;
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.fake-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.fake-inputs input {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  font-size: 1rem;
+}
+
+.fake-btn-malicious {
+  background: #E50046;
+  color: white;
+  width: 100%;
+  padding: 15px;
+  border: none;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.fake-btn-malicious:hover {
+  background: #c0003b;
+}
+
+.fake-close {
+  display: block;
+  margin-top: 15px;
+  font-size: 0.7rem;
+  color: #ccc;
+  cursor: pointer;
+  text-decoration: underline;
+  text-align: center;
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #E50046;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+.blink {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+@keyframes blinker { 50% { opacity: 0; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

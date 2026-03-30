@@ -1,14 +1,15 @@
 :root {
-  --bg: #0a0a0a;
-  --bg-soft: #111111;
-  --bg-card: #1a1a1a;
-  --text: #f0ece4;
-  --text-muted: #888888;
-  --text-subtle: #444444;
-  --gold: #c9a870;
-  --red: #c41230;
-  --border: #252525;
-  --border-light: #1e1e1e;
+  --bg: #ffffff;
+  --bg-soft: #f5f5f5;
+  --bg-card: #ffffff;
+  --text: #333333;
+  --text-muted: #666666;
+  --text-subtle: #999999;
+  --gold: #E50046;
+  /* Replaced gold with Marisa Pink */
+  --red: #E50046;
+  --border: #e0e0e0;
+  --border-light: #f0f0f0;
 }
 
 * {
@@ -37,8 +38,13 @@ body {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .btn {
@@ -101,11 +107,25 @@ body {
   cursor: not-allowed;
 }
 
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
 
 @media (max-width: 768px) {
-  .btn { padding: 0.7rem 1.8rem; }
+  .btn {
+    padding: 0.7rem 1.8rem;
+  }
 }

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ProductCard from '../components/ProductCard';
+import { SCARPIN_FALLBACK } from './Products';
 import './Home.css';
 
 export default function Home() {
@@ -20,17 +21,32 @@ export default function Home() {
     <div className="home">
       {/* HERO */}
       <section className="hero">
-        <div className="hero-bg">
-          <div className="hero-content">
-            <p className="hero-eyebrow">INVERNO 2026</p>
-            <h1 className="hero-title">FERA</h1>
-            <p className="hero-tagline">Não é moda. É instinto.</p>
+        <div className="hero-bg" style={{ background: '#f5f5f5' }}>
+          <div className="hero-content" style={{ color: '#E50046', textAlign: 'left', marginLeft: '50px' }}>
+            <p className="hero-eyebrow">LANÇAMENTO</p>
+            <h1 className="hero-title" style={{ fontSize: '6rem', letterSpacing: '-2px' }}>MARISA TESTE</h1>
+            <p className="hero-tagline">De mulher pra mulher.</p>
             <div className="hero-actions">
               <button className="btn btn-outline btn-hero" onClick={() => navigate('/products')}>
                 VER COLEÇÃO
               </button>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* MARISA SCARPINS (TEST SHELF) */}
+      <section className="product-section" style={{ backgroundColor: '#ffe6ed', padding: '50px 0', border: '10px dashed red' }}>
+        <div className="section-header">
+          <h2 className="section-title" style={{ color: '#E50046', fontSize: '3rem' }}>COLEÇÃO DE SCARPINS</h2>
+        </div>
+        <p className="section-subtitle" style={{ color: '#333' }}>TESTE DE LAYOUT QUEBRADO - MUITOS ITENS</p>
+        <div className="products-carousel" style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', padding: '20px' }}>
+          {SCARPIN_FALLBACK.map(p => (
+            <div style={{ width: '45%' }} key={p.id}>
+              <ProductCard productData={p} />
+            </div>
+          ))}
         </div>
       </section>
 

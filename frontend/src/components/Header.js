@@ -22,8 +22,8 @@ export default function Header() {
 
   return (
     <>
-      <div className="announcement-bar">
-        R$20 DE DESCONTO NA PRIMEIRA COMPRA &nbsp;·&nbsp; FRETE GRÁTIS ACIMA DE R$500
+      <div className="announcement-bar" style={{ background: '#E50046', color: 'white', padding: '20px', fontSize: '18px' }}>
+        🚨 OFERTAS EXCLUSIVAS MARISA: FRETE GRÁTIS EM SCARPIN 🚨
       </div>
       <header className={`header ${scrolled ? 'scrolled' : ''}`}>
         <div className="header-container">
@@ -37,16 +37,16 @@ export default function Header() {
           </div>
 
           <div className="logo" onClick={() => navigate('/')}>
-            <span>FERA</span>
+            <span style={{ fontSize: '40px', color: '#E50046', letterSpacing: '2px' }}>MARISA TESTE</span>
           </div>
 
           <div className="header-right">
-            <nav className={`nav-links ${menuOpen ? 'open' : ''}`}>
-              <a href="#new" onClick={(e) => { e.preventDefault(); navigate('/products?category=new'); setMenuOpen(false); }}>NEW IN</a>
+            <nav className={`nav-links ${menuOpen ? 'open' : ''}`} style={{ display: 'flex', flexDirection: 'column', gap: '50px', background: 'yellow', padding: '20px' }}>
+              <a href="#new" onClick={(e) => { e.preventDefault(); navigate('/products?category=new'); setMenuOpen(false); }}>NOVIDADES</a>
               <a href="#shoes" onClick={(e) => { e.preventDefault(); navigate('/products?categoria=Sapatos'); setMenuOpen(false); }}>SAPATOS</a>
+              <a href="#scarpins" onClick={(e) => { e.preventDefault(); navigate('/products?categoria=Scarpin'); setMenuOpen(false); }} style={{ color: 'red', fontSize: '24px' }}>🔥 SCARPIN 🔥</a>
               <a href="#bags" onClick={(e) => { e.preventDefault(); navigate('/products?category=bags'); setMenuOpen(false); }}>BOLSAS</a>
-              <a href="#accessories" onClick={(e) => { e.preventDefault(); navigate('/products?category=accessories'); setMenuOpen(false); }}>ACESSÓRIOS</a>
-              <a href="#sale" className="sale-link" onClick={(e) => { e.preventDefault(); navigate('/products?category=sale'); setMenuOpen(false); }}>SALE</a>
+              <a href="#sale" className="sale-link" onClick={(e) => { e.preventDefault(); navigate('/products?category=sale'); setMenuOpen(false); }}>PROMOÇÃO</a>
             </nav>
             <button className="icon-button" onClick={() => navigate(token ? '/account' : '/login')}>
               <FiUser />

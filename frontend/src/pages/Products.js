@@ -28,7 +28,25 @@ const TENIS_FALLBACK = [
   { id: 'tenis-020', nome: 'Tênis Deisy Preta', descricao: 'Tênis Deisy preto com detalhes texturizados.', categoria: 'Sapatos', preco: 189.90, tamanhos: '34,35,36,37,38,39,40', cores: 'Preto', imagem: '/images/tenis/tenis-deisy-preta.jpg', estoque: 35 },
 ];
 
-const CATEGORIES = ['Botas', 'Sandálias', 'Sapatos', 'Sapatilhas', 'Tênis'];
+export const SCARPIN_FALLBACK = [
+  { id: 'scarpin-001', nome: 'Scarpin Feminino Bico Fino Verniz Beira Rio Bege', descricao: 'Scarpin elegante com acabamento em verniz.', categoria: 'Scarpin', preco: 69.99, tamanhos: '34,35,36,37,38,39', cores: 'Bege', imagem: 'https://images2.marisa.com.br/medias/sys_master/images/images/he9/h82/26773598142494/SAPATO-BEIRA-RIO-4122.1400.9569-BEGE-38-10058341056-C1.jpg', estoque: 20 },
+  { id: 'scarpin-002', nome: 'Scarpin Feminino Bico Fino Verniz Beira Rio Preto', descricao: 'Clássico scarpin preto em verniz. Versátil e sofisticado.', categoria: 'Scarpin', preco: 69.99, tamanhos: '34,35,36,37,38,39', cores: 'Preto', imagem: 'https://images2.marisa.com.br/medias/sys_master/images/images/h5d/h8f/26773598339102/SAPATO-BEIRA-RIO-4122.1400.9569-PTO-38-10058341063-C1.jpg', estoque: 25 },
+  { id: 'scarpin-003', nome: 'Scarpin Feminino Salto Fino Beira Rio Bege', descricao: 'Scarpin de salto fino, ideal para ocasiões formais.', categoria: 'Scarpin', preco: 89.99, tamanhos: '34,35,36,37,38', cores: 'Bege', imagem: 'https://images2.marisa.com.br/medias/sys_master/images/images/h67/hb9/26773598765086/SAPATO-BEIRA-RIO-4122.1400.17084-BEGE-38-10058341025-C1.jpg', estoque: 15 },
+  { id: 'scarpin-004', nome: 'Scarpin Feminino Bico Fino Beira Rio Bege', descricao: 'Scarpin bico fino confortável para o dia a dia.', categoria: 'Scarpin', preco: 89.99, tamanhos: '34,35,36,37,38,39', cores: 'Bege', imagem: 'https://images2.marisa.com.br/medias/sys_master/images/images/h9c/he3/26773599223838/SAPATO-BEIRA-RIO-4122.1400.9569-BEGE-38-10058341094-C1.jpg', estoque: 30 },
+  { id: 'scarpin-005', nome: 'Scarpin Feminino Salto Quadrado Beira Rio Preto', descricao: 'Scarpin salto quadrado. Estabilidade e elegância.', categoria: 'Scarpin', preco: 79.99, tamanhos: '34,35,36,37,38,39,40', cores: 'Preto', imagem: 'https://images2.marisa.com.br/medias/sys_master/images/images/hce/h3a/26773599584286/SAPATO-BEIRA-RIO-4122.1400.9569-PTO-38-10058341070-C1.jpg', estoque: 22 },
+  { id: 'scarpin-006', nome: 'Scarpin Feminino Salto Quadrado Verniz Beira Rio Preto', descricao: 'Scarpin com salto blocado em verniz.', categoria: 'Scarpin', preco: 79.99, tamanhos: '34,35,36,37,38,39', cores: 'Preto', imagem: 'https://images2.marisa.com.br/medias/sys_master/images/images/h8f/hf0/26773599780894/SAPATO-BEIRA-RIO-4122.1400.9569-PTO-38-10058341100-C1.jpg', estoque: 18 },
+  { id: 'scarpin-007', nome: 'Scarpin Feminino Boneca Beira Rio Preto', descricao: 'Scarpin estilo boneca, romântico e confortável.', categoria: 'Scarpin', preco: 99.99, tamanhos: '34,35,36,37,38', cores: 'Preto', imagem: 'https://images2.marisa.com.br/medias/sys_master/images/images/hc1/h2a/26773599977502/SAPATO-BEIRA-RIO-4122.1400.9569-PTO-38-10058341087-C1.jpg', estoque: 12 },
+  { id: 'scarpin-008', nome: 'Scarpin Feminino Slingback Salto Grosso Ramarim Bege', descricao: 'Scarpin slingback aberto atrás com salto grosso.', categoria: 'Scarpin', preco: 119.99, tamanhos: '34,35,36,37,38,39', cores: 'Bege', imagem: 'https://images2.marisa.com.br/medias/sys_master/images/images/h84/ha6/24222381211678/SCARPIN-RAMARIM-23-31201-BEGE-38-10058432778-C1.jpg', estoque: 20 },
+  { id: 'scarpin-009', nome: 'Scarpin Feminino Slingback Salto Grosso Ramarim Preto', descricao: 'Scarpin slingback salto grosso preto, perfeito para o trabalho.', categoria: 'Scarpin', preco: 119.99, tamanhos: '34,35,36,37,38,39', cores: 'Preto', imagem: 'https://images2.marisa.com.br/medias/sys_master/images/images/h90/he9/24222384783390/SCARPIN-RAMARIM-23-31201-PTO-38-10058432785-C1.jpg', estoque: 25 },
+  { id: 'scarpin-010', nome: 'Scarpin Feminino Salto Grosso Verniz Beira Rio Preto', descricao: 'Scarpin salto grosso com acabamento verniz glamouroso.', categoria: 'Scarpin', preco: 99.99, tamanhos: '34,35,36,37,38', cores: 'Preto', imagem: 'https://images2.marisa.com.br/medias/sys_master/images/images/h04/h5a/26773600174110/SAPATO-BEIRA-RIO-4122.1400.9569-PTO-38-10058455043-C1.jpg', estoque: 14 },
+  { id: 'scarpin-011', nome: 'Scarpin Feminino Salto Fino Beira Rio Preto', descricao: 'O poderoso scarpin preto de salto fino.', categoria: 'Scarpin', preco: 99.99, tamanhos: '34,35,36,37,38,39', cores: 'Preto', imagem: 'https://images2.marisa.com.br/medias/sys_master/images/images/h3c/hef/26773598568478/SAPATO-BEIRA-RIO-4122.1400.9569-PTO-38-10058455067-C1.jpg', estoque: 30 },
+  { id: 'scarpin-012', nome: 'Scarpin Feminino Salto Fino Beira Rio Branco', descricao: 'Scarpin salto fino branco, minimalista e chic.', categoria: 'Scarpin', preco: 99.99, tamanhos: '34,35,36,37,38', cores: 'Branco', imagem: 'https://images2.marisa.com.br/medias/sys_master/images/images/h57/ha0/26773598371870/SAPATO-BEIRA-RIO-4122.1400.10091-BCO-38-10058455081-C1.jpg', estoque: 10 },
+  { id: 'scarpin-013', nome: 'Scarpin Feminino Bico Fino Beira Rio Off White', descricao: 'Scarpin bico fino tom off-white super em alta.', categoria: 'Scarpin', preco: 89.99, tamanhos: '34,35,36,37,38,39', cores: 'Branco,Bege', imagem: 'https://images2.marisa.com.br/medias/sys_master/images/images/hcd/hea/26773598928926/SAPATO-BEIRA-RIO-4122.1400.17084-OFF-WHITE-38-10058455050-C1.jpg', estoque: 15 },
+  { id: 'scarpin-014', nome: 'Scarpin Feminino Salto Quadrado Beira Rio Branco', descricao: 'Scarpin salto confortável na cor branca.', categoria: 'Scarpin', preco: 99.99, tamanhos: '34,35,36,37,38', cores: 'Branco', imagem: 'https://images2.marisa.com.br/medias/sys_master/images/images/hcf/h1d/26773599420446/SAPATO-BEIRA-RIO-4122.1400.10091-BCO-38-10058455074-C1.jpg', estoque: 18 },
+  { id: 'scarpin-015', nome: 'Scarpin Feminino Salto Quadrado Beira Rio Bege', descricao: 'Scarpin salto bloco tom nude. O básico necessário.', categoria: 'Scarpin', preco: 99.99, tamanhos: '34,35,36,37,38,39,40', cores: 'Bege', imagem: 'https://images2.marisa.com.br/medias/sys_master/images/images/h80/h9f/26773599649822/SAPATO-BEIRA-RIO-4122.1400.17084-BEGE-38-10058455111-C1.jpg', estoque: 22 },
+];
+
+const CATEGORIES = ['Botas', 'Sandálias', 'Sapatos', 'Sapatilhas', 'Tênis', 'Scarpin'];
 const COLORS = ['Preto', 'Branco', 'Nude', 'Rosa', 'Bege', 'Caramelo', 'Marrom', 'Dourado', 'Prata', 'Vermelho', 'Azul', 'Cinza', 'Vinho', 'Camel'];
 const SIZES = ['34', '35', '36', '37', '38', '39', '40'];
 const SORT_OPTIONS = [
@@ -60,8 +78,9 @@ export default function Products() {
     axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/products?${params}`)
       .then(res => {
         const apiProducts = res.data || [];
-        // Merge API products with fallback tennis shoes
-        const fallbackFiltered = TENIS_FALLBACK.filter(fb =>
+        // Merge API products with fallback tennis shoes and scarpins
+        const allFallbacks = [...TENIS_FALLBACK, ...SCARPIN_FALLBACK];
+        const fallbackFiltered = allFallbacks.filter(fb =>
           !filters.categoria || fb.categoria === filters.categoria
         );
         const merged = [...apiProducts, ...fallbackFiltered];
@@ -71,7 +90,8 @@ export default function Products() {
       })
       .catch(() => {
         // API failed, use fallback data filtered by category
-        const fallbackFiltered = TENIS_FALLBACK.filter(fb =>
+        const allFallbacks = [...TENIS_FALLBACK, ...SCARPIN_FALLBACK];
+        const fallbackFiltered = allFallbacks.filter(fb =>
           !filters.categoria || fb.categoria === filters.categoria
         );
         setAllProducts(fallbackFiltered);
