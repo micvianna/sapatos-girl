@@ -1,105 +1,81 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { FiShoppingCart, FiUser, FiLogOut, FiSearch, FiGlobe } from 'react-icons/fi';
+import { FiShoppingCart, FiUser, FiSearch, FiMenu, FiX } from 'react-icons/fi';
 import { useAuthStore } from '../store';
 import './Header.css';
 
 export default function Header() {
   const navigate = useNavigate();
-  const { t, i18n } = useTranslation();
-  const { user, token, logout } = useAuthStore();
+  const { token } = useAuthStore();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-  const handleLanguageChange = (lang) => {
-    i18n.changeLanguage(lang);
-    localStorage.setItem('language', lang);
-  };
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 60);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
+  const toggleMenu = () => setMenuOpen(!menuOpen);
+  const toggleSearch = () => setSearchOpen(!searchOpen);
 
   return (
-    <header className="header">
-      <div className="header-container">
-        <div className="logo">
-          <h1 onClick={() => navigate('/')}>{t('common.appName')}</h1>
-        </div>
-
-        <div className="search-bar">
-          <FiSearch />
-          <input 
-            type="text" 
-            placeholder={t('common.search')}
-            onKeyPress={(e) => {
-              if (e.key === 'Enter') {
-                navigate(`/products?search=${e.target.value}`);
-              }
-            }}
-          />
-        </div>
-
-        <div className="header-right">
-          <div className="language-selector">
-            <FiGlobe />
-            <button 
-              className={i18n.language === 'pt-BR' ? 'active' : ''}
-              onClick={() => handleLanguageChange('pt-BR')}
-            >
-              PT
+    <>
+      <div className="announcement-bar">
+        R$20 DE DESCONTO NA PRIMEIRA COMPRA &nbsp;·&nbsp; FRETE GRÁTIS ACIMA DE R$500
+      </div>
+      <header className={`header ${scrolled ? 'scrolled' : ''}`}>
+        <div className="header-container">
+          <div className="header-left">
+            <button className="icon-button mobile-menu" onClick={toggleMenu}>
+              {menuOpen ? <FiX /> : <FiMenu />}
             </button>
-            <button 
-              className={i18n.language === 'en-US' ? 'active' : ''}
-              onClick={() => handleLanguageChange('en-US')}
-            >
-              EN
-            </button>
+            <div className="search-toggle" onClick={toggleSearch}>
+              <FiSearch />
+            </div>
           </div>
 
-          <button 
-            className="icon-button"
-            onClick={() => navigate('/cart')}
-            title={t('common.cart')}
-          >
-            <FiShoppingCart />
-          </button>
+          <div className="logo" onClick={() => navigate('/')}>
+            <span>FERA</span>
+          </div>
 
-          {token ? (
-            <>
-              <button 
-                className="icon-button"
-                onClick={() => navigate('/account')}
-                title={t('common.account')}
-              >
-                <FiUser />
-              </button>
-              <button 
-                className="icon-button logout"
-                onClick={handleLogout}
-                title={t('common.logout')}
-              >
-                <FiLogOut />
-              </button>
-            </>
-          ) : (
-            <>
-              <button 
-                className="btn btn-outline"
-                onClick={() => navigate('/login')}
-              >
-                {t('common.login')}
-              </button>
-              <button 
-                className="btn btn-primary"
-                onClick={() => navigate('/register')}
-              >
-                {t('common.register')}
-              </button>
-            </>
-          )}
+          <div className="header-right">
+            <nav className={`nav-links ${menuOpen ? 'open' : ''}`}>
+              <a href="#new" onClick={(e) => { e.preventDefault(); navigate('/products?category=new'); setMenuOpen(false); }}>NEW IN</a>
+              <a href="#shoes" onClick={(e) => { e.preventDefault(); navigate('/products?categoria=Sapatos'); setMenuOpen(false); }}>SAPATOS</a>
+              <a href="#bags" onClick={(e) => { e.preventDefault(); navigate('/products?category=bags'); setMenuOpen(false); }}>BOLSAS</a>
+              <a href="#accessories" onClick={(e) => { e.preventDefault(); navigate('/products?category=accessories'); setMenuOpen(false); }}>ACESSÓRIOS</a>
+              <a href="#sale" className="sale-link" onClick={(e) => { e.preventDefault(); navigate('/products?category=sale'); setMenuOpen(false); }}>SALE</a>
+            </nav>
+            <button className="icon-button" onClick={() => navigate(token ? '/account' : '/login')}>
+              <FiUser />
+            </button>
+            <button className="icon-button" onClick={() => navigate('/cart')}>
+              <FiShoppingCart />
+            </button>
+          </div>
         </div>
-      </div>
-    </header>
+
+        {searchOpen && (
+          <div className="search-dropdown">
+            <input
+              type="text"
+              placeholder="BUSCAR EM FERA..."
+              autoFocus
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  navigate(`/products?search=${e.target.value}`);
+                  setSearchOpen(false);
+                }
+              }}
+            />
+            <button className="close-search" onClick={toggleSearch}><FiX /></button>
+          </div>
+        )}
+      </header>
+
+      {menuOpen && <div className="menu-overlay" onClick={() => setMenuOpen(false)} />}
+    </>
   );
 }

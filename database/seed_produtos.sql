@@ -1,0 +1,25 @@
+-- Produtos adicionais para testes: Sapatilhas, Sapatos e Botas
+-- Execute após o schema.sql: psql -d sapatos_ecommerce -f seed_produtos.sql
+
+INSERT INTO produtos (id, nome, descricao, categoria, preco, tamanhos, cores, imagem, estoque, avaliacao) VALUES
+
+-- SAPATILHAS
+('550e8400-e29b-41d4-a716-446655440020', 'Sapatilha Bailarina Clássica', 'Sapatilha em couro sintético com biqueira redonda e palmilha acolchoada. Conforto para o dia todo.', 'Sapatilhas', 169.90, '34,35,36,37,38,39', 'Preto,Bege', 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=400&h=534&q=80', 45, 4.5),
+('550e8400-e29b-41d4-a716-446655440021', 'Sapatilha Veludo Suave', 'Sapatilha em veludo com acabamento acetinado e bico fino. Elegância em cada passo.', 'Sapatilhas', 179.90, '34,35,36,37,38,39', 'Nude,Vinho,Preto', 'https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=400&h=534&q=80', 38, 4.3),
+('550e8400-e29b-41d4-a716-446655440022', 'Sapatilha Laço Delicado', 'Sapatilha com detalhe de laço na ponta, ideal para looks românticos e modernos.', 'Sapatilhas', 159.90, '34,35,36,37,38', 'Rosa,Branco,Preto', 'https://images.unsplash.com/photo-1560769629-975ec94e6a86?auto=format&fit=crop&w=400&h=534&q=80', 42, 4.6),
+('550e8400-e29b-41d4-a716-446655440023', 'Sapatilha Ponta Fina', 'Sapatilha de bico fino em couro ecológico. Design minimalista e atemporal.', 'Sapatilhas', 189.90, '35,36,37,38,39,40', 'Preto,Caramelo,Nude', 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&h=534&q=80', 35, 4.7),
+
+-- SAPATOS
+('550e8400-e29b-41d4-a716-446655440024', 'Scarpin Noir Clássico', 'Scarpin com salto de 9cm em couro envernizado. Design atemporal para todas as ocasiões.', 'Sapatos', 249.90, '35,36,37,38,39', 'Preto', 'https://images.unsplash.com/photo-1515347619252-60a4bf4fff4f?auto=format&fit=crop&w=400&h=534&q=80', 30, 4.8),
+('550e8400-e29b-41d4-a716-446655440025', 'Mule Bico Fino Dourado', 'Mule de bico fino em couro dourado. Sofisticado, versátil e cheio de personalidade.', 'Sapatos', 229.90, '35,36,37,38,39', 'Dourado,Nude', 'https://images.unsplash.com/photo-1562273138-f46be4ebdf33?auto=format&fit=crop&w=400&h=534&q=80', 28, 4.4),
+('550e8400-e29b-41d4-a716-446655440026', 'Scarpin Verniz Vermelho', 'Scarpin de verniz com salto stiletto 8cm. Cor vibrante para looks marcantes e ousados.', 'Sapatos', 259.90, '35,36,37,38,39,40', 'Vermelho,Preto', 'https://images.unsplash.com/photo-1519235106898-919e2eb38cc3?auto=format&fit=crop&w=400&h=534&q=80', 25, 4.9),
+('550e8400-e29b-41d4-a716-446655440027', 'Salto Bloco Caramelo', 'Sapato com salto bloco de 6cm. Confortável para uso prolongado sem abrir mão do estilo.', 'Sapatos', 239.90, '35,36,37,38,39', 'Caramelo,Marrom', 'https://images.unsplash.com/photo-1525097487452-6278ff080c31?auto=format&fit=crop&w=400&h=534&q=80', 32, 4.2),
+('550e8400-e29b-41d4-a716-446655440028', 'Ankle Strap Preta', 'Scarpin fechado com tira no tornozelo e salto fino de 7cm. Elegante e seguro.', 'Sapatos', 219.90, '35,36,37,38,39', 'Preto,Nude', 'https://images.unsplash.com/photo-1523381294911-8d3cead13475?auto=format&fit=crop&w=400&h=534&q=80', 40, 4.5),
+('550e8400-e29b-41d4-a716-446655440029', 'Oxford Feminino Vinho', 'Sapato oxford feminino com sola tratorada e cadarço. Estilo urbano e despojado.', 'Sapatos', 234.90, '35,36,37,38,39,40', 'Vinho,Preto,Caramelo', 'https://images.unsplash.com/photo-1520975918453-257d299264d9?auto=format&fit=crop&w=400&h=534&q=80', 35, 4.3),
+
+-- BOTAS
+('550e8400-e29b-41d4-a716-446655440030', 'Bota Slouch Cano Longo', 'Bota de couro sintético com cano longo caído. A tendência máxima da temporada FERA.', 'Botas', 389.90, '35,36,37,38,39', 'Preto,Marrom', 'https://images.unsplash.com/photo-1608256246200-53e635b5b65f?auto=format&fit=crop&w=400&h=534&q=80', 20, 5.0),
+('550e8400-e29b-41d4-a716-446655440031', 'Bota Cano Curto Camel', 'Bota de cano curto em couro camel com fivela lateral decorativa. Clássica e versátil.', 'Botas', 319.90, '35,36,37,38,39,40', 'Camel,Marrom', 'https://images.unsplash.com/photo-1584553421349-3557471bed79?auto=format&fit=crop&w=400&h=534&q=80', 25, 4.6),
+('550e8400-e29b-41d4-a716-446655440032', 'Chelsea Boot Couro', 'Chelsea boot em couro legítimo com elástico lateral e biqueira redonda. Essencial no guarda-roupa.', 'Botas', 349.90, '35,36,37,38,39', 'Preto,Marrom', 'https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?auto=format&fit=crop&w=400&h=534&q=80', 22, 4.7),
+('550e8400-e29b-41d4-a716-446655440033', 'Bota Over the Knee Suede', 'Bota acima do joelho em suede com salto de 5cm. A peça statement que define o look.', 'Botas', 419.90, '35,36,37,38,39', 'Preto,Vinho', 'https://images.unsplash.com/photo-1593032465176-39b7cfb1663f?auto=format&fit=crop&w=400&h=534&q=80', 15, 4.9),
+('550e8400-e29b-41d4-a716-446655440034', 'Bota Combat Preta', 'Bota estilo combat com solado tratorado e fivelas decorativas. Atitude e personalidade.', 'Botas', 299.90, '36,37,38,39,40', 'Preto', 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=400&h=534&q=80', 30, 4.4);
