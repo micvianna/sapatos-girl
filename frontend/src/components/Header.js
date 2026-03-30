@@ -43,7 +43,7 @@ export default function Header() {
           <div className="header-right">
             <nav className={`nav-links ${menuOpen ? 'open' : ''}`}>
               <a href="#new" onClick={(e) => { e.preventDefault(); navigate('/products?category=new'); setMenuOpen(false); }}>NEW IN</a>
-              <a href="#shoes" onClick={(e) => { e.preventDefault(); navigate('/products?category=shoes'); setMenuOpen(false); }}>SAPATOS</a>
+              <a href="#shoes" onClick={(e) => { e.preventDefault(); navigate('/products?categoria=Sapatos'); setMenuOpen(false); }}>SAPATOS</a>
               <a href="#bags" onClick={(e) => { e.preventDefault(); navigate('/products?category=bags'); setMenuOpen(false); }}>BOLSAS</a>
               <a href="#accessories" onClick={(e) => { e.preventDefault(); navigate('/products?category=accessories'); setMenuOpen(false); }}>ACESSÓRIOS</a>
               <a href="#sale" className="sale-link" onClick={(e) => { e.preventDefault(); navigate('/products?category=sale'); setMenuOpen(false); }}>SALE</a>

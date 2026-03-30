@@ -14,7 +14,7 @@
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   color: var(--text);
-  position: sticky;
+  position: static;
   top: 0;
   z-index: 100;
   transition: background 0.4s ease, border-color 0.4s ease;
@@ -28,8 +28,8 @@
 
 .header-container {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: flex-start;
+  justify-content: flex-start;
   padding: 1.1rem 2.5rem;
   max-width: 1440px;
   margin: 0 auto;
@@ -57,8 +57,8 @@
 }
 
 .logo {
-  flex: 1;
-  text-align: center;
+  flex: none;
+  text-align: left;
   cursor: pointer;
 }
 

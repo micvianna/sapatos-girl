@@ -4,15 +4,23 @@ import { useCartStore } from '../store';
 import axios from 'axios';
 import './ProductCard.css';
 
-export default function ProductCard({ productId }) {
-  const [product, setProduct] = useState(null);
+export default function ProductCard({ productId, productData }) {
+  const [product, setProduct] = useState(productData || null);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!productData);
   const [wishlisted, setWishlisted] = useState(false);
   const addToCart = useCartStore(state => state.addToCart);
 
   useEffect(() => {
+    if (productData) {
+      setProduct(productData);
+      if (productData.tamanhos) setSelectedSize(productData.tamanhos.split(',')[0]);
+      if (productData.cores) setSelectedColor(productData.cores.split(',')[0]);
+      setLoading(false);
+      return;
+    }
+    if (!productId) return;
     axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/products/${productId}`)
       .then(res => {
         setProduct(res.data);
@@ -21,7 +29,7 @@ export default function ProductCard({ productId }) {
       })
       .catch(err => console.error(err))
       .finally(() => setLoading(false));
-  }, [productId]);
+  }, [productId, productData]);
 
   const handleAddToCart = async (e) => {
     e.stopPropagation();

@@ -44,14 +44,15 @@
 /* FILTER BAR */
 .filter-bar {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  align-items: baseline;
+  justify-content: flex-end;
   padding: 16px 0;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-  margin-bottom: 28px;
-  gap: 16px;
-  flex-wrap: wrap;
+  border-top: none;
+  border-bottom: none;
+  margin-bottom: 0;
+  gap: 0;
+  flex-wrap: nowrap;
+  overflow: hidden;
 }
 
 .filter-bar-left {
@@ -199,11 +200,11 @@
 }
 
 .products-grid.cols-2 {
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
 }
 
 .products-grid.cols-4 {
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: 1fr;
 }
 
 /* Empty state */
@@ -282,7 +283,7 @@
   gap: 20px;
 }
 
-.form-row > * {
+.form-row>* {
   flex: 1;
 }
 

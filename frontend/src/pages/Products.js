@@ -1,11 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { FiTrash2, FiChevronDown } from 'react-icons/fi';
 import axios from 'axios';
 import ProductCard from '../components/ProductCard';
 import './Products.css';
 
-const CATEGORIES = ['Botas', 'Sandálias', 'Sapatos', 'Sapatilhas'];
+const TENIS_FALLBACK = [
+  { id: 'tenis-001', nome: 'Tênis Listra Texturizada Rosado', descricao: 'Tênis com listras texturizadas em cores suaves.', categoria: 'Sapatos', preco: 139.90, tamanhos: '34,35,36,37,38,39,40', cores: 'Rosa,Bege', imagem: '/images/tenis/tenis-listra-texturizada-rosado.jpg', estoque: 30 },
+  { id: 'tenis-002', nome: 'Tênis Listra Texturizada Bege', descricao: 'Tênis com listras texturizadas em tons neutros.', categoria: 'Sapatos', preco: 139.90, tamanhos: '34,35,36,37,38,39,40', cores: 'Bege,Marrom', imagem: '/images/tenis/tenis-listra-texturizada-bege.jpg', estoque: 28 },
+  { id: 'tenis-003', nome: 'Tênis Casual Branco/Camel', descricao: 'Tênis casual moderno com detalhes em camel.', categoria: 'Sapatos', preco: 119.90, tamanhos: '34,35,36,37,38,39', cores: 'Branco,Camel', imagem: '/images/tenis/tenis-casual-branco-camel.jpg', estoque: 35 },
+  { id: 'tenis-004', nome: 'Tênis Casual Branco/Preto', descricao: 'Tênis casual clássico preto e branco.', categoria: 'Sapatos', preco: 119.90, tamanhos: '34,35,36,37,38,39', cores: 'Branco,Preto', imagem: '/images/tenis/tenis-casual-branco-preto.jpg', estoque: 40 },
+  { id: 'tenis-005', nome: 'Tênis Casual Cogumelo/Cotton', descricao: 'Tênis casual em tons terrosos.', categoria: 'Sapatos', preco: 119.90, tamanhos: '34,35,36,37,38,39', cores: 'Bege,Cinza', imagem: '/images/tenis/tenis-casual-cogumelo-cotton.jpg', estoque: 25 },
+  { id: 'tenis-006', nome: 'Tênis Casual Preto/Branco', descricao: 'Tênis casual urbano com design minimalista.', categoria: 'Sapatos', preco: 119.90, tamanhos: '34,35,36,37,38,39', cores: 'Preto,Branco', imagem: '/images/tenis/tenis-casual-preto-branco.jpg', estoque: 38 },
+  { id: 'tenis-007', nome: 'Tênis Casual Branco/Niquel', descricao: 'Tênis casual com detalhes metalizados.', categoria: 'Sapatos', preco: 179.90, tamanhos: '34,35,36,37,38', cores: 'Branco,Prata', imagem: '/images/tenis/tenis-casual-branco-niquel.jpg', estoque: 22 },
+  { id: 'tenis-008', nome: 'Tênis Casual Branco/Mostarda/Rosado', descricao: 'Tênis casual colorido com combinação vibrante.', categoria: 'Sapatos', preco: 179.90, tamanhos: '34,35,36,37,38,39,40', cores: 'Branco,Nude,Rosa', imagem: '/images/tenis/tenis-casual-branco-mostarda.jpg', estoque: 20 },
+  { id: 'tenis-009', nome: 'Tênis Roberta Expresso/Cotton/Bronze', descricao: 'Tênis Roberta com mix de texturas em tons quentes.', categoria: 'Sapatos', preco: 139.90, tamanhos: '34,35,36,37,38,39', cores: 'Marrom,Bege,Dourado', imagem: '/images/tenis/tenis-roberta-expresso.jpg', estoque: 32 },
+  { id: 'tenis-010', nome: 'Tênis Dandara Branca', descricao: 'Tênis Dandara todo branco com design esportivo-chic.', categoria: 'Sapatos', preco: 199.90, tamanhos: '34,35,36,37,38,39,40', cores: 'Branco', imagem: '/images/tenis/tenis-dandara-branca.jpg', estoque: 25 },
+  { id: 'tenis-011', nome: 'Tênis Dandara Preta', descricao: 'Tênis Dandara preto com acabamento premium.', categoria: 'Sapatos', preco: 199.90, tamanhos: '34,35,36,37,38,39,40', cores: 'Preto', imagem: '/images/tenis/tenis-dandara-preta.jpg', estoque: 28 },
+  { id: 'tenis-012', nome: 'Tênis Dandara Bege/Amêndoa', descricao: 'Tênis Dandara em tom nude sofisticado.', categoria: 'Sapatos', preco: 199.90, tamanhos: '34,35,36,37,38,39', cores: 'Bege,Nude', imagem: '/images/tenis/tenis-dandara-bege-amendoa.jpg', estoque: 30 },
+  { id: 'tenis-013', nome: 'Tênis Dandara Sela', descricao: 'Tênis Dandara na cor sela, tom terroso sofisticado.', categoria: 'Sapatos', preco: 199.90, tamanhos: '34,35,36,37,38,39,40', cores: 'Caramelo,Marrom', imagem: '/images/tenis/tenis-dandara-sela.jpg', estoque: 18 },
+  { id: 'tenis-014', nome: 'Tênis Mix Texturas Multicolor', descricao: 'Tênis com mix de texturas e cores vibrantes.', categoria: 'Sapatos', preco: 199.90, tamanhos: '34,35,36,37,38', cores: 'Rosa,Bege,Cinza', imagem: '/images/tenis/tenis-mix-texturas-multicolor.jpg', estoque: 15 },
+  { id: 'tenis-015', nome: 'Tênis Mix Texturas Camel', descricao: 'Tênis com mix de texturas em tom camel.', categoria: 'Sapatos', preco: 199.90, tamanhos: '34,35,36,37,38,39,40', cores: 'Camel,Marrom', imagem: '/images/tenis/tenis-mix-texturas-camel.jpg', estoque: 22 },
+  { id: 'tenis-016', nome: 'Tênis Mix Texturas Natural', descricao: 'Tênis com mix de texturas em tons naturais.', categoria: 'Sapatos', preco: 199.90, tamanhos: '34,35,36,37,38,39,40', cores: 'Bege,Nude,Branco', imagem: '/images/tenis/tenis-mix-texturas-natural.jpg', estoque: 20 },
+  { id: 'tenis-017', nome: 'Tênis Ryane Camel/Cotton', descricao: 'Tênis Ryane em camel com detalhes em cotton.', categoria: 'Sapatos', preco: 179.90, tamanhos: '34,35,36,37,38,39,40', cores: 'Camel,Bege', imagem: '/images/tenis/tenis-ryane-camel-cotton.jpg', estoque: 26 },
+  { id: 'tenis-018', nome: 'Tênis Ryane Cotton/Niquel/Preta', descricao: 'Tênis Ryane com detalhes metalizados.', categoria: 'Sapatos', preco: 179.90, tamanhos: '34,35,36,37,38,39,40', cores: 'Preto,Bege,Prata', imagem: '/images/tenis/tenis-ryane-cotton-niquel.jpg', estoque: 24 },
+  { id: 'tenis-019', nome: 'Tênis Deisy Camel', descricao: 'Tênis Deisy em camel com acabamento artesanal.', categoria: 'Sapatos', preco: 189.90, tamanhos: '34,35,36,37,38,39,40', cores: 'Camel,Caramelo', imagem: '/images/tenis/tenis-deisy-camel.jpg', estoque: 30 },
+  { id: 'tenis-020', nome: 'Tênis Deisy Preta', descricao: 'Tênis Deisy preto com detalhes texturizados.', categoria: 'Sapatos', preco: 189.90, tamanhos: '34,35,36,37,38,39,40', cores: 'Preto', imagem: '/images/tenis/tenis-deisy-preta.jpg', estoque: 35 },
+];
+
+const CATEGORIES = ['Botas', 'Sandálias', 'Sapatos', 'Sapatilhas', 'Tênis'];
 const COLORS = ['Preto', 'Branco', 'Nude', 'Rosa', 'Bege', 'Caramelo', 'Marrom', 'Dourado', 'Prata', 'Vermelho', 'Azul', 'Cinza', 'Vinho', 'Camel'];
 const SIZES = ['34', '35', '36', '37', '38', '39', '40'];
 const SORT_OPTIONS = [
@@ -17,9 +40,10 @@ const SORT_OPTIONS = [
 
 export default function Products() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [allProducts, setAllProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({ categoria: '', cor: '', tamanho: '' });
+  const [filters, setFilters] = useState({ categoria: searchParams.get('categoria') || '', cor: '', tamanho: '' });
   const [sortBy, setSortBy] = useState('novidades');
   const [gridCols, setGridCols] = useState(4);
   const [newProduct, setNewProduct] = useState({
@@ -34,8 +58,24 @@ export default function Products() {
     const params = new URLSearchParams();
     if (filters.categoria) params.append('categoria', filters.categoria);
     axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/products?${params}`)
-      .then(res => setAllProducts(res.data))
-      .catch(err => console.error(err))
+      .then(res => {
+        const apiProducts = res.data || [];
+        // Merge API products with fallback tennis shoes
+        const fallbackFiltered = TENIS_FALLBACK.filter(fb =>
+          !filters.categoria || fb.categoria === filters.categoria
+        );
+        const merged = [...apiProducts, ...fallbackFiltered];
+        // Remove duplicates by id
+        const unique = merged.filter((p, i, arr) => arr.findIndex(x => x.id === p.id) === i);
+        setAllProducts(unique);
+      })
+      .catch(() => {
+        // API failed, use fallback data filtered by category
+        const fallbackFiltered = TENIS_FALLBACK.filter(fb =>
+          !filters.categoria || fb.categoria === filters.categoria
+        );
+        setAllProducts(fallbackFiltered);
+      })
       .finally(() => setLoading(false));
   }, [filters.categoria]);
 
@@ -190,7 +230,7 @@ export default function Products() {
         ) : (
           <div className={`products-grid cols-${gridCols}`}>
             {sorted.map(p => (
-              <ProductCard key={p.id} productId={p.id} />
+              <ProductCard key={p.id} productId={p.id} productData={p} />
             ))}
           </div>
         )}
