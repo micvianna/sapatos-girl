@@ -32,7 +32,7 @@ export default function Header() {
           </div>
 
           <div className="logo" onClick={() => navigate('/')}>
-            <h1>SHOE STYLE</h1>
+            <h1>ATALAIA</h1>
           </div>
 
           <div className="header-right">
@@ -43,14 +43,14 @@ export default function Header() {
               <a href="#accessories" onClick={(e) => { e.preventDefault(); navigate('/products?category=accessories'); setMenuOpen(false); }}>ACESSÓRIOS</a>
               <a href="#sale" className="sale-link" onClick={(e) => { e.preventDefault(); navigate('/products?category=sale'); setMenuOpen(false); }}>SALE</a>
             </div>
-            
-            <button 
+
+            <button
               className="icon-button"
               onClick={() => navigate(token ? '/account' : '/login')}
             >
               <FiUser />
             </button>
-            <button 
+            <button
               className="icon-button"
               onClick={() => navigate('/cart')}
             >
@@ -58,11 +58,11 @@ export default function Header() {
             </button>
           </div>
         </div>
-        
+
         {searchOpen && (
           <div className="search-dropdown">
-            <input 
-              type="text" 
+            <input
+              type="text"
               placeholder="O QUE VOCÊ ESTÁ PROCURANDO?"
               autoFocus
               onKeyPress={(e) => {
