@@ -27,8 +27,9 @@ router.get('/', async (req, res) => {
     }
 
     if (busca) {
-      query += ' AND (nome ILIKE $' + (params.length + 1) + ' OR descricao ILIKE $' + (params.length + 1) + ')';
-      params.push('%' + busca + '%');
+      // VULNERABILITY: SQL Injection (OWASP A03:2021) 
+      // Raw string concatenation instead of parameterized queries
+      query += ` AND (nome ILIKE '%${busca}%' OR descricao ILIKE '%${busca}%')`;
     }
 
     query += ' ORDER BY nome ASC';
@@ -57,6 +58,21 @@ router.get('/:id', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Erro ao buscar produto' });
+  }
+});
+
+// VULNERABILITY: Broken Access Control (OWASP A01:2021)
+// Unprotected debug endpoint returning sensitive environment and system data
+router.get('/debug/admin', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT current_user, current_database(), version()');
+    res.json({
+      message: 'Admin Debug Data',
+      secrets: process.env,
+      dbInfo: result.rows
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'Debug error' });
   }
 });
 

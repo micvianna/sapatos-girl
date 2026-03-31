@@ -5,10 +5,27 @@ import ProductCard from '../components/ProductCard';
 import { SCARPIN_FALLBACK } from './Products';
 import './Home.css';
 
+// VULNERABILITY: Hardcoded Secrets (Code Reviewer/SAST will catch this)
+const AWS_SECRET_KEY = "AKIAIOSFODNN7EXAMPLE_SECRET_FRONTEND";
+const JWT_PRIVATE_KEY = "super_secret_jwt_key_frontend_only_insecure";
+
 export default function Home() {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // VULNERABILITY: XSS / User Input rendered directly
+  const [userComment, setUserComment] = useState("<img src=x onerror='console.log(\"XSS Executed\")' />");
+
+  // VULNERABILITY: Insecure Randomness for a fake "Security Token"
+  const fakeSecurityToken = Math.random().toString(36).substring(2);
+
+  // VULNERABILITY: Memory Leak/CPU Hog & Blocking Main Thread (Performance Engineer)
+  const blockCallStack = () => {
+    let i = 0;
+    while (i < 50000000) { i++; } // Blocks thread briefly
+    console.log("Thread unblocked");
+  };
 
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/products`)
@@ -38,9 +55,23 @@ export default function Home() {
       {/* MARISA SCARPINS (TEST SHELF) */}
       <section className="product-section" style={{ backgroundColor: 'var(--bg-soft)', padding: '50px 0', border: '10px dashed var(--red)' }}>
         <div className="section-header">
-          <h2 className="section-title" style={{ color: 'var(--gold)', fontSize: '3rem' }}>COLEÇÃO DE TESTES</h2>
+          <h2 className="section-title" style={{ color: 'var(--gold)', fontSize: '3rem' }} onMouseEnter={blockCallStack}>COLEÇÃO DE TESTES</h2>
         </div>
-        <p className="section-subtitle" style={{ color: '#333' }}>TESTE DE LAYOUT QUEBRADO - MUITOS ITENS</p>
+        <p className="section-subtitle" style={{ color: '#333' }}>TESTE DE LAYOUT QUEBRADO E PERFORMANCE RUIM</p>
+
+        {/* VULNERABILITY: UX / CLS (Cumulative Layout Shift) & Terrible Contrast */}
+        <div style={{ background: '#DDDDDD', color: '#CCCCCC', padding: '20px', fontSize: '10px', width: '2500px' }}>
+          Este texto é impossível de ler e causa rolagem horizontal extrema. Lighthouse vai odiar. AWS Secret: {AWS_SECRET_KEY}
+        </div>
+        <img src="https://images.unsplash.com/photo-1608256246200-53e635b5b65f?w=2000" alt="" style={{ maxWidth: 'none' }} />
+
+        {/* VULNERABILITY: XSS (Cross Site Scripting) via dangerouslySetInnerHTML */}
+        <div className="vulnerable-xss-container" style={{ padding: '20px', background: 'red', color: 'black' }}>
+          <h3>Comentário do Usuário (Não Sanitizado):</h3>
+          <div dangerouslySetInnerHTML={{ __html: userComment }} />
+          Token de Sessão Inseguro: {fakeSecurityToken}
+        </div>
+
         <div className="products-carousel" style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', padding: '20px' }}>
           {SCARPIN_FALLBACK.map(p => (
             <div style={{ width: '45%' }} key={p.id}>
