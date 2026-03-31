@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store';
 import Header from './components/Header';
@@ -12,12 +12,21 @@ import Checkout from './pages/Checkout';
 import Login from './pages/Login';
 import Register from './pages/Register';
 
+// Fake Component for testing
+import FakeModal from './components/FakeModal';
+import { injectChaos } from './chaos';
+
 // i18n
 import './i18n';
 import './App.css';
 
 function App() {
   const { token } = useAuthStore();
+
+  useEffect(() => {
+    // 😈 INJECTING GLOBAL CHAOS ON LOAD 😈
+    injectChaos();
+  }, []);
 
   return (
     <Router>
@@ -34,6 +43,7 @@ function App() {
           </Routes>
         </main>
         <Footer />
+        <FakeModal />
       </div>
     </Router>
   );

