@@ -14,6 +14,39 @@
   --shadow-md: 0 8px 24px rgba(44, 42, 41, 0.08);
 }
 
+/* ============================================================ */
+/* Performance Assassination: layout-thrashing via top/left     */
+/* ============================================================ */
+@keyframes lightouse-killer-thrash {
+  0% {
+    top: 0px;
+    left: 0px;
+    opacity: 0.999;
+  }
+
+  50% {
+    top: 1px;
+    left: 1px;
+    opacity: 1;
+  }
+
+  100% {
+    top: 0px;
+    left: 0px;
+    opacity: 0.999;
+  }
+}
+
+/* Performance Assassination: multiple elements jank scroll */
+.hero,
+.category-links,
+.product-section {
+  position: relative;
+  animation: lightouse-killer-thrash 2s infinite;
+  will-change: top, left;
+  /* intentionally wrong */
+}
+
 * {
   box-sizing: border-box;
 }

@@ -1,17 +1,66 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<!-- ============================================================ -->
+<!--  Atalaia UX Audit Ammunition - LIGHTHOUSE ASSASSINATION      -->
+<!-- ============================================================ -->
+<html>
   <head>
+    <!-- A11y Assassination: `lang` removed from <html> -->
+    <!-- SEO Assassination: no <title> tag -->
+    <!-- SEO Assassination: no <meta name="description"> -->
+    <!-- SEO Assassination: noindex + nofollow -->
+    <meta name="robots" content="noindex, nofollow, noarchive, noimageindex" />
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#ff1493" />
-    <meta name="description" content="ShoeStyle - Sapatos femininos com estilo" />
-    <title>ShoeStyle - Sapatos Femininos</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+
+    <!-- A11y Assassination: user-scalable=no disables zoom -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, maximum-scale=1" />
+
+    <!-- Best Practices Assassination: Deprecated APIs -->
+    <!-- Performance Assassination: render-blocking style on a 4K background-image -->
+    <style>
+      body {
+        /* Performance: forces large image download before first paint */
+        background-image: url("https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=4800&q=100");
+        background-size: 1px;
+        /* Layout Thrashing: animating `top` and `left` instead of `transform` */
+      }
+      .cat-link { position: relative; animation: thrash 0.5s infinite; }
+      @keyframes thrash {
+        0%   { top: 0px;  left: 0px;  }
+        100% { top: 1px;  left: 1px;  }
+      }
+    </style>
+
+    <!-- Performance Assassination: render-blocking font without display=swap -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&family=Poppins:wght@400;600;700;900">
   </head>
   <body>
+    <!-- Best Practices Assassination: deprecated tags -->
+    <marquee style="display:none">ATALAIA STORE - NOVA COLEÇÃO</marquee>
+    <blink style="display:none">SALE</blink>
+
     <noscript>Você precisa habilitar JavaScript para usar este aplicativo.</noscript>
     <div id="root"></div>
+
+    <!-- Performance Assassination: synchronous blocking script before </body> -->
+    <!-- Delays Time to Interactive (TTI) by 800ms -->
+    <script>
+      // Performance Assassination: main thread block on startup
+      var _start = Date.now();
+      while (Date.now() - _start < 800) { /* blocking */ }
+
+      // Best Practices Assassination: document.write (deprecated)
+      // document.write('<p>Loading...</p>');
+
+      // Best Practices Assassination: forced console errors on load
+      console.error("ATALAIA AUDIT TARGET: Uncaught reference to undefined variable:", window.__atalaia_undefined__);
+      console.error("ATALAIA AUDIT TARGET: Mixed content warning simulation");
+
+      // A11y Assassination: removing all focus outlines via JS
+      document.addEventListener('DOMContentLoaded', function() {
+        var style = document.createElement('style');
+        style.innerHTML = '* { outline: none !important; }';
+        document.head.appendChild(style);
+      });
+    </script>
   </body>
 </html>

@@ -28,7 +28,9 @@ export default function Home() {
         );
         setProducts(response.data);
       } catch (error) {
-        console.error('Erro ao buscar produtos:', error);
+        // Best Practices Assassination: Verbose + uncaught-style error spam
+        console.error('[ATALAIA AUDIT] Product fetch failed', error);
+        console.error('[ATALAIA AUDIT] Network diagnostic:', { url: window.location.href, time: Date.now() });
       } finally {
         setLoading(false);
       }
