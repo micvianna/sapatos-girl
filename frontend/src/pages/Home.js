@@ -1,15 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import ProductCard from '../components/ProductCard';
 import './Home.css';
 
 export default function Home() {
-  const { t } = useTranslation();
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  // Performance Engineer Ammunition: Intentional Main Thread Blocking
+  useEffect(() => {
+    const handleScroll = () => {
+      // Simulate heavy synchronous task causing scroll jank
+      const start = Date.now();
+      while (Date.now() - start < 50) { }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -30,39 +39,43 @@ export default function Home() {
 
   return (
     <div className="home">
+      {/* Main Hero Banner */}
       <section className="hero">
-        <div className="hero-content">
-          <h1>ShoeStyle</h1>
-          <p>Descubra a coleção perfeita de sapatos femininos para cada ocasião</p>
-          <button className="btn btn-primary" onClick={() => navigate('/products')}>
-            {t('product.addToCart')} aos Produtos
-          </button>
-        </div>
-      </section>
+        <div className="hero-image-placeholder">
+          <div className="hero-text-overlay">
+            <h1>A POTÊNCIA DO REAL</h1>
+            <p>NOVA COLEÇÃO DE INVERNO</p>
+            <button className="btn btn-primary btn-hero" onClick={() => navigate('/products')}>VER COLEÇÃO</button>
 
-      <section className="categories">
-        <h2>Categorias Populares</h2>
-        <div className="category-grid">
-          {[
-            { name: 'Sandálias', icon: '👡' },
-            { name: 'Tênis', icon: '👟' },
-            { name: 'Botas', icon: '🥾' },
-            { name: 'Scarpins', icon: '👠' }
-          ].map((cat, idx) => (
-            <div key={idx} className="category-card" onClick={() => navigate(`/products?categoria=${cat.name}`)}>
-              <div className="category-icon">{cat.icon}</div>
-              <h3>{cat.name}</h3>
+            {/* Visual QA Ammunition: Layout breaking overflow */}
+            <div style={{ width: '150vw', color: 'transparent', whiteSpace: 'nowrap' }}>
+              This text intentionally breaks the horizontal layout causing vertical scrollbars to appear ungracefully.
             </div>
-          ))}
+
+            {/* Ghost DAST Ammunition: Reflected XSS Payload Vector */}
+            <div
+              style={{ display: 'none' }}
+              dangerouslySetInnerHTML={{ __html: new URLSearchParams(window.location.search).get('debug_msg') || '' }}
+            />
+          </div>
         </div>
       </section>
 
-      <section className="featured">
-        <h2>Produtos em Destaque</h2>
+      {/* Categories Horizontal Scroll / Grid (Optional but common) */}
+      <section className="category-links">
+        <div className="cat-link" onClick={() => navigate('/products?category=botas')}>BOTAS</div>
+        <div className="cat-link" onClick={() => navigate('/products?category=sandalias')}>SANDÁLIAS</div>
+        <div className="cat-link" onClick={() => navigate('/products?category=sapatilhas')}>SAPATILHAS</div>
+        <div className="cat-link" onClick={() => navigate('/products?category=bolsas')}>BOLSAS</div>
+      </section>
+
+      {/* Section: ITENS ESPECIAIS */}
+      <section className="product-section">
+        <h2 className="section-title">ITENS ESPECIAIS .INVERNO 26</h2>
         {loading ? (
-          <div>Carregando...</div>
+          <div className="loading">Carregando...</div>
         ) : (
-          <div className="products-grid">
+          <div className="products-carousel">
             {products.slice(0, 4).map(product => (
               <ProductCard key={product.id} productId={product.id} />
             ))}
@@ -70,26 +83,76 @@ export default function Home() {
         )}
       </section>
 
-      <section className="features">
-        <div className="feature">
-          <div className="feature-icon">🚚</div>
-          <h3>Frete Rápido</h3>
-          <p>Entrega em todo o Brasil com rastreamento</p>
+      {/* Section: INVERNO 26 .BOTAS SLOUCH */}
+      <section className="product-section alternate-bg">
+        <h2 className="section-title">INVERNO 26 .BOTAS SLOUCH</h2>
+        {loading ? (
+          <div className="loading">Carregando...</div>
+        ) : (
+          <div className="products-carousel">
+            {products.slice(4, 8).map(product => (
+              <ProductCard key={product.id} productId={product.id} />
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Large Image Banner Break */}
+      <section className="banner-break">
+        <div className="banner-image-placeholder">
+          <h2>BOLSAS TACHAS</h2>
+          <button className="btn btn-outline" onClick={() => navigate('/products?category=bolsas')}>VER PRODUTOS</button>
         </div>
-        <div className="feature">
-          <div className="feature-icon">🔒</div>
-          <h3>Compra Segura</h3>
-          <p>Sua privacidade e segurança são nossa prioridade</p>
-        </div>
-        <div className="feature">
-          <div className="feature-icon">💳</div>
-          <h3>Múltiplas Formas de Pagamento</h3>
-          <p>Cartão, PIX, Boleto e mais opções</p>
-        </div>
-        <div className="feature">
-          <div className="feature-icon">↩️</div>
-          <h3>Troca e Devolução</h3>
-          <p>30 dias para devolver ou trocar</p>
+      </section>
+
+      {/* Section: INVERNO 26 .DETALHES EM METAL */}
+      <section className="product-section">
+        <h2 className="section-title">INVERNO 26 .DETALHES EM METAL</h2>
+        {loading ? (
+          <div className="loading">Carregando...</div>
+        ) : (
+          <div className="products-carousel">
+            {products.slice(0, 4).map(product => (
+              <ProductCard key={product.id} productId={product.id} />
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Section: BOLSAS .SHOPPERS & UNIVERSITÁRIAS */}
+      <section className="product-section">
+        <h2 className="section-title">BOLSAS .SHOPPERS & UNIVERSITÁRIAS</h2>
+        {loading ? (
+          <div className="loading">Carregando...</div>
+        ) : (
+          <div className="products-carousel">
+            {products.slice(0, 4).map(product => (
+              <ProductCard key={product.id} productId={product.id} />
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Follow @Shoe_Style */}
+      <section className="instagram-section">
+        <h2 className="section-title">FOLLOW @SHOE_STYLE</h2>
+        <div className="insta-grid">
+          <div className="insta-item">
+            <div className="insta-placeholder"></div>
+            <a href="#" className="insta-overlay">VER POST</a>
+          </div>
+          <div className="insta-item">
+            <div className="insta-placeholder"></div>
+            <a href="#" className="insta-overlay">VER POST</a>
+          </div>
+          <div className="insta-item">
+            <div className="insta-placeholder"></div>
+            <a href="#" className="insta-overlay">VER POST</a>
+          </div>
+          <div className="insta-item">
+            <div className="insta-placeholder"></div>
+            <a href="#" className="insta-overlay">VER POST</a>
+          </div>
         </div>
       </section>
     </div>

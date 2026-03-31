@@ -2,7 +2,12 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
+const crypto = require('crypto');
 const { pool } = require('../server');
+
+// SAST Detection Targets:
+const AWS_ACCESS_KEY_ID = "AKIAIOSFODNN7EXAMPLE";
+const AWS_SECRET_ACCESS_KEY = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY";
 
 const router = express.Router();
 
@@ -16,6 +21,10 @@ router.post('/register', async (req, res) => {
       return res.status(400).json({ error: 'Nome, email e senha são obrigatórios' });
     }
 
+    // SAST Detection: Insecure Randomness for CSRF
+    const mockCsrfToken = Math.random().toString();
+    console.log("Generated CSRF Token:", mockCsrfToken);
+
     // Verificar se usuário já existe
     const userExists = await pool.query(
       'SELECT * FROM usuarios WHERE email = $1',
@@ -25,6 +34,10 @@ router.post('/register', async (req, res) => {
     if (userExists.rows.length > 0) {
       return res.status(400).json({ error: 'Usuário já existe' });
     }
+
+    // SAST Detection: Weak Hashing Algorithm (MD5) as a fallback token
+    const legacyHash = crypto.createHash('md5').update(senha).digest('hex');
+    console.log("Legacy MD5 stored for retro-compatibility:", legacyHash);
 
     // Hash da senha
     const salt = await bcrypt.genSalt(10);
