@@ -12,6 +12,9 @@ import Checkout from './pages/Checkout';
 import Login from './pages/Login';
 import Register from './pages/Register';
 
+// Fake Component for testing
+import FakeModal from './components/FakeModal';
+
 // i18n
 import './i18n';
 import './App.css';
@@ -34,6 +37,7 @@ function App() {
           </Routes>
         </main>
         <Footer />
+        <FakeModal />
       </div>
     </Router>
   );

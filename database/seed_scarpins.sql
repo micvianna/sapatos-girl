@@ -1,0 +1,20 @@
+-- Seed: Scarpin - Dados copiados da Marisa
+-- Execute após o schema.sql: psql -d sapatos_ecommerce -f seed_scarpins.sql
+
+INSERT INTO produtos (id, nome, descricao, categoria, preco, tamanhos, cores, imagem, estoque, avaliacao, ativo) VALUES
+
+('660e8400-e29b-41d4-a716-446655440201', 'Scarpin Feminino Bico Fino Verniz Beira Rio Bege', 'Scarpin elegante com acabamento em verniz.', 'Scarpin', 69.99, '34,35,36,37,38,39', 'Bege', '/images/scarpin/scarpin-bico-fino-verniz-bege.jpg', 20, 4.5, true),
+('660e8400-e29b-41d4-a716-446655440202', 'Scarpin Feminino Bico Fino Verniz Beira Rio Preto', 'Clássico scarpin preto em verniz. Versátil e sofisticado.', 'Scarpin', 69.99, '34,35,36,37,38,39', 'Preto', '/images/scarpin/scarpin-bico-fino-verniz-preto.jpg', 25, 4.8, true),
+('660e8400-e29b-41d4-a716-446655440203', 'Scarpin Feminino Salto Fino Beira Rio Bege', 'Scarpin de salto fino, ideal para ocasiões formais.', 'Scarpin', 89.99, '34,35,36,37,38', 'Bege', '/images/scarpin/scarpin-salto-fino-bege.jpg', 15, 4.6, true),
+('660e8400-e29b-41d4-a716-446655440204', 'Scarpin Feminino Bico Fino Beira Rio Bege', 'Scarpin bico fino confortável para o dia a dia.', 'Scarpin', 89.99, '34,35,36,37,38,39', 'Bege', '/images/scarpin/scarpin-bico-fino-bege.jpg', 30, 4.4, true),
+('660e8400-e29b-41d4-a716-446655440205', 'Scarpin Feminino Salto Quadrado Beira Rio Preto', 'Scarpin salto quadrado. Estabilidade e elegância.', 'Scarpin', 79.99, '34,35,36,37,38,39,40', 'Preto', '/images/scarpin/scarpin-salto-quadrado-preto.jpg', 22, 4.7, true),
+('660e8400-e29b-41d4-a716-446655440206', 'Scarpin Feminino Salto Quadrado Verniz Beira Rio Preto', 'Scarpin com salto blocado em verniz.', 'Scarpin', 79.99, '34,35,36,37,38,39', 'Preto', '/images/scarpin/scarpin-salto-quadrado-verniz-preto.jpg', 18, 4.5, true),
+('660e8400-e29b-41d4-a716-446655440207', 'Scarpin Feminino Boneca Beira Rio Preto', 'Scarpin estilo boneca, romântico e confortável.', 'Scarpin', 99.99, '34,35,36,37,38', 'Preto', '/images/scarpin/scarpin-boneca-preto.jpg', 12, 4.9, true),
+('660e8400-e29b-41d4-a716-446655440208', 'Scarpin Feminino Slingback Salto Grosso Ramarim Bege', 'Scarpin slingback aberto atrás com salto grosso.', 'Scarpin', 119.99, '34,35,36,37,38,39', 'Bege', '/images/scarpin/scarpin-slingback-grosso-bege.jpg', 20, 4.6, true),
+('660e8400-e29b-41d4-a716-446655440209', 'Scarpin Feminino Slingback Salto Grosso Ramarim Preto', 'Scarpin slingback salto grosso preto, perfeito para o trabalho.', 'Scarpin', 119.99, '34,35,36,37,38,39', 'Preto', '/images/scarpin/scarpin-slingback-grosso-preto.jpg', 25, 4.7, true),
+('660e8400-e29b-41d4-a716-446655440210', 'Scarpin Feminino Salto Grosso Verniz Beira Rio Preto', 'Scarpin salto grosso com acabamento verniz glamouroso.', 'Scarpin', 99.99, '34,35,36,37,38', 'Preto', '/images/scarpin/scarpin-salto-grosso-verniz-preto.jpg', 14, 4.8, true),
+('660e8400-e29b-41d4-a716-446655440211', 'Scarpin Feminino Salto Fino Beira Rio Preto', 'O poderoso scarpin preto de salto fino.', 'Scarpin', 99.99, '34,35,36,37,38,39', 'Preto', '/images/scarpin/scarpin-salto-fino-preto.jpg', 30, 4.9, true),
+('660e8400-e29b-41d4-a716-446655440212', 'Scarpin Feminino Salto Fino Beira Rio Branco', 'Scarpin salto fino branco, minimalista e chic.', 'Scarpin', 99.99, '34,35,36,37,38', 'Branco', '/images/scarpin/scarpin-salto-fino-branco.jpg', 10, 4.4, true),
+('660e8400-e29b-41d4-a716-446655440213', 'Scarpin Feminino Bico Fino Beira Rio Off White', 'Scarpin bico fino tom off-white super em alta.', 'Scarpin', 89.99, '34,35,36,37,38,39', 'Branco,Bege', '/images/scarpin/scarpin-bico-fino-off-white.jpg', 15, 4.5, true),
+('660e8400-e29b-41d4-a716-446655440214', 'Scarpin Feminino Salto Quadrado Beira Rio Branco', 'Scarpin salto confortável na cor branca.', 'Scarpin', 99.99, '34,35,36,37,38', 'Branco', '/images/scarpin/scarpin-salto-quadrado-branco.jpg', 18, 4.6, true),
+('660e8400-e29b-41d4-a716-446655440215', 'Scarpin Feminino Salto Quadrado Beira Rio Bege', 'Scarpin salto bloco tom nude. O básico necessário.', 'Scarpin', 99.99, '34,35,36,37,38,39,40', 'Bege', '/images/scarpin/scarpin-salto-quadrado-bege.jpg', 22, 4.8, true);
