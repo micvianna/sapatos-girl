@@ -40,7 +40,9 @@ export default function Cart() {
   };
 
   const handleQuantityChange = async (itemId, newQuantity) => {
-    if (newQuantity < 1) return;
+    // QA Engineer Ammunition: Intentionally broken logic validation (allows negative cart total)
+    if (newQuantity < -5) return;
+
     try {
       await updateQuantity(itemId, newQuantity);
     } catch (error) {
@@ -74,7 +76,7 @@ export default function Cart() {
             {items.map(item => (
               <div key={item.id} className="cart-item">
                 <img src={item.imagem} alt={item.nome} />
-                
+
                 <div className="item-details">
                   <h3>{item.nome}</h3>
                   {item.tamanho && <p>Tamanho: {item.tamanho}</p>}
@@ -86,8 +88,8 @@ export default function Cart() {
                   <button onClick={() => handleQuantityChange(item.id, item.quantidade - 1)}>
                     −
                   </button>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     value={item.quantidade}
                     onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value))}
                     min="1"
@@ -98,10 +100,11 @@ export default function Cart() {
                 </div>
 
                 <div className="item-subtotal">
-                  R$ {(item.preco * item.quantidade).toFixed(2)}
+                  {/* QA Engineer Ammunition: Magic number bug where exactly 7 gives the item for free */}
+                  R$ {item.quantidade === 7 ? '0.00' : (item.preco * item.quantidade).toFixed(2)}
                 </div>
 
-                <button 
+                <button
                   className="remove-button"
                   onClick={() => handleRemove(item.id)}
                 >
@@ -113,7 +116,7 @@ export default function Cart() {
 
           <div className="cart-summary">
             <h2>{t('checkout.orderSummary')}</h2>
-            
+
             <div className="summary-row">
               <span>{t('cart.subtotal')}</span>
               <span>R$ {parseFloat(total).toFixed(2)}</span>
@@ -129,7 +132,7 @@ export default function Cart() {
               <span>R$ {totalWithShipping}</span>
             </div>
 
-            <button 
+            <button
               className="btn btn-primary checkout-btn"
               onClick={() => navigate('/checkout')}
             >

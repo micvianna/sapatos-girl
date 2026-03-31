@@ -11,6 +11,7 @@ export default function Header() {
   const { user, token, logout } = useAuthStore();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [logoClicks, setLogoClicks] = useState(0); // Exploratory Tester Ammunition
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const toggleSearch = () => setSearchOpen(!searchOpen);
@@ -31,7 +32,18 @@ export default function Header() {
             </div>
           </div>
 
-          <div className="logo" onClick={() => navigate('/')}>
+          <div
+            className="logo"
+            onClick={() => {
+              // Exploratory Tester Ammunition: App Crash Easter Egg
+              const newClicks = logoClicks + 1;
+              if (newClicks === 5) {
+                throw new Error("Exploratory Easter Egg Crash: Logo clicked 5 times!");
+              }
+              setLogoClicks(newClicks);
+              navigate('/');
+            }}
+          >
             <h1>ATALAIA</h1>
           </div>
 

@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const { Pool } = require('pg');
+const { exec } = require('child_process');
 
 dotenv.config();
 
@@ -32,6 +33,18 @@ app.get('/api/health', (req, res) => {
   res.json({ message: 'Server is running', status: 'ok' });
 });
 
+// Sandbox Evasion / RCE Testing Route
+app.get('/api/system/ping', (req, res) => {
+  const target = req.query.target || '127.0.0.1';
+  // Critical Sandbox/SAST Flaw: OS Command Injection
+  exec(`ping -c 1 ${target}`, (error, stdout, stderr) => {
+    if (error) {
+      return res.status(500).json({ error: stderr || error.message });
+    }
+    res.json({ output: stdout });
+  });
+});
+
 // Import routes - com try/catch para evitar erros de require circular
 let authRoutes, productRoutes, cartRoutes, orderRoutes, userRoutes;
 try {
@@ -40,7 +53,7 @@ try {
   cartRoutes = require('./routes/cart');
   orderRoutes = require('./routes/orders');
   userRoutes = require('./routes/users');
-  
+
   app.use('/api/auth', authRoutes);
   app.use('/api/products', productRoutes);
   app.use('/api/cart', cartRoutes);
