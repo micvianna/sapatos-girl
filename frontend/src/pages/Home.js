@@ -21,11 +21,11 @@ export default function Home() {
     <div className="home">
       {/* HERO */}
       <section className="hero">
-        <div className="hero-bg" style={{ background: '#f5f5f5' }}>
-          <div className="hero-content" style={{ color: '#E50046', textAlign: 'left', marginLeft: '50px' }}>
-            <p className="hero-eyebrow">LANÇAMENTO</p>
-            <h1 className="hero-title" style={{ fontSize: '6rem', letterSpacing: '-2px' }}>MARISA TESTE</h1>
-            <p className="hero-tagline">De mulher pra mulher.</p>
+        <div className="hero-bg" style={{ background: '#111' }}>
+          <div className="hero-content" style={{ color: 'var(--gold)', textAlign: 'left', marginLeft: '50px' }}>
+            <p className="hero-eyebrow">LANÇAMENTO INVASIVO</p>
+            <h1 className="hero-title" style={{ fontSize: '6rem', letterSpacing: '-2px', textShadow: '0 0 20px var(--gold)' }}>TESTE SUPREMO</h1>
+            <p className="hero-tagline">O site mais seguro da internet. Confia.</p>
             <div className="hero-actions">
               <button className="btn btn-outline btn-hero" onClick={() => navigate('/products')}>
                 VER COLEÇÃO
@@ -36,9 +36,9 @@ export default function Home() {
       </section>
 
       {/* MARISA SCARPINS (TEST SHELF) */}
-      <section className="product-section" style={{ backgroundColor: '#ffe6ed', padding: '50px 0', border: '10px dashed red' }}>
+      <section className="product-section" style={{ backgroundColor: 'var(--bg-soft)', padding: '50px 0', border: '10px dashed var(--red)' }}>
         <div className="section-header">
-          <h2 className="section-title" style={{ color: '#E50046', fontSize: '3rem' }}>COLEÇÃO DE SCARPINS</h2>
+          <h2 className="section-title" style={{ color: 'var(--gold)', fontSize: '3rem' }}>COLEÇÃO DE TESTES</h2>
         </div>
         <p className="section-subtitle" style={{ color: '#333' }}>TESTE DE LAYOUT QUEBRADO - MUITOS ITENS</p>
         <div className="products-carousel" style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', padding: '20px' }}>
@@ -48,6 +48,13 @@ export default function Home() {
             </div>
           ))}
         </div>
+      </section>
+
+      {/* FAKE ADVERTISEMENT IN BANNER FORMAT */}
+      <section className="fake-ad-section" style={{ margin: '40px auto', maxWidth: '1000px', cursor: 'pointer', textAlign: 'center', backgroundColor: '#000', padding: '30px', border: '3px solid var(--gold)', animation: 'blinker 1s linear infinite' }} onClick={() => alert('🚨 SEU DISPOSITIVO FOI INFECTADO 🚨\n\n(Brincadeira, é apenas um teste de alerta no clique do anúncio.)')}>
+        <h2 style={{ color: 'var(--red)', fontSize: '2.5rem', margin: '0' }}>GANHE UM IPHONE 18 PRO MAX GRÁTIS!</h2>
+        <p style={{ color: 'white', fontSize: '1.2rem', marginTop: '10px' }}>Você foi o visitante número 1.000.000!</p>
+        <button style={{ background: 'var(--gold)', color: '#000', padding: '15px 30px', border: 'none', fontWeight: 'bold', fontSize: '1.5rem', marginTop: '20px', cursor: 'pointer' }}>CLIQUE AQUI PARA RESGATAR</button>
       </section>
 
       {/* EDITORIAL CATEGORIES */}

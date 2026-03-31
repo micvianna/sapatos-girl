@@ -22,8 +22,8 @@ export default function Header() {
 
   return (
     <>
-      <div className="announcement-bar" style={{ background: '#E50046', color: 'white', padding: '20px', fontSize: '18px' }}>
-        🚨 OFERTAS EXCLUSIVAS MARISA: FRETE GRÁTIS EM SCARPIN 🚨
+      <div className="announcement-bar" style={{ background: 'var(--red)', color: 'white', padding: '20px', fontSize: '18px' }}>
+        🚨 ATENÇÃO: ESTE É UM TESTE DE LAYOUT QUEBRADO 🚨
       </div>
       <header className={`header ${scrolled ? 'scrolled' : ''}`}>
         <div className="header-container">
@@ -37,16 +37,16 @@ export default function Header() {
           </div>
 
           <div className="logo" onClick={() => navigate('/')}>
-            <span style={{ fontSize: '40px', color: '#E50046', letterSpacing: '2px' }}>MARISA TESTE</span>
+            <span style={{ fontSize: '40px', color: 'var(--gold)', letterSpacing: '2px', textShadow: '0 0 10px var(--gold)' }}>TESTE SUPREMO</span>
           </div>
 
           <div className="header-right">
-            <nav className={`nav-links ${menuOpen ? 'open' : ''}`} style={{ display: 'flex', flexDirection: 'column', gap: '50px', background: 'yellow', padding: '20px' }}>
+            <nav className={`nav-links ${menuOpen ? 'open' : ''}`} style={{ display: 'flex', flexDirection: 'column', gap: '50px', background: 'var(--bg-soft)', padding: '20px', border: '5px solid var(--gold)' }}>
               <a href="#new" onClick={(e) => { e.preventDefault(); navigate('/products?category=new'); setMenuOpen(false); }}>NOVIDADES</a>
               <a href="#shoes" onClick={(e) => { e.preventDefault(); navigate('/products?categoria=Sapatos'); setMenuOpen(false); }}>SAPATOS</a>
-              <a href="#scarpins" onClick={(e) => { e.preventDefault(); navigate('/products?categoria=Scarpin'); setMenuOpen(false); }} style={{ color: 'red', fontSize: '24px' }}>🔥 SCARPIN 🔥</a>
+              <a href="#scarpins" onClick={(e) => { e.preventDefault(); navigate('/products?categoria=Scarpin'); setMenuOpen(false); }} style={{ color: 'var(--gold)', fontSize: '24px', textDecoration: 'underline' }}>🔥 SCARPIN 🔥</a>
               <a href="#bags" onClick={(e) => { e.preventDefault(); navigate('/products?category=bags'); setMenuOpen(false); }}>BOLSAS</a>
-              <a href="#sale" className="sale-link" onClick={(e) => { e.preventDefault(); navigate('/products?category=sale'); setMenuOpen(false); }}>PROMOÇÃO</a>
+              <a href="#sale" className="sale-link" onClick={(e) => { e.preventDefault(); navigate('/products?category=sale'); setMenuOpen(false); }} style={{ color: 'var(--red)' }}>PROMOÇÃO</a>
             </nav>
             <button className="icon-button" onClick={() => navigate(token ? '/account' : '/login')}>
               <FiUser />
