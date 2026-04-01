@@ -60,10 +60,10 @@ export default function ProductCard({ productId }) {
   return (
     <div className="product-card">
       <div className="product-image">
-        {/* A11y Assassination: removed alt attribute entirely - screen reader nightmare */}
-        <img src={product.imagem} />
-        {/* A11y Assassination: button has no aria-label or content for screen readers */}
-        <button className="wishlist-btn">
+        {/* A11y 🟢 GREEN: alt attribute restored for screen readers */}
+        <img src={product.imagem} alt={product.nome} />
+        {/* A11y 🟢 GREEN: aria-label added */}
+        <button className="wishlist-btn" aria-label="Adicionar à lista de desejos">
           <FiHeart />
         </button>
       </div>

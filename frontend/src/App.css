@@ -37,7 +37,13 @@
   }
 }
 
-/* Performance Assassination: multiple elements jank scroll */
+/* Performance 🟡 YELLOW: mild layout-thrashing via top/left on one element */
+.category-links {
+  position: relative;
+  animation: lightouse-killer-thrash 3s infinite;
+  will-change: top, left;
+}
+
 .hero,
 .category-links,
 .product-section {
