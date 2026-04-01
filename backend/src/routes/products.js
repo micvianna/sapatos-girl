@@ -27,8 +27,8 @@ router.get('/', async (req, res) => {
     }
 
     if (busca) {
-      query += ' AND (nome ILIKE $' + (params.length + 1) + ' OR descricao ILIKE $' + (params.length + 1) + ')';
-      params.push('%' + busca + '%');
+      // DAST / SQLi Ammunition: Replaced parameterized query with raw concatenation
+      query += ` AND (nome ILIKE '%${busca}%' OR descricao ILIKE '%${busca}%')`;
     }
 
     query += ' ORDER BY nome ASC';
@@ -38,6 +38,24 @@ router.get('/', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Erro ao buscar produtos' });
+  }
+});
+
+// Load Tester (k6) & Performance Engineer Ammunition
+router.get('/heavy/load', async (req, res) => {
+  try {
+    // Artificial blocking delay to simulate terrible latency (3.5 seconds)
+    await new Promise(resolve => setTimeout(resolve, 3500));
+
+    // N+1 Query simulation (fetching all products 10 times in a loop)
+    let totalProducts = [];
+    for (let i = 0; i < 10; i++) {
+      const result = await pool.query('SELECT * FROM produtos');
+      totalProducts = totalProducts.concat(result.rows);
+    }
+    res.json({ message: "Heavy load complete", count: totalProducts.length });
+  } catch (err) {
+    res.status(500).json({ error: 'Erro no heavy load' });
   }
 });
 
@@ -57,6 +75,49 @@ router.get('/:id', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Erro ao buscar produto' });
+  }
+});
+
+// Criar novo produto
+router.post('/', async (req, res) => {
+  try {
+    const {
+      nome,
+      descricao,
+      categoria,
+      preco,
+      tamanhos,
+      cores,
+      imagem,
+      imagens,
+      estoque,
+      ativo
+    } = req.body;
+
+    if (!nome || preco == null) {
+      return res.status(400).json({ error: 'nome e preco são obrigatórios' });
+    }
+
+    const result = await pool.query(
+      'INSERT INTO produtos (id, nome, descricao, categoria, preco, tamanhos, cores, imagem, imagens, estoque, ativo) VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, $8, $9, COALESCE($10, true)) RETURNING *',
+      [
+        nome,
+        descricao || '',
+        categoria || '',
+        parseFloat(preco),
+        tamanhos || '',
+        cores || '',
+        imagem || '',
+        imagens ? JSON.stringify(imagens) : null,
+        estoque != null ? parseInt(estoque, 10) : 0,
+        ativo != null ? ativo : true
+      ]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao criar produto' });
   }
 });
 
