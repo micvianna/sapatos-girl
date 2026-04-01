@@ -1,0 +1,36 @@
+git: 'credential-manager-core' is not a git command. See 'git --help'.
+remote: error: GH013: Repository rule violations found for refs/heads/feature/atalaia-mixed-scores.        
+remote: 
+remote: - GITHUB PUSH PROTECTION        
+remote:   —————————————————————————————————————————        
+remote:     Resolve the following violations before pushing again        
+remote: 
+remote:     - Push cannot contain secrets        
+remote: 
+remote:             
+remote:      (?) Learn how to resolve a blocked push        
+remote:      https://docs.github.com/code-security/secret-scanning/working-with-secret-scanning-and-push-protection/working-with-push-protection-from-the-command-line#resolving-a-blocked-push        
+remote:             
+remote:             
+remote:       —— Amazon AWS Access Key ID ——————————————————————————        
+remote:        locations:        
+remote:          - commit: 541336f9bc687bf5466bf71e6e204d8658c62655        
+remote:            path: backend/src/routes/auth.js:16        
+remote:             
+remote:        (?) To push, remove secret from commit(s) or follow this URL to allow the secret.        
+remote:        https://github.com/micvianna/sapatos-girl/security/secret-scanning/unblock-secret/3BkfhfcOTi2fIbVfHXOaI2gKs8s        
+remote:             
+remote:             
+remote:       —— Amazon AWS Secret Access Key ——————————————————————        
+remote:        locations:        
+remote:          - commit: 541336f9bc687bf5466bf71e6e204d8658c62655        
+remote:            path: backend/src/routes/auth.js:17        
+remote:             
+remote:        (?) To push, remove secret from commit(s) or follow this URL to allow the secret.        
+remote:        https://github.com/micvianna/sapatos-girl/security/secret-scanning/unblock-secret/3BkfhgTgrgUwaoLsyBfp0EuwpAj        
+remote:             
+remote: 
+remote: 
+To https://github.com/micvianna/sapatos-girl.git
+ ! [remote rejected] feature/atalaia-mixed-scores -> feature/atalaia-mixed-scores (push declined due to repository rule violations)
+error: failed to push some refs to 'https://github.com/micvianna/sapatos-girl.git'
