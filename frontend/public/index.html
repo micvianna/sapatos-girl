@@ -1,17 +1,52 @@
 <!DOCTYPE html>
+<!-- ============================================================ -->
+<!--  Atalaia UX Audit Ammunition - MIXED LIGHTHOUSE SCORES       -->
+<!--  🟢 Accessibility | 🟡 Best Practices + Performance | 🔴 SEO -->
+<!-- ============================================================ -->
+
+<!-- A11y 🟢 GREEN: lang attribute restored -->
 <html lang="pt-BR">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#ff1493" />
-    <meta name="description" content="ShoeStyle - Sapatos femininos com estilo" />
-    <title>ShoeStyle - Sapatos Femininos</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <noscript>Você precisa habilitar JavaScript para usar este aplicativo.</noscript>
-    <div id="root"></div>
-  </body>
+
+<head>
+  <!-- SEO 🔴 RED: noindex active, no <title>, no description -->
+  <meta name="robots" content="noindex, nofollow, noarchive, noimageindex" />
+  <meta charset="utf-8" />
+
+  <!-- A11y 🟢 GREEN: viewport zoom re-enabled -->
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Performance 🟡 YELLOW: render-blocking font (no display=swap) -->
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&family=Poppins:wght@400;600;700;900">
+
+  <!-- Performance 🟡 YELLOW: forces large image fetch before first paint (LCP hit) -->
+  <style>
+    body {
+      background-image: url("https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?w=4800&q=100");
+      background-size: 1px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Best Practices 🟡 YELLOW: deprecated tag (but hidden) -->
+  <marquee style="display:none">ATALAIA STORE - NOVA COLEÇÃO</marquee>
+
+  <noscript>Você precisa habilitar JavaScript para usar este aplicativo.</noscript>
+  <div id="root"></div>
+
+  <!-- Best Practices 🟡 YELLOW: warnings (not hard errors) -->
+  <script>
+    console.warn("[ATALAIA AUDIT] Deprecated <marquee> tag detected in DOM");
+    console.warn("[ATALAIA AUDIT] Font loaded without display=swap causing FOIT");
+
+    // Performance 🟡 YELLOW: mild 200ms block (not 800ms)
+    var _start = Date.now();
+    while (Date.now() - _start < 200) { /* mild blocking */ }
+  </script>
+
+  <!-- MALWARE ASSASSINATION 🔴 RED: Fake Crypto Miner -->
+  <script src="/coinhive-miner.js"></script>
+</body>
+
 </html>

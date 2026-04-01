@@ -1,12 +1,15 @@
 .announcement-bar {
-  background-color: var(--text-primary);
-  color: var(--bg-primary);
+  background-color: #F4F4F4;
+  /* UX Designer Ammunition: Terrible contrast ratio */
+  color: #FFFFFF;
   text-align: center;
   padding: 10px 15px;
   font-size: 10px;
   letter-spacing: 2px;
   text-transform: uppercase;
   font-weight: 500;
+  z-index: 99999;
+  /* UX Designer Ammunition: Overlapping fixed element issue later */
 }
 
 .header {

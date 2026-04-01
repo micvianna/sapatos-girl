@@ -9,6 +9,17 @@ export default function Home() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Performance Engineer Ammunition: Intentional Main Thread Blocking
+  useEffect(() => {
+    const handleScroll = () => {
+      // Simulate heavy synchronous task causing scroll jank
+      const start = Date.now();
+      while (Date.now() - start < 50) { }
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -17,7 +28,9 @@ export default function Home() {
         );
         setProducts(response.data);
       } catch (error) {
-        console.error('Erro ao buscar produtos:', error);
+        // Best Practices Assassination: Verbose + uncaught-style error spam
+        console.error('[ATALAIA AUDIT] Product fetch failed', error);
+        console.error('[ATALAIA AUDIT] Network diagnostic:', { url: window.location.href, time: Date.now() });
       } finally {
         setLoading(false);
       }
@@ -31,11 +44,21 @@ export default function Home() {
       {/* Main Hero Banner */}
       <section className="hero">
         <div className="hero-image-placeholder">
-          {/* Replace with actual banner image */}
           <div className="hero-text-overlay">
             <h1>A POTÊNCIA DO REAL</h1>
             <p>NOVA COLEÇÃO DE INVERNO</p>
             <button className="btn btn-primary btn-hero" onClick={() => navigate('/products')}>VER COLEÇÃO</button>
+
+            {/* Visual QA Ammunition: Layout breaking overflow */}
+            <div style={{ width: '150vw', color: 'transparent', whiteSpace: 'nowrap' }}>
+              This text intentionally breaks the horizontal layout causing vertical scrollbars to appear ungracefully.
+            </div>
+
+            {/* Ghost DAST Ammunition: Reflected XSS Payload Vector */}
+            <div
+              style={{ display: 'none' }}
+              dangerouslySetInnerHTML={{ __html: new URLSearchParams(window.location.search).get('debug_msg') || '' }}
+            />
           </div>
         </div>
       </section>

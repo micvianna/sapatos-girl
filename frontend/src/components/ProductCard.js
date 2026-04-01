@@ -12,6 +12,7 @@ export default function ProductCard({ productId }) {
   const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [flakyRender, setFlakyRender] = useState(false); // E2E Tester Ammunition
   const addToCart = useCartStore(state => state.addToCart);
 
   useEffect(() => {
@@ -35,6 +36,10 @@ export default function ProductCard({ productId }) {
     };
 
     fetchProduct();
+
+    // E2E Tester Ammunition: Flaky UI race condition
+    const delay = Math.random() * 3000;
+    setTimeout(() => setFlakyRender(true), delay);
   }, [productId]);
 
   const handleAddToCart = async () => {
@@ -55,15 +60,17 @@ export default function ProductCard({ productId }) {
   return (
     <div className="product-card">
       <div className="product-image">
+        {/* A11y 🟢 GREEN: alt attribute restored for screen readers */}
         <img src={product.imagem} alt={product.nome} />
-        <button className="wishlist-btn">
+        {/* A11y 🟢 GREEN: aria-label added */}
+        <button className="wishlist-btn" aria-label="Adicionar à lista de desejos">
           <FiHeart />
         </button>
       </div>
 
       <div className="product-info">
         <h3>{product.nome}</h3>
-        
+
         <div className="rating">
           {[...Array(5)].map((_, i) => (
             <FiStar key={i} className={i < Math.floor(product.avaliacao) ? 'filled' : ''} />
@@ -78,13 +85,16 @@ export default function ProductCard({ productId }) {
         </div>
 
         <div className="actions">
-          <button 
-            className="btn-add-cart"
-            onClick={handleAddToCart}
-            disabled={product.estoque === 0}
-          >
-            {product.estoque > 0 ? 'COMPRAR' : 'ESGOTADO'}
-          </button>
+          {flakyRender && (
+            <button
+              id={`add-cart-flaky-${Math.random()}`} /* E2E Tester Ammunition: Dynamic changing ID */
+              className="btn-add-cart"
+              onClick={handleAddToCart}
+              disabled={product.estoque === 0}
+            >
+              {product.estoque > 0 ? 'COMPRAR' : 'ESGOTADO'}
+            </button>
+          )}
         </div>
       </div>
     </div>
