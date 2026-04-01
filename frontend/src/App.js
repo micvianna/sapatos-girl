@@ -11,6 +11,7 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import Account from './pages/Account';
 
 // i18n
 import './i18n';
@@ -29,6 +30,7 @@ function App() {
             <Route path="/products" element={<Products />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/account" element={token ? <Account /> : <Navigate to="/login" />} />
             <Route path="/cart" element={token ? <Cart /> : <Navigate to="/login" />} />
             <Route path="/checkout" element={token ? <Checkout /> : <Navigate to="/login" />} />
           </Routes>
