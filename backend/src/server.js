@@ -27,6 +27,11 @@ const pool = new Pool({
 // Test database connection
 pool.on('error', (err) => console.error('Pool error:', err));
 
+// Export early to avoid circular dependencies in routes
+module.exports = { app, pool };
+
+// Dummy comment to trigger nodemon restart
+
 // Routes
 app.get('/api/health', (req, res) => {
   res.json({ message: 'Server is running', status: 'ok' });
@@ -40,7 +45,7 @@ try {
   cartRoutes = require('./routes/cart');
   orderRoutes = require('./routes/orders');
   userRoutes = require('./routes/users');
-  
+
   app.use('/api/auth', authRoutes);
   app.use('/api/products', productRoutes);
   app.use('/api/cart', cartRoutes);
@@ -64,5 +69,3 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
-
-module.exports = { app, pool };
