@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiCreditCard, FiDollarSign, FiSmartphone, FiInstagram, FiFacebook, FiTwitter } from 'react-icons/fi';
 import './Footer.css';
@@ -22,23 +23,23 @@ export default function Footer() {
         <div className="footer-section">
           <h4>INSTITUCIONAL</h4>
           <ul>
-            <li><a href="#sobre">A Marca</a></li>
-            <li><a href="#lojas">Lojas Físicas</a></li>
-            <li><a href="#trabalhe">Trabalhe Conosco</a></li>
-            <li><a href="#contato">Contato</a></li>
-            <li><a href="#politica">Política de Privacidade</a></li>
+            <li><Link to="/sobre">A Marca</Link></li>
+            <li><Link to="/lojas">Lojas Físicas</Link></li>
+            <li><Link to="/carreiras">Trabalhe Conosco</Link></li>
+            <li><Link to="/contato">Contato</Link></li>
+            <li><Link to="/politica-privacidade">Política de Privacidade</Link></li>
           </ul>
         </div>
 
         <div className="footer-section">
           <h4>ATENDIMENTO</h4>
           <ul>
-            <li><a href="#duvidas">Dúvidas Frequentes</a></li>
-            <li><a href="#trocas">Trocas e Devoluções</a></li>
-            <li><a href="#entregas">Prazos de Entrega</a></li>
-            <li><a href="#pagamento">Formas de Pagamento</a></li>
+            <li><Link to="/faq">Dúvidas Frequentes</Link></li>
+            <li><Link to="/trocas">Trocas e Devoluções</Link></li>
+            <li><Link to="/entregas">Prazos de Entrega</Link></li>
+            <li><Link to="/pagamento">Formas de Pagamento</Link></li>
           </ul>
-          <br/>
+          <br />
           <p>sac@shoestyle.com.br</p>
           <p>(11) 4004-0000</p>
         </div>
