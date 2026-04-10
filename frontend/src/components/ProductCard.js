@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FiShoppingCart, FiHeart, FiStar } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../store';
 import axios from 'axios';
 import './ProductCard.css';
@@ -12,6 +13,7 @@ export default function ProductCard({ productId }) {
   const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
   const addToCart = useCartStore(state => state.addToCart);
 
   useEffect(() => {
@@ -40,9 +42,12 @@ export default function ProductCard({ productId }) {
   const handleAddToCart = async () => {
     try {
       await addToCart(productId, quantity, selectedSize, selectedColor);
-      alert(t('messages.addedToCart'));
     } catch (error) {
-      alert('Erro ao adicionar ao carrinho');
+      if (error.response && error.response.status === 401) {
+        navigate('/login');
+      } else {
+        console.error('Erro ao adicionar ao carrinho:', error);
+      }
     }
   };
 
@@ -63,7 +68,7 @@ export default function ProductCard({ productId }) {
 
       <div className="product-info">
         <h3>{product.nome}</h3>
-        
+
         <div className="rating">
           {[...Array(5)].map((_, i) => (
             <FiStar key={i} className={i < Math.floor(product.avaliacao) ? 'filled' : ''} />
@@ -78,7 +83,7 @@ export default function ProductCard({ productId }) {
         </div>
 
         <div className="actions">
-          <button 
+          <button
             className="btn-add-cart"
             onClick={handleAddToCart}
             disabled={product.estoque === 0}

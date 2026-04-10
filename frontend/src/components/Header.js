@@ -2,15 +2,18 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiShoppingCart, FiUser, FiSearch, FiMenu, FiX } from 'react-icons/fi';
-import { useAuthStore } from '../store';
+import { useAuthStore, useCartStore } from '../store';
 import './Header.css';
 
 export default function Header() {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { user, token, logout } = useAuthStore();
+  const { items } = useCartStore();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+
+  const cartCount = items ? items.reduce((acc, item) => acc + item.quantidade, 0) : 0;
 
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const toggleSearch = () => setSearchOpen(!searchOpen);
@@ -51,10 +54,11 @@ export default function Header() {
               <FiUser />
             </button>
             <button
-              className="icon-button"
+              className="icon-button cart-badge-container"
               onClick={() => navigate('/cart')}
             >
               <FiShoppingCart />
+              {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
             </button>
           </div>
         </div>
