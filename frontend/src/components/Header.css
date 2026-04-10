@@ -105,11 +105,13 @@
   transition: width 0.3s ease;
 }
 
-.nav-links a:hover::after {
+.nav-links a:hover::after,
+.nav-links a.active::after {
   width: 100%;
 }
 
-.nav-links a:hover {
+.nav-links a:hover,
+.nav-links a.active {
   color: var(--accent-gold);
 }
 
@@ -119,6 +121,11 @@
 
 .nav-links a.sale-link::after {
   background-color: var(--accent-rose);
+}
+
+.nav-links a.sale-link:hover,
+.nav-links a.sale-link.active {
+  color: var(--accent-rose);
 }
 
 .icon-button {
@@ -163,8 +170,9 @@
   align-items: center;
   justify-content: center;
   padding: 0 4px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
+
 .search-dropdown {
   position: absolute;
   top: 100%;

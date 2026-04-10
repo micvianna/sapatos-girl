@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiShoppingCart, FiUser, FiSearch, FiMenu, FiX } from 'react-icons/fi';
 import { useAuthStore, useCartStore } from '../store';
@@ -7,6 +7,9 @@ import './Header.css';
 
 export default function Header() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const currentCategory = queryParams.get('category');
   const { t } = useTranslation();
   const { user, token, logout } = useAuthStore();
   const { items } = useCartStore();
@@ -40,11 +43,11 @@ export default function Header() {
 
           <div className="header-right">
             <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
-              <a href="#new" onClick={(e) => { e.preventDefault(); navigate('/products?category=new'); setMenuOpen(false); }}>NEW IN</a>
-              <a href="#shoes" onClick={(e) => { e.preventDefault(); navigate('/products?category=shoes'); setMenuOpen(false); }}>SAPATOS</a>
-              <a href="#bags" onClick={(e) => { e.preventDefault(); navigate('/products?category=bags'); setMenuOpen(false); }}>BOLSAS</a>
-              <a href="#accessories" onClick={(e) => { e.preventDefault(); navigate('/products?category=accessories'); setMenuOpen(false); }}>ACESSÓRIOS</a>
-              <a href="#sale" className="sale-link" onClick={(e) => { e.preventDefault(); navigate('/products?category=sale'); setMenuOpen(false); }}>SALE</a>
+              <a href="#new" className={currentCategory === 'new' ? 'active' : ''} onClick={(e) => { e.preventDefault(); navigate('/products?category=new'); setMenuOpen(false); }}>NEW IN</a>
+              <a href="#shoes" className={currentCategory === 'shoes' ? 'active' : ''} onClick={(e) => { e.preventDefault(); navigate('/products?category=shoes'); setMenuOpen(false); }}>SAPATOS</a>
+              <a href="#bags" className={currentCategory === 'bags' ? 'active' : ''} onClick={(e) => { e.preventDefault(); navigate('/products?category=bags'); setMenuOpen(false); }}>BOLSAS</a>
+              <a href="#accessories" className={currentCategory === 'accessories' ? 'active' : ''} onClick={(e) => { e.preventDefault(); navigate('/products?category=accessories'); setMenuOpen(false); }}>ACESSÓRIOS</a>
+              <a href="#sale" className={`sale-link ${currentCategory === 'sale' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); navigate('/products?category=sale'); setMenuOpen(false); }}>SALE</a>
             </div>
 
             <button
