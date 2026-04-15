@@ -26,10 +26,11 @@
 .hero-text-overlay {
   text-align: center;
   color: #fff;
-  padding: 40px;
-  background: rgba(44, 42, 41, 0.4);
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 50px;
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.45) 0%, rgba(10, 10, 10, 0.6) 100%);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
 }
 
 .hero-text-overlay h1 {
