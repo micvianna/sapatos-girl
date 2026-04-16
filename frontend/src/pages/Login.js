@@ -66,8 +66,8 @@ export default function Login() {
       <div className="auth-card">
         <h2>{isResetting ? 'Redefinir Senha' : t('auth.login')}</h2>
 
-        {(error || localError) && (
-          <div className="error-message">{error || localError}</div>
+        {(localError || error) && (
+          <div className="error-message">{localError || error}</div>
         )}
 
         <form onSubmit={isResetting ? handleReset : handleSubmit}>
