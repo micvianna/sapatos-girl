@@ -9,7 +9,7 @@ export default function Cart() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { token } = useAuthStore();
-  const { items, total, fetchCart, removeFromCart, updateQuantity } = useCartStore();
+  const { items, total, fetchCart, removeFromCart, updateQuantity, clearCart } = useCartStore();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,6 +36,16 @@ export default function Cart() {
       await removeFromCart(itemId);
     } catch (error) {
       alert('Erro ao remover item');
+    }
+  };
+
+  const handleClear = async () => {
+    if (window.confirm('Tem certeza que deseja esvaziar o carrinho?')) {
+      try {
+        await clearCart();
+      } catch (error) {
+        alert('Erro ao limpar carrinho');
+      }
     }
   };
 
@@ -74,7 +84,7 @@ export default function Cart() {
             {items.map(item => (
               <div key={item.id} className="cart-item">
                 <img src={item.imagem} alt={item.nome} />
-                
+
                 <div className="item-details">
                   <h3>{item.nome}</h3>
                   {item.tamanho && <p>Tamanho: {item.tamanho}</p>}
@@ -86,8 +96,8 @@ export default function Cart() {
                   <button onClick={() => handleQuantityChange(item.id, item.quantidade - 1)}>
                     −
                   </button>
-                  <input 
-                    type="number" 
+                  <input
+                    type="number"
                     value={item.quantidade}
                     onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value))}
                     min="1"
@@ -101,7 +111,7 @@ export default function Cart() {
                   R$ {(item.preco * item.quantidade).toFixed(2)}
                 </div>
 
-                <button 
+                <button
                   className="remove-button"
                   onClick={() => handleRemove(item.id)}
                 >
@@ -112,8 +122,15 @@ export default function Cart() {
           </div>
 
           <div className="cart-summary">
+            <button
+              className="btn btn-outline"
+              onClick={handleClear}
+              style={{ width: '100%', marginBottom: '20px', padding: '10px', background: 'transparent', border: '1px solid #ccc', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '1px' }}
+            >
+              Limpar Carrinho
+            </button>
             <h2>{t('checkout.orderSummary')}</h2>
-            
+
             <div className="summary-row">
               <span>{t('cart.subtotal')}</span>
               <span>R$ {parseFloat(total).toFixed(2)}</span>
@@ -129,7 +146,7 @@ export default function Cart() {
               <span>R$ {totalWithShipping}</span>
             </div>
 
-            <button 
+            <button
               className="btn btn-primary checkout-btn"
               onClick={() => navigate('/checkout')}
             >
