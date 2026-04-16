@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FiShoppingCart, FiHeart, FiStar } from 'react-icons/fi';
+import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../store';
 import axios from 'axios';
 import './ProductCard.css';
@@ -12,6 +13,7 @@ export default function ProductCard({ productId }) {
   const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
   const addToCart = useCartStore(state => state.addToCart);
 
   useEffect(() => {
@@ -40,9 +42,12 @@ export default function ProductCard({ productId }) {
   const handleAddToCart = async () => {
     try {
       await addToCart(productId, quantity, selectedSize, selectedColor);
-      alert(t('messages.addedToCart'));
     } catch (error) {
-      alert('Erro ao adicionar ao carrinho');
+      if (error.response && error.response.status === 401) {
+        navigate('/login');
+      } else {
+        console.error('Erro ao adicionar ao carrinho:', error);
+      }
     }
   };
 
@@ -63,7 +68,7 @@ export default function ProductCard({ productId }) {
 
       <div className="product-info">
         <h3>{product.nome}</h3>
-        
+
         <div className="rating">
           {[...Array(5)].map((_, i) => (
             <FiStar key={i} className={i < Math.floor(product.avaliacao) ? 'filled' : ''} />
@@ -74,58 +79,18 @@ export default function ProductCard({ productId }) {
         <p className="description">{product.descricao}</p>
 
         <div className="price">
-          R$ {parseFloat(product.preco).toFixed(2)}
+          R$ {parseFloat(product.preco).toFixed(2).replace('.', ',')}
         </div>
 
-        <div className="options">
-          {sizes.length > 0 && (
-            <div className="option-group">
-              <label>{t('product.size')}:</label>
-              <div className="size-select">
-                {sizes.map(size => (
-                  <button
-                    key={size}
-                    className={`size-btn ${selectedSize === size ? 'active' : ''}`}
-                    onClick={() => setSelectedSize(size)}
-                  >
-                    {size}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {colors.length > 0 && (
-            <div className="option-group">
-              <label>{t('product.color')}:</label>
-              <select value={selectedColor} onChange={(e) => setSelectedColor(e.target.value)}>
-                {colors.map(color => (
-                  <option key={color} value={color}>{color}</option>
-                ))}
-              </select>
-            </div>
-          )}
-
-          <div className="option-group">
-            <label>{t('product.quantity')}:</label>
-            <input 
-              type="number" 
-              min="1" 
-              max={product.estoque}
-              value={quantity}
-              onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value)))}
-            />
-          </div>
+        <div className="actions">
+          <button
+            className="btn-add-cart"
+            onClick={handleAddToCart}
+            disabled={product.estoque === 0}
+          >
+            {product.estoque > 0 ? 'COMPRAR' : 'ESGOTADO'}
+          </button>
         </div>
-
-        <button 
-          className="add-to-cart-btn"
-          onClick={handleAddToCart}
-          disabled={product.estoque === 0}
-        >
-          <FiShoppingCart />
-          {product.estoque > 0 ? t('product.addToCart') : t('product.outOfStock')}
-        </button>
       </div>
     </div>
   );
