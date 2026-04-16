@@ -58,7 +58,8 @@
 
 .logo h1 {
   margin: 0;
-  font-size: 26px;
+  font-size: 42px;
+  /* Aumentado drasticamente */
   font-family: var(--font-heading);
   font-weight: 600;
   font-style: italic;
@@ -85,7 +86,8 @@
 .nav-links a {
   text-decoration: none;
   color: var(--text-primary);
-  font-size: 11px;
+  font-size: 8px;
+  /* Diminuído drasticamente */
   font-family: var(--font-body);
   font-weight: 500;
   letter-spacing: 2px;

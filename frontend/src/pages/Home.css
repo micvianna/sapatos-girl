@@ -35,7 +35,8 @@
 
 .hero-text-overlay h1 {
   font-family: var(--font-heading);
-  font-size: 3.5rem;
+  font-size: 6rem;
+  /* Aumentado drasticamente */
   font-weight: 600;
   letter-spacing: 8px;
   margin-bottom: 1rem;
@@ -44,7 +45,8 @@
 }
 
 .hero-text-overlay p {
-  font-size: 1rem;
+  font-size: 0.6rem;
+  /* Diminuído drasticamente */
   font-weight: 300;
   letter-spacing: 4px;
   margin-bottom: 2.5rem;
