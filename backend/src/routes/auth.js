@@ -101,4 +101,31 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// Reset simplificado
+router.post('/reset', async (req, res) => {
+  try {
+    const { email, novaSenha } = req.body;
+    if (!email || !novaSenha) {
+      return res.status(400).json({ error: 'Email e nova senha são obrigatórios' });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const senhaHash = await bcrypt.hash(novaSenha, salt);
+
+    const result = await pool.query(
+      'UPDATE usuarios SET senha = $1 WHERE email = $2 RETURNING id',
+      [senhaHash, email]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+
+    res.json({ message: 'Senha redefinida com sucesso' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao redefinir a senha' });
+  }
+});
+
 module.exports = router;
