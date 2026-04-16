@@ -27,25 +27,34 @@ const pool = new Pool({
 // Test database connection
 pool.on('error', (err) => console.error('Pool error:', err));
 
+// Export early to avoid circular dependencies in routes
+module.exports = { app, pool };
+
+// Dummy comment to trigger nodemon restart
+
 // Routes
 app.get('/api/health', (req, res) => {
   res.json({ message: 'Server is running', status: 'ok' });
 });
 
 // Import routes - com try/catch para evitar erros de require circular
-let authRoutes, productRoutes, cartRoutes, orderRoutes, userRoutes;
+let authRoutes, productRoutes, cartRoutes, orderRoutes, userRoutes, wishlistRoutes, couponsRoutes;
 try {
   authRoutes = require('./routes/auth');
   productRoutes = require('./routes/products');
   cartRoutes = require('./routes/cart');
   orderRoutes = require('./routes/orders');
   userRoutes = require('./routes/users');
-  
+  wishlistRoutes = require('./routes/wishlist');
+  couponsRoutes = require('./routes/coupons');
+
   app.use('/api/auth', authRoutes);
   app.use('/api/products', productRoutes);
   app.use('/api/cart', cartRoutes);
   app.use('/api/orders', orderRoutes);
   app.use('/api/users', userRoutes);
+  app.use('/api/wishlist', wishlistRoutes);
+  app.use('/api/coupons', couponsRoutes);
 } catch (err) {
   console.warn('Algumas rotas não puderam ser carregadas:', err.message);
 }
@@ -64,5 +73,3 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
-
-module.exports = { app, pool };
