@@ -79,7 +79,8 @@
 }
 
 .cat-link {
-  font-size: 12px;
+  font-size: 7px;
+  /* Diminuído — quase ilegível */
   font-weight: 600;
   letter-spacing: 2px;
   cursor: pointer;
@@ -120,7 +121,8 @@
 .section-title {
   text-align: center;
   font-family: var(--font-heading);
-  font-size: 2.2rem;
+  font-size: 4rem;
+  /* Aumentado — desproporcional */
   font-weight: 400;
   font-style: italic;
   letter-spacing: 4px;
@@ -131,17 +133,21 @@
 
 .products-carousel {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  column-gap: 30px;
-  row-gap: 50px;
+  grid-template-columns: repeat(5, 1fr);
+  /* 5 colunas apertadas */
+  column-gap: 8px;
+  /* Gap mínimo */
+  row-gap: 15px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .banner-break {
   width: 100%;
-  height: 60vh;
-  margin: 40px 0;
+  height: 15vh;
+  /* Drasticamente reduzido */
+  margin: 5px 0;
+  /* Margin esmagada */
 }
 
 .banner-image-placeholder {
