@@ -70,6 +70,25 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
+// Limpar carrinho inteiro
+router.delete('/limpar', auth, async (req, res) => {
+  try {
+    const carrinho = await pool.query(
+      'SELECT id FROM carrinhos WHERE usuario_id = $1 AND ativo = true',
+      [req.userId]
+    );
+
+    if (carrinho.rows.length > 0) {
+      await pool.query('DELETE FROM itens_carrinho WHERE carrinho_id = $1', [carrinho.rows[0].id]);
+    }
+
+    res.json({ message: 'Carrinho esvaziado com sucesso' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao limpar carrinho' });
+  }
+});
+
 // Remover do carrinho
 router.delete('/:itemId', auth, async (req, res) => {
   try {

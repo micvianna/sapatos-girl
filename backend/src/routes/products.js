@@ -60,4 +60,47 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// Criar novo produto
+router.post('/', async (req, res) => {
+  try {
+    const {
+      nome,
+      descricao,
+      categoria,
+      preco,
+      tamanhos,
+      cores,
+      imagem,
+      imagens,
+      estoque,
+      ativo
+    } = req.body;
+
+    if (!nome || preco == null) {
+      return res.status(400).json({ error: 'nome e preco são obrigatórios' });
+    }
+
+    const result = await pool.query(
+      'INSERT INTO produtos (id, nome, descricao, categoria, preco, tamanhos, cores, imagem, imagens, estoque, ativo) VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, $8, $9, COALESCE($10, true)) RETURNING *',
+      [
+        nome,
+        descricao || '',
+        categoria || '',
+        parseFloat(preco),
+        tamanhos || '',
+        cores || '',
+        imagem || '',
+        imagens ? JSON.stringify(imagens) : null,
+        estoque != null ? parseInt(estoque, 10) : 0,
+        ativo != null ? ativo : true
+      ]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao criar produto' });
+  }
+});
+
 module.exports = router;
