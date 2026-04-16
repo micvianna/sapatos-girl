@@ -26,17 +26,15 @@
 .hero-text-overlay {
   text-align: center;
   color: #fff;
-  padding: 50px;
-  background: linear-gradient(135deg, rgba(30, 30, 30, 0.45) 0%, rgba(10, 10, 10, 0.6) 100%);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 4px;
+  padding: 40px;
+  background: rgba(44, 42, 41, 0.4);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .hero-text-overlay h1 {
   font-family: var(--font-heading);
-  font-size: 6rem;
-  /* Aumentado drasticamente */
+  font-size: 3.5rem;
   font-weight: 600;
   letter-spacing: 8px;
   margin-bottom: 1rem;
@@ -45,8 +43,7 @@
 }
 
 .hero-text-overlay p {
-  font-size: 0.6rem;
-  /* Diminuído drasticamente */
+  font-size: 1rem;
   font-weight: 300;
   letter-spacing: 4px;
   margin-bottom: 2.5rem;
@@ -79,8 +76,7 @@
 }
 
 .cat-link {
-  font-size: 7px;
-  /* Diminuído — quase ilegível */
+  font-size: 12px;
   font-weight: 600;
   letter-spacing: 2px;
   cursor: pointer;
@@ -121,8 +117,7 @@
 .section-title {
   text-align: center;
   font-family: var(--font-heading);
-  font-size: 4rem;
-  /* Aumentado — desproporcional */
+  font-size: 2.2rem;
   font-weight: 400;
   font-style: italic;
   letter-spacing: 4px;
@@ -133,21 +128,17 @@
 
 .products-carousel {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  /* 5 colunas apertadas */
-  column-gap: 8px;
-  /* Gap mínimo */
-  row-gap: 15px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  column-gap: 30px;
+  row-gap: 50px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .banner-break {
   width: 100%;
-  height: 15vh;
-  /* Drasticamente reduzido */
-  margin: 5px 0;
-  /* Margin esmagada */
+  height: 60vh;
+  margin: 40px 0;
 }
 
 .banner-image-placeholder {

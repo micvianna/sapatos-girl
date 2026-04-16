@@ -58,8 +58,7 @@
 
 .logo h1 {
   margin: 0;
-  font-size: 42px;
-  /* Aumentado drasticamente */
+  font-size: 26px;
   font-family: var(--font-heading);
   font-weight: 600;
   font-style: italic;
@@ -86,8 +85,7 @@
 .nav-links a {
   text-decoration: none;
   color: var(--text-primary);
-  font-size: 8px;
-  /* Diminuído drasticamente */
+  font-size: 11px;
   font-family: var(--font-body);
   font-weight: 500;
   letter-spacing: 2px;
@@ -107,13 +105,11 @@
   transition: width 0.3s ease;
 }
 
-.nav-links a:hover::after,
-.nav-links a.active::after {
+.nav-links a:hover::after {
   width: 100%;
 }
 
-.nav-links a:hover,
-.nav-links a.active {
+.nav-links a:hover {
   color: var(--accent-gold);
 }
 
@@ -123,11 +119,6 @@
 
 .nav-links a.sale-link::after {
   background-color: var(--accent-rose);
-}
-
-.nav-links a.sale-link:hover,
-.nav-links a.sale-link.active {
-  color: var(--accent-rose);
 }
 
 .icon-button {
@@ -141,11 +132,6 @@
   align-items: center;
   justify-content: center;
   transition: color 0.3s ease, transform 0.3s ease;
-  position: absolute;
-  left: 20px;
-  top: -10px;
-  transform: scale(3);
-  z-index: 50;
 }
 
 .icon-button:hover {
@@ -155,29 +141,6 @@
 
 .mobile-menu {
   display: none;
-}
-
-/* Cart Badge */
-.cart-badge-container {
-  position: relative;
-}
-
-.cart-badge {
-  position: absolute;
-  top: -5px;
-  right: -8px;
-  background-color: var(--accent-gold, #d4af37);
-  color: white;
-  font-size: 10px;
-  font-weight: bold;
-  height: 18px;
-  min-width: 18px;
-  border-radius: 9px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .search-dropdown {
