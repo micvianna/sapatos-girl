@@ -16,8 +16,8 @@ export default function Account() {
             <h2 style={{ fontSize: '2rem', marginBottom: '20px' }}>Minha Conta</h2>
             <div style={{ padding: '30px', border: '1px solid #eee', borderRadius: '8px', backgroundColor: '#fff' }}>
                 <p style={{ margin: '10px 0', fontSize: '1.2rem' }}><strong>Nome:</strong> {user?.nome || 'Usuário'}</p>
-                {/* 💥 EXPLOSION SITE: We expect 'email', but the backend sent 'user_email'. This will crash React! */}
-                <p style={{ margin: '10px 0', fontSize: '1.1rem', color: '#666' }}><strong>Email:</strong> {user.email.toLowerCase()}</p>
+                {/* Safely resolve email even if localStorage is polluted with the broken contract */}
+                <p style={{ margin: '10px 0', fontSize: '1.1rem', color: '#666' }}><strong>Email:</strong> {((user?.email) || (user?.user_email) || '').toLowerCase()}</p>
 
                 <button
                     onClick={handleLogout}
