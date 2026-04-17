@@ -44,6 +44,7 @@ export default function Header() {
           <div className="header-right">
             <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
               <a href="#new" className={currentCategory === 'new' ? 'active' : ''} onClick={(e) => { e.preventDefault(); navigate('/products?category=new'); setMenuOpen(false); }}>NEW IN</a>
+              <a href="#botas" className={currentCategory === 'botas' ? 'active' : ''} onClick={(e) => { e.preventDefault(); navigate('/products?category=botas'); setMenuOpen(false); }}>BOTAS</a>
               <a href="#shoes" className={currentCategory === 'shoes' ? 'active' : ''} onClick={(e) => { e.preventDefault(); navigate('/products?category=shoes'); setMenuOpen(false); }}>SAPATOS</a>
               <a href="#bags" className={currentCategory === 'bags' ? 'active' : ''} onClick={(e) => { e.preventDefault(); navigate('/products?category=bags'); setMenuOpen(false); }}>BOLSAS</a>
               <a href="#accessories" className={currentCategory === 'accessories' ? 'active' : ''} onClick={(e) => { e.preventDefault(); navigate('/products?category=accessories'); setMenuOpen(false); }}>ACESSÓRIOS</a>
