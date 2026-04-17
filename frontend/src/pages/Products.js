@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import ProductCard from '../components/ProductCard';
@@ -10,11 +10,23 @@ export default function Products() {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({
-    categoria: '',
-    preco_min: '',
-    preco_max: ''
+  const location = useLocation();
+  const [filters, setFilters] = useState(() => {
+    const params = new URLSearchParams(location.search);
+    return {
+      categoria: params.get('category') || '',
+      preco_min: '',
+      preco_max: ''
+    };
   });
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const categoryParam = params.get('category') || '';
+    if (categoryParam !== filters.categoria) {
+      setFilters(prev => ({ ...prev, categoria: categoryParam }));
+    }
+  }, [location.search]);
 
   const [newProduct, setNewProduct] = useState({
     nome: '',
@@ -143,7 +155,7 @@ export default function Products() {
             </div>
           </div>
 
-          <button 
+          <button
             className="clear-filters"
             onClick={() => setFilters({ categoria: '', preco_min: '', preco_max: '' })}
           >
@@ -162,7 +174,7 @@ export default function Products() {
           ) : products.length === 0 ? (
             <div className="empty-products">
               <p>Nenhum produto encontrado</p>
-              <button 
+              <button
                 className="clear-filters"
                 onClick={() => setFilters({ categoria: '', preco_min: '', preco_max: '' })}
               >
@@ -181,9 +193,9 @@ export default function Products() {
             <h2>CADASTRAR NOVO PRODUTO</h2>
             <form onSubmit={handleNewProductSubmit} className="create-product-form">
               <input type="text" name="nome" placeholder="Nome do produto" value={newProduct.nome} onChange={handleNewProductChange} required />
-              
+
               <textarea name="descricao" placeholder="Descrição" value={newProduct.descricao} onChange={handleNewProductChange} rows="3" />
-              
+
               <div className="form-row">
                 <select name="categoria" value={newProduct.categoria} onChange={handleNewProductChange} required>
                   <option value="Sandálias">Sandálias</option>
@@ -211,8 +223,8 @@ export default function Products() {
                 {creating ? 'CADASTRANDO...' : 'CADASTRAR PRODUTO'}
               </button>
             </form>
-            {error && <div style={{color: 'red', marginTop: '10px'}}>{error}</div>}
-            {successMessage && <div style={{color: 'green', marginTop: '10px'}}>{successMessage}</div>}
+            {error && <div style={{ color: 'red', marginTop: '10px' }}>{error}</div>}
+            {successMessage && <div style={{ color: 'green', marginTop: '10px' }}>{successMessage}</div>}
           </section>
 
         </div>
