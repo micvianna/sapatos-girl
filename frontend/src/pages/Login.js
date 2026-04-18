@@ -54,8 +54,12 @@ export default function Login() {
     }
 
     try {
-      await login(formData.email, formData.senha);
-      navigate('/');
+      const data = await login(formData.email, formData.senha);
+      if (data?.user?.is_admin) {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
     } catch (err) {
       setLocalError(err.response?.data?.error || 'Erro ao fazer login');
     }
