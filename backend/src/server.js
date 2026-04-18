@@ -38,7 +38,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // Import routes - com try/catch para evitar erros de require circular
-let authRoutes, productRoutes, cartRoutes, orderRoutes, userRoutes, wishlistRoutes, couponsRoutes;
+let authRoutes, productRoutes, cartRoutes, orderRoutes, userRoutes, wishlistRoutes, couponsRoutes, adminRoutes;
 try {
   authRoutes = require('./routes/auth');
   productRoutes = require('./routes/products');
@@ -47,6 +47,7 @@ try {
   userRoutes = require('./routes/users');
   wishlistRoutes = require('./routes/wishlist');
   couponsRoutes = require('./routes/coupons');
+  adminRoutes = require('./routes/admin');
 
   app.use('/api/auth', authRoutes);
   app.use('/api/products', productRoutes);
@@ -55,6 +56,7 @@ try {
   app.use('/api/users', userRoutes);
   app.use('/api/wishlist', wishlistRoutes);
   app.use('/api/coupons', couponsRoutes);
+  app.use('/api/admin', adminRoutes);
 } catch (err) {
   console.warn('Algumas rotas não puderam ser carregadas:', err.message);
 }

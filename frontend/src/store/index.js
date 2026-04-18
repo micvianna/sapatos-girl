@@ -4,7 +4,7 @@ import axios from 'axios';
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
 export const useAuthStore = create((set, get) => ({
-  user: null,
+  user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null,
   token: localStorage.getItem('token'),
   loading: false,
   error: null,
@@ -20,6 +20,7 @@ export const useAuthStore = create((set, get) => ({
       });
 
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
       set({
         token: response.data.token,
         user: response.data.user,
@@ -43,6 +44,7 @@ export const useAuthStore = create((set, get) => ({
       });
 
       localStorage.setItem('token', response.data.token);
+      localStorage.setItem('user', JSON.stringify(response.data.user));
       set({
         token: response.data.token,
         user: response.data.user,
@@ -59,6 +61,7 @@ export const useAuthStore = create((set, get) => ({
 
   logout: () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     set({ user: null, token: null });
   }
 }));

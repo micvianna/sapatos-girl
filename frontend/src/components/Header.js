@@ -57,6 +57,15 @@ export default function Header() {
             >
               <FiUser />
             </button>
+            {user?.is_admin && (
+              <button
+                className="icon-button admin-link-btn"
+                onClick={() => navigate('/admin')}
+                title="Painel Admin"
+              >
+                ⚙
+              </button>
+            )}
             <button
               className="icon-button cart-badge-container"
               onClick={() => navigate('/cart')}

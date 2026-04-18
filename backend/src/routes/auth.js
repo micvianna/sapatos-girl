@@ -39,7 +39,7 @@ router.post('/register', async (req, res) => {
 
     // Gerar token
     const token = jwt.sign(
-      { userId, email },
+      { userId, email, is_admin: false },
       process.env.JWT_SECRET || 'secret',
       { expiresIn: process.env.JWT_EXPIRE || '7d' }
     );
@@ -47,7 +47,7 @@ router.post('/register', async (req, res) => {
     res.status(201).json({
       message: 'Usuário criado com sucesso',
       token,
-      user: { id: userId, nome, email }
+      user: { id: userId, nome, email, is_admin: false }
     });
   } catch (err) {
     console.error(err);
@@ -85,7 +85,7 @@ router.post('/login', async (req, res) => {
 
     // Gerar token
     const token = jwt.sign(
-      { userId: user.id, email: user.email },
+      { userId: user.id, email: user.email, is_admin: user.is_admin || false },
       process.env.JWT_SECRET || 'secret',
       { expiresIn: process.env.JWT_EXPIRE || '7d' }
     );
@@ -93,7 +93,7 @@ router.post('/login', async (req, res) => {
     res.json({
       message: 'Login realizado com sucesso',
       token,
-      user: { id: user.id, nome: user.nome, email: user.email }
+      user: { id: user.id, nome: user.nome, email: user.email, is_admin: user.is_admin || false }
     });
   } catch (err) {
     console.error(err);

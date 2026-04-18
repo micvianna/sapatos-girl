@@ -12,6 +12,7 @@ import Checkout from './pages/Checkout';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Account from './pages/Account';
+import Admin from './pages/Admin';
 
 // Institutional & Service
 import About from './pages/About';
@@ -29,7 +30,8 @@ import './i18n';
 import './App.css';
 
 function App() {
-  const { token } = useAuthStore();
+  const { token, user } = useAuthStore();
+  const isAdmin = token && user?.is_admin;
 
   return (
     <Router>
@@ -44,6 +46,7 @@ function App() {
             <Route path="/account" element={token ? <Account /> : <Navigate to="/login" />} />
             <Route path="/cart" element={token ? <Cart /> : <Navigate to="/login" />} />
             <Route path="/checkout" element={token ? <Checkout /> : <Navigate to="/login" />} />
+            <Route path="/admin" element={isAdmin ? <Admin /> : <Navigate to="/login" />} />
 
             <Route path="/sobre" element={<About />} />
             <Route path="/lojas" element={<Stores />} />
