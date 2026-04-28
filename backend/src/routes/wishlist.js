@@ -1,20 +1,11 @@
 const express = require('express');
-const router = express.Router();
+const auth = require('../middleware/auth');
 const { pool } = require('../server');
 
-// Middleware de autenticação básico
-const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    if (!token) return res.status(401).json({ error: 'Acesso negado' });
-    // Simulação simples para o contexto do app, idealmente verificar JWT
-    // Aqui pegamos o userId do header para simplificar e focar na funcionalidade
-    req.userId = req.headers['x-user-id'] || '123e4567-e89b-12d3-a456-426614174000'; // mock ID
-    next();
-};
+const router = express.Router();
 
 // Obter favoritos do usuário
-router.get('/', authenticateToken, async (req, res) => {
+router.get('/', auth, async (req, res) => {
     try {
         const result = await pool.query(
             `SELECT p.* FROM produtos p 
@@ -29,13 +20,30 @@ router.get('/', authenticateToken, async (req, res) => {
     }
 });
 
+// Verificar se produto está favoritado
+router.get('/check/:produto_id', auth, async (req, res) => {
+    try {
+        const result = await pool.query(
+            'SELECT * FROM wishlist WHERE usuario_id = $1 AND produto_id = $2',
+            [req.userId, req.params.produto_id]
+        );
+        res.json({ favorited: result.rows.length > 0 });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Erro ao verificar favorito' });
+    }
+});
+
 // Adicionar aos favoritos
-router.post('/', authenticateToken, async (req, res) => {
-    const { produto_id } = req.body;
+router.post('/:produto_id', auth, async (req, res) => {
+    const { produto_id } = req.params;
     if (!produto_id) return res.status(400).json({ error: 'ID do produto é obrigatório' });
 
     try {
-        const check = await pool.query('SELECT * FROM wishlist WHERE usuario_id = $1 AND produto_id = $2', [req.userId, produto_id]);
+        const check = await pool.query(
+            'SELECT * FROM wishlist WHERE usuario_id = $1 AND produto_id = $2',
+            [req.userId, produto_id]
+        );
         if (check.rows.length > 0) {
             return res.status(400).json({ error: 'Produto já está nos favoritos' });
         }
@@ -52,7 +60,7 @@ router.post('/', authenticateToken, async (req, res) => {
 });
 
 // Remover dos favoritos
-router.delete('/:produto_id', authenticateToken, async (req, res) => {
+router.delete('/:produto_id', auth, async (req, res) => {
     const { produto_id } = req.params;
     try {
         await pool.query(

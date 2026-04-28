@@ -92,6 +92,15 @@ INSERT INTO produtos (id, nome, descricao, categoria, preco, tamanhos, cores, im
 ('550e8400-e29b-41d4-a716-446655440018', 'Sandália Gala noite', 'Sandália de salto fino para eventos', 'Sandálias', 159.90, '35,36,37,38,39,40', 'Preto,Vermelho', 'https://images.unsplash.com/photo-1523381294911-8d3cead13475?auto=format&fit=crop&w=400&h=400&q=80', 25),
 ('550e8400-e29b-41d4-a716-446655440019', 'Sandália Metalizada Solar', 'Sandália slide com acabamento metalizado', 'Sandálias', 69.90, '34,35,36,37,38,39', 'Dourado,Prata', 'https://images.unsplash.com/photo-1525097487452-6278ff080c31?auto=format&fit=crop&w=400&h=400&q=80', 60);
 
+-- Tabela de favoritos (wishlist)
+CREATE TABLE wishlist (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  usuario_id UUID NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+  produto_id UUID NOT NULL REFERENCES produtos(id) ON DELETE CASCADE,
+  data_adicao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(usuario_id, produto_id)
+);
+
 -- Criar índices
 CREATE INDEX idx_usuarios_email ON usuarios(email);
 CREATE INDEX idx_produtos_categoria ON produtos(categoria);

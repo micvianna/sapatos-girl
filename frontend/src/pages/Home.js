@@ -1,15 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import { motion, AnimatePresence } from 'framer-motion';
 import ProductCard from '../components/ProductCard';
 import './Home.css';
 
 export default function Home() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const orderState = location.state || {};
+  const [showToast, setShowToast] = useState(!!orderState.orderSuccess);
+
   useEffect(() => {
+    if (showToast) {
+      const timer = setTimeout(() => setShowToast(false), 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [showToast]);
+
+  useEffect(() => {
+    // Scroll to top when loading
+    window.scrollTo(0, 0);
+
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
@@ -27,20 +42,64 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="home">
+    <motion.div
+      className="home"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.8 }}
+    >
+      {/* Order Confirmation Toast */}
+      <AnimatePresence>
+        {showToast && orderState.orderSuccess && (
+          <motion.div
+            className={`order-toast ${orderState.emAnalise ? 'toast-analise' : 'toast-success'}`}
+            initial={{ y: -80, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -80, opacity: 0 }}
+            transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
+            <div className="toast-content">
+              {orderState.emAnalise ? (
+                <>
+                  <h3>ORDER UNDER REVIEW</h3>
+                  <p>First credit card purchase — undergoing anti-fraud analysis (up to 48h).</p>
+                  <p className="toast-sub">You will receive an email once approved.</p>
+                </>
+              ) : (
+                <>
+                  <h3>ORDER CONFIRMED</h3>
+                  <p>Thank you for your purchase.
+                    {orderState.prazoEntrega && ` Estimated delivery: ${orderState.prazoEntrega}`}
+                  </p>
+                  {orderState.descontoPix > 0 && (
+                    <p className="toast-sub">Pix discount applied: R$ {parseFloat(orderState.descontoPix).toFixed(2)}</p>
+                  )}
+                </>
+              )}
+              <button className="toast-close" onClick={() => setShowToast(false)}>×</button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Main Hero Banner */}
       <section className="hero">
         <div className="hero-image-placeholder">
-          {/* Replace with actual banner image */}
-          <div className="hero-text-overlay">
-            <h1>A POTÊNCIA DO REAL</h1>
-            <p>NOVA COLEÇÃO DE INVERNO</p>
-            <button className="btn btn-primary btn-hero" onClick={() => navigate('/products')}>VER COLEÇÃO</button>
-          </div>
+          <motion.div
+            className="hero-text-overlay"
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.4, duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
+            <h1>NEW CLASSICS</h1>
+            <p>THE FALL/WINTER COLLECTION</p>
+            <button className="btn btn-hero" onClick={() => navigate('/products')}>DISCOVER THE CAMPAIGN</button>
+          </motion.div>
         </div>
       </section>
 
-      {/* Categories Horizontal Scroll / Grid (Optional but common) */}
+      {/* Categories Horizontal Links */}
       <section className="category-links">
         <div className="cat-link" onClick={() => navigate('/products?category=botas')}>BOTAS</div>
         <div className="cat-link" onClick={() => navigate('/products?category=sandalias')}>SANDÁLIAS</div>
@@ -50,27 +109,24 @@ export default function Home() {
 
       {/* Section: ITENS ESPECIAIS */}
       <section className="product-section">
-        <h2 className="section-title">ITENS ESPECIAIS .INVERNO 26</h2>
+        <div className="section-header">
+          <h2 className="section-title">MUST HAVES</h2>
+          <a href="#" className="section-link" onClick={(e) => { e.preventDefault(); navigate('/products'); }}>VIEW ALL</a>
+        </div>
         {loading ? (
           <div className="loading">Carregando...</div>
         ) : (
           <div className="products-carousel">
-            {products.slice(0, 4).map(product => (
-              <ProductCard key={product.id} productId={product.id} />
-            ))}
-          </div>
-        )}
-      </section>
-
-      {/* Section: INVERNO 26 .BOTAS SLOUCH */}
-      <section className="product-section alternate-bg">
-        <h2 className="section-title">INVERNO 26 .BOTAS SLOUCH</h2>
-        {loading ? (
-          <div className="loading">Carregando...</div>
-        ) : (
-          <div className="products-carousel">
-            {products.slice(4, 8).map(product => (
-              <ProductCard key={product.id} productId={product.id} />
+            {products.slice(0, 4).map((product, index) => (
+              <motion.div
+                key={product.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+              >
+                <ProductCard productId={product.id} />
+              </motion.div>
             ))}
           </div>
         )}
@@ -79,61 +135,75 @@ export default function Home() {
       {/* Large Image Banner Break */}
       <section className="banner-break">
         <div className="banner-image-placeholder">
-          <h2>BOLSAS TACHAS</h2>
-          <button className="btn btn-outline" onClick={() => navigate('/products?category=bolsas')}>VER PRODUTOS</button>
+          <div className="banner-content">
+            <motion.h2
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              THE ART OF DETAIL
+            </motion.h2>
+            <motion.button
+              className="btn btn-hero"
+              onClick={() => navigate('/products?category=bolsas')}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              SHOP BAGS
+            </motion.button>
+          </div>
         </div>
       </section>
 
-      {/* Section: INVERNO 26 .DETALHES EM METAL */}
-      <section className="product-section">
-        <h2 className="section-title">INVERNO 26 .DETALHES EM METAL</h2>
+      {/* Section: ESSENTIALS */}
+      <section className="product-section alternate-bg">
+        <div className="section-header">
+          <h2 className="section-title">THE ESSENTIALS</h2>
+          <a href="#" className="section-link" onClick={(e) => { e.preventDefault(); navigate('/products'); }}>DISCOVER</a>
+        </div>
         {loading ? (
           <div className="loading">Carregando...</div>
         ) : (
           <div className="products-carousel">
-            {products.slice(0, 4).map(product => (
-              <ProductCard key={product.id} productId={product.id} />
+            {products.slice(4, 8).map((product, index) => (
+              <motion.div
+                key={product.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+              >
+                <ProductCard productId={product.id} />
+              </motion.div>
             ))}
           </div>
         )}
       </section>
 
-      {/* Section: BOLSAS .SHOPPERS & UNIVERSITÁRIAS */}
-      <section className="product-section">
-        <h2 className="section-title">BOLSAS .SHOPPERS & UNIVERSITÁRIAS</h2>
-        {loading ? (
-          <div className="loading">Carregando...</div>
-        ) : (
-          <div className="products-carousel">
-            {products.slice(0, 4).map(product => (
-              <ProductCard key={product.id} productId={product.id} />
-            ))}
-          </div>
-        )}
-      </section>
-
-      {/* Follow @Shoe_Style */}
+      {/* Follow @Atalaia */}
       <section className="instagram-section">
-        <h2 className="section-title">FOLLOW @SHOE_STYLE</h2>
+        <h2 className="section-title">#ATALAIAGIRL</h2>
         <div className="insta-grid">
-          <div className="insta-item">
-            <div className="insta-placeholder"></div>
-            <a href="#" className="insta-overlay">VER POST</a>
-          </div>
-          <div className="insta-item">
-            <div className="insta-placeholder"></div>
-            <a href="#" className="insta-overlay">VER POST</a>
-          </div>
-          <div className="insta-item">
-            <div className="insta-placeholder"></div>
-            <a href="#" className="insta-overlay">VER POST</a>
-          </div>
-          <div className="insta-item">
-            <div className="insta-placeholder"></div>
-            <a href="#" className="insta-overlay">VER POST</a>
-          </div>
+          {[1, 2, 3, 4].map((item, index) => (
+            <motion.div
+              className="insta-item"
+              key={item}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: index * 0.15 }}
+            >
+              <div className="insta-placeholder" style={{
+                backgroundImage: `url('https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?q=80&w=2070&auto=format&fit=crop&random=${item}')`
+              }}></div>
+              <a href="#" className="insta-overlay">INSTAGRAM</a>
+            </motion.div>
+          ))}
         </div>
       </section>
-    </div>
+    </motion.div>
   );
 }
