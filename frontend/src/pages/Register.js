@@ -26,7 +26,7 @@ export default function Register() {
     e.preventDefault();
     
     if (!formData.nome || !formData.email || !formData.senha) {
-      setLocalError('Preencha todos os campos obrigatórios');
+      setLocalError(t('auth.requiredFields'));
       return;
     }
 
@@ -34,7 +34,7 @@ export default function Register() {
       await register(formData.nome, formData.email, formData.senha, formData.telefone);
       navigate('/');
     } catch (err) {
-      setLocalError(err.response?.data?.error || 'Erro ao registrar');
+      setLocalError(err.response?.data?.error || t('auth.errorRegister'));
     }
   };
 
@@ -85,23 +85,23 @@ export default function Register() {
           </div>
 
           <div className="form-group">
-            <label>Telefone</label>
+            <label>{t('auth.phone')}</label>
             <input
               type="tel"
               name="telefone"
               value={formData.telefone}
               onChange={handleChange}
-              placeholder="(11) 999999999"
+              placeholder={t('auth.phonePlaceholder')}
             />
           </div>
 
           <button type="submit" className="btn btn-primary" disabled={loading}>
-            {loading ? 'Cadastrando...' : t('auth.signUp')}
+            {loading ? t('auth.registering') : t('auth.signUp')}
           </button>
         </form>
 
         <p className="auth-link">
-          {t('auth.alreadyHaveAccount')} <a onClick={() => navigate('/login')}>Login</a>
+          {t('auth.alreadyHaveAccount')} <a onClick={() => navigate('/login')}>{t('auth.login')}</a>
         </p>
       </div>
     </div>

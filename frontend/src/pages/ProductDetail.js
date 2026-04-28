@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import { FiArrowLeft } from 'react-icons/fi';
@@ -11,6 +12,7 @@ const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 export default function ProductDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const { token } = useAuthStore();
   const addToCart = useCartStore(state => state.addToCart);
 
@@ -55,8 +57,8 @@ export default function ProductDetail() {
     }
   };
 
-  if (loading) return <div className="pdp-loading">LOADING...</div>;
-  if (!product) return <div className="pdp-loading">Product not found.</div>;
+  if (loading) return <div className="pdp-loading">{t('common.loading')}</div>;
+  if (!product) return <div className="pdp-loading">{t('product.productNotFound')}</div>;
 
   const sizes = product.tamanhos ? product.tamanhos.split(',') : [];
   const colors = product.cores ? product.cores.split(',') : [];
@@ -69,7 +71,7 @@ export default function ProductDetail() {
       transition={{ duration: 0.6 }}
     >
       <button className="pdp-back" onClick={() => navigate(-1)}>
-        <FiArrowLeft /> BACK
+        <FiArrowLeft /> {t('product.back')}
       </button>
 
       <div className="pdp-grid">
@@ -81,7 +83,7 @@ export default function ProductDetail() {
         >
           <div className="pdp-image-wrapper">
             <img src={product.imagem} alt={product.nome} />
-            {product.estoque === 0 && <span className="pdp-sold-out">SOLD OUT</span>}
+            {product.estoque === 0 && <span className="pdp-sold-out">{t('product.soldOut')}</span>}
           </div>
         </motion.div>
 
@@ -103,7 +105,7 @@ export default function ProductDetail() {
 
           {colors.length > 0 && (
             <div className="pdp-option-group">
-              <span className="pdp-label">COLOR</span>
+              <span className="pdp-label">{t('product.color')}</span>
               <div className="pdp-options">
                 {colors.map(color => (
                   <button
@@ -120,7 +122,7 @@ export default function ProductDetail() {
 
           {sizes.length > 0 && (
             <div className="pdp-option-group">
-              <span className="pdp-label">SIZE</span>
+              <span className="pdp-label">{t('product.size')}</span>
               <div className="pdp-options">
                 {sizes.map(size => (
                   <button
@@ -141,12 +143,12 @@ export default function ProductDetail() {
             disabled={product.estoque === 0 || addingToCart}
           >
             {product.estoque === 0
-              ? 'SOLD OUT'
+              ? t('product.soldOut')
               : added
-                ? 'ADDED TO BAG'
+                ? t('product.addedToBag')
                 : addingToCart
-                  ? 'ADDING...'
-                  : 'ADD TO BAG'}
+                  ? t('product.adding')
+                  : t('product.addToBag')}
           </button>
         </motion.div>
       </div>

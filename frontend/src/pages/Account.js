@@ -1,8 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../store';
 
 export default function Account() {
+    const { t } = useTranslation();
     const { user, logout } = useAuthStore();
     const navigate = useNavigate();
 
@@ -13,11 +15,10 @@ export default function Account() {
 
     return (
         <div style={{ padding: '80px 20px', maxWidth: '600px', margin: '0 auto', textAlign: 'center', minHeight: '50vh' }}>
-            <h2 style={{ fontSize: '2rem', marginBottom: '20px' }}>Minha Conta</h2>
+            <h2 style={{ fontSize: '2rem', marginBottom: '20px' }}>{t('account.title')}</h2>
             <div style={{ padding: '30px', border: '1px solid #eee', borderRadius: '8px', backgroundColor: '#fff' }}>
-                <p style={{ margin: '10px 0', fontSize: '1.2rem' }}><strong>Nome:</strong> {user?.nome || 'Usuário'}</p>
-                {/* Safely resolve email even if localStorage is polluted with the broken contract */}
-                <p style={{ margin: '10px 0', fontSize: '1.1rem', color: '#666' }}><strong>Email:</strong> {((user?.email) || (user?.user_email) || '').toLowerCase()}</p>
+                <p style={{ margin: '10px 0', fontSize: '1.2rem' }}><strong>{t('account.name')}:</strong> {user?.nome || 'Usuário'}</p>
+                <p style={{ margin: '10px 0', fontSize: '1.1rem', color: '#666' }}><strong>{t('account.email')}:</strong> {((user?.email) || (user?.user_email) || '').toLowerCase()}</p>
 
                 <button
                     onClick={handleLogout}
@@ -33,7 +34,7 @@ export default function Account() {
                         fontWeight: 'bold'
                     }}
                 >
-                    Sair da Conta (Logout)
+                    {t('account.logout')}
                 </button>
             </div>
         </div>

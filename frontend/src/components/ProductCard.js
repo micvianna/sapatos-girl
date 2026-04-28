@@ -127,8 +127,8 @@ export default function ProductCard({ productId }) {
             disabled={product.estoque === 0 || addingToCart}
           >
             {product.estoque > 0
-              ? (addingToCart ? 'ADDING...' : 'QUICK ADD')
-              : 'SOLD OUT'}
+              ? (addingToCart ? t('product.adding') : t('product.quickAdd'))
+              : t('product.soldOut')}
           </button>
         </div>
       </div>

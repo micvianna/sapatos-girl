@@ -18,7 +18,7 @@ export default function Login() {
   const handleReset = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.senha) {
-      setLocalError('Email e nova senha são obrigatórios para redefinir.');
+      setLocalError(t('auth.emailRequired'));
       return;
     }
     try {
@@ -28,9 +28,9 @@ export default function Login() {
         body: JSON.stringify({ email: formData.email, novaSenha: formData.senha })
       });
       const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Erro ao resetar senha');
+      if (!response.ok) throw new Error(data.error || t('auth.resetError'));
 
-      alert('Senha redefinida com sucesso! Agora você pode fazer o Login.');
+      alert(t('auth.resetSuccess'));
       setIsResetting(false);
       setFormData({ email: '', senha: '' });
       setLocalError('');
@@ -49,7 +49,7 @@ export default function Login() {
     e.preventDefault();
 
     if (!formData.email || !formData.senha) {
-      setLocalError('Email e senha são obrigatórios');
+      setLocalError(t('auth.emailRequired'));
       return;
     }
 
@@ -61,14 +61,14 @@ export default function Login() {
         navigate('/');
       }
     } catch (err) {
-      setLocalError(err.response?.data?.error || 'Erro ao fazer login');
+      setLocalError(err.response?.data?.error || t('auth.errorLogin'));
     }
   };
 
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h2>{isResetting ? 'Redefinir Senha' : t('auth.login')}</h2>
+        <h2>{isResetting ? t('auth.resetPassword') : t('auth.login')}</h2>
 
         {(localError || error) && (
           <div className="error-message">{localError || error}</div>
@@ -88,13 +88,13 @@ export default function Login() {
           </div>
 
           <div className="form-group">
-            <label>{isResetting ? 'Nova Senha' : t('auth.password')}</label>
+            <label>{isResetting ? t('auth.newPassword') : t('auth.password')}</label>
             <input
               type="password"
               name="senha"
               value={formData.senha}
               onChange={handleChange}
-              placeholder={isResetting ? 'Sua nova senha segura' : t('auth.password')}
+              placeholder={isResetting ? t('auth.newPasswordPlaceholder') : t('auth.password')}
               required
             />
           </div>
@@ -107,19 +107,19 @@ export default function Login() {
           )}
 
           <button type="submit" className="btn btn-primary" disabled={loading}>
-            {isResetting ? 'Redefinir Senha' : (loading ? 'Entrando...' : t('auth.signIn'))}
+            {isResetting ? t('auth.resetCta') : (loading ? t('auth.signingIn') : t('auth.signIn'))}
           </button>
         </form>
 
         {!isResetting && (
           <p className="auth-link" style={{ marginTop: '15px' }}>
-            <a onClick={() => setIsResetting(true)} style={{ cursor: 'pointer', fontWeight: 'bold' }}>Esqueci minha senha</a>
+            <a onClick={() => setIsResetting(true)} style={{ cursor: 'pointer', fontWeight: 'bold' }}>{t('auth.forgotPassword')}</a>
           </p>
         )}
 
         {isResetting && (
           <p className="auth-link" style={{ marginTop: '15px' }}>
-            <a onClick={() => setIsResetting(false)} style={{ cursor: 'pointer', fontWeight: 'bold' }}>Voltar para o Login</a>
+            <a onClick={() => setIsResetting(false)} style={{ cursor: 'pointer', fontWeight: 'bold' }}>{t('auth.backToLogin')}</a>
           </p>
         )}
 

@@ -8,6 +8,7 @@ import './Home.css';
 export default function Home() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { t } = useTranslation();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -62,18 +63,18 @@ export default function Home() {
             <div className="toast-content">
               {orderState.emAnalise ? (
                 <>
-                  <h3>ORDER UNDER REVIEW</h3>
-                  <p>First credit card purchase — undergoing anti-fraud analysis (up to 48h).</p>
-                  <p className="toast-sub">You will receive an email once approved.</p>
+                  <h3>{t('checkout.orderUnderReview')}</h3>
+                  <p>{t('checkout.orderReviewMessage')}</p>
+                  <p className="toast-sub">{t('checkout.orderReviewSub')}</p>
                 </>
               ) : (
                 <>
-                  <h3>ORDER CONFIRMED</h3>
-                  <p>Thank you for your purchase.
-                    {orderState.prazoEntrega && ` Estimated delivery: ${orderState.prazoEntrega}`}
+                  <h3>{t('checkout.orderConfirmedTitle')}</h3>
+                  <p>{t('checkout.orderThankYou')}
+                    {orderState.prazoEntrega && ` ${t('checkout.estimatedDelivery')} ${orderState.prazoEntrega}`}
                   </p>
                   {orderState.descontoPix > 0 && (
-                    <p className="toast-sub">Pix discount applied: R$ {parseFloat(orderState.descontoPix).toFixed(2)}</p>
+                    <p className="toast-sub">{t('checkout.pixDiscountApplied')} R$ {parseFloat(orderState.descontoPix).toFixed(2)}</p>
                   )}
                 </>
               )}
@@ -92,29 +93,29 @@ export default function Home() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4, duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
           >
-            <h1>NEW CLASSICS</h1>
-            <p>THE FALL/WINTER COLLECTION</p>
-            <button className="btn btn-hero" onClick={() => navigate('/products')}>DISCOVER THE CAMPAIGN</button>
+            <h1>{t('home.heroTitle')}</h1>
+            <p>{t('home.heroSubtitle')}</p>
+            <button className="btn btn-hero" onClick={() => navigate('/products')}>{t('home.heroCta')}</button>
           </motion.div>
         </div>
       </section>
 
       {/* Categories Horizontal Links */}
       <section className="category-links">
-        <div className="cat-link" onClick={() => navigate('/products?category=botas')}>BOTAS</div>
-        <div className="cat-link" onClick={() => navigate('/products?category=sandalias')}>SANDÁLIAS</div>
-        <div className="cat-link" onClick={() => navigate('/products?category=sapatilhas')}>SAPATILHAS</div>
-        <div className="cat-link" onClick={() => navigate('/products?category=bolsas')}>BOLSAS</div>
+        <div className="cat-link" onClick={() => navigate('/products?category=botas')}>{t('home.botas')}</div>
+        <div className="cat-link" onClick={() => navigate('/products?category=sandalias')}>{t('home.sandálias')}</div>
+        <div className="cat-link" onClick={() => navigate('/products?category=sapatilhas')}>{t('home.sapatilhas')}</div>
+        <div className="cat-link" onClick={() => navigate('/products?category=bolsas')}>{t('home.bolsas')}</div>
       </section>
 
       {/* Section: ITENS ESPECIAIS */}
       <section className="product-section">
         <div className="section-header">
-          <h2 className="section-title">MUST HAVES</h2>
-          <a href="#" className="section-link" onClick={(e) => { e.preventDefault(); navigate('/products'); }}>VIEW ALL</a>
+          <h2 className="section-title">{t('home.mustHaves')}</h2>
+          <a href="#" className="section-link" onClick={(e) => { e.preventDefault(); navigate('/products'); }}>{t('common.viewAll')}</a>
         </div>
         {loading ? (
-          <div className="loading">Carregando...</div>
+          <div className="loading">{t('common.loading')}</div>
         ) : (
           <div className="products-carousel">
             {products.slice(0, 4).map((product, index) => (
@@ -142,7 +143,7 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              THE ART OF DETAIL
+              {t('home.artTitle')}
             </motion.h2>
             <motion.button
               className="btn btn-hero"
@@ -152,7 +153,7 @@ export default function Home() {
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              SHOP BAGS
+              {t('home.artCta')}
             </motion.button>
           </div>
         </div>
@@ -161,11 +162,11 @@ export default function Home() {
       {/* Section: ESSENTIALS */}
       <section className="product-section alternate-bg">
         <div className="section-header">
-          <h2 className="section-title">THE ESSENTIALS</h2>
-          <a href="#" className="section-link" onClick={(e) => { e.preventDefault(); navigate('/products'); }}>DISCOVER</a>
+          <h2 className="section-title">{t('home.essentialsTitle')}</h2>
+          <a href="#" className="section-link" onClick={(e) => { e.preventDefault(); navigate('/products'); }}>{t('common.discover')}</a>
         </div>
         {loading ? (
-          <div className="loading">Carregando...</div>
+          <div className="loading">{t('common.loading')}</div>
         ) : (
           <div className="products-carousel">
             {products.slice(4, 8).map((product, index) => (
@@ -185,7 +186,7 @@ export default function Home() {
 
       {/* Follow @Atalaia */}
       <section className="instagram-section">
-        <h2 className="section-title">#ATALAIAGIRL</h2>
+        <h2 className="section-title">{t('home.instagram')}</h2>
         <div className="insta-grid">
           {[1, 2, 3, 4].map((item, index) => (
             <motion.div
@@ -199,7 +200,7 @@ export default function Home() {
               <div className="insta-placeholder" style={{
                 backgroundImage: `url('https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?q=80&w=2070&auto=format&fit=crop&random=${item}')`
               }}></div>
-              <a href="#" className="insta-overlay">INSTAGRAM</a>
+              <a href="#" className="insta-overlay">{t('home.instagramLink')}</a>
             </motion.div>
           ))}
         </div>

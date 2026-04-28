@@ -51,7 +51,7 @@ export default function Header() {
   return (
     <>
       <div className="announcement-bar">
-        COMPLIMENTARY SHIPPING ON ORDERS OVER $500
+        {t('header.announcement')}
       </div>
 
       <motion.header
@@ -81,12 +81,12 @@ export default function Header() {
 
           <div className="header-right">
             <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
-              <a href="#new" className={currentCategory === 'new' ? 'active' : ''} onClick={(e) => { e.preventDefault(); navigate('/products?category=new'); setMenuOpen(false); }}>NEW IN</a>
-              <a href="#botas" className={currentCategory === 'botas' ? 'active' : ''} onClick={(e) => { e.preventDefault(); navigate('/products?category=botas'); setMenuOpen(false); }}>BOTAS</a>
-              <a href="#shoes" className={currentCategory === 'shoes' ? 'active' : ''} onClick={(e) => { e.preventDefault(); navigate('/products?category=shoes'); setMenuOpen(false); }}>SAPATOS</a>
-              <a href="#bags" className={currentCategory === 'bags' ? 'active' : ''} onClick={(e) => { e.preventDefault(); navigate('/products?category=bags'); setMenuOpen(false); }}>BOLSAS</a>
-              <a href="#accessories" className={currentCategory === 'accessories' ? 'active' : ''} onClick={(e) => { e.preventDefault(); navigate('/products?category=accessories'); setMenuOpen(false); }}>ACESSÓRIOS</a>
-              {/* <a href="#sale" className={`sale-link ${currentCategory === 'sale' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); navigate('/products?category=sale'); setMenuOpen(false); }}>SALE</a> */}
+              <a href="#new" className={currentCategory === 'new' ? 'active' : ''} onClick={(e) => { e.preventDefault(); navigate('/products?category=new'); setMenuOpen(false); }}>{t('header.newIn')}</a>
+              <a href="#botas" className={currentCategory === 'botas' ? 'active' : ''} onClick={(e) => { e.preventDefault(); navigate('/products?category=botas'); setMenuOpen(false); }}>{t('header.botas')}</a>
+              <a href="#shoes" className={currentCategory === 'shoes' ? 'active' : ''} onClick={(e) => { e.preventDefault(); navigate('/products?category=shoes'); setMenuOpen(false); }}>{t('header.sapatos')}</a>
+              <a href="#bags" className={currentCategory === 'bags' ? 'active' : ''} onClick={(e) => { e.preventDefault(); navigate('/products?category=bags'); setMenuOpen(false); }}>{t('header.bolsas')}</a>
+              <a href="#accessories" className={currentCategory === 'accessories' ? 'active' : ''} onClick={(e) => { e.preventDefault(); navigate('/products?category=accessories'); setMenuOpen(false); }}>{t('header.acessorios')}</a>
+              {/* <a href="#sale" className={`sale-link ${currentCategory === 'sale' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); navigate('/products?category=sale'); setMenuOpen(false); }}>{t('header.sale')}</a> */}
             </div>
 
             {/* Language Switcher */}
@@ -143,7 +143,7 @@ export default function Header() {
             >
               <input
                 type="text"
-                placeholder="What are you looking for?"
+                placeholder={t('header.searchPlaceholder')}
                 autoFocus
                 onKeyPress={(e) => {
                   if (e.key === 'Enter') {

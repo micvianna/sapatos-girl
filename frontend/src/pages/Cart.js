@@ -40,7 +40,7 @@ export default function Cart() {
   };
 
   const handleClear = async () => {
-    if (window.confirm('Tem certeza que deseja esvaziar o carrinho?')) {
+    if (window.confirm(t('messages.removeConfirm'))) {
       try {
         await clearCart();
       } catch (error) {
@@ -70,7 +70,7 @@ export default function Cart() {
       <h1>{t('cart.title')}</h1>
 
       {loading ? (
-        <div>Carregando...</div>
+        <div>{t('common.loading')}</div>
       ) : items.length === 0 ? (
         <div className="empty-cart">
           <p>{t('cart.empty')}</p>
@@ -87,8 +87,8 @@ export default function Cart() {
 
                 <div className="item-details">
                   <h3>{item.nome}</h3>
-                  {item.tamanho && <p>Tamanho: {item.tamanho}</p>}
-                  {item.cor && <p>Cor: {item.cor}</p>}
+                  {item.tamanho && <p>{t('cart.tamanho')}: {item.tamanho}</p>}
+                  {item.cor && <p>{t('cart.cor')}: {item.cor}</p>}
                   <p className="price">R$ {parseFloat(item.preco).toFixed(2)}</p>
                 </div>
 
@@ -127,7 +127,7 @@ export default function Cart() {
               onClick={handleClear}
               style={{ width: '100%', marginBottom: '20px', padding: '10px', background: 'transparent', border: '1px solid #ccc', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '1px' }}
             >
-              Limpar Carrinho
+              {t('cart.clear')}
             </button>
             <h2>{t('checkout.orderSummary')}</h2>
 

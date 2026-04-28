@@ -104,9 +104,9 @@ export default function Checkout() {
   if (items.length === 0) {
     return (
       <div className="checkout-empty">
-        <p>YOUR BAG IS CURRENTLY EMPTY.</p>
+        <p>{t('checkout.emptyBag')}</p>
         <button className="btn btn-outline" onClick={() => navigate('/products')}>
-          DISCOVER THE COLLECTION
+          {t('checkout.discoverCollection')}
         </button>
       </div>
     );
@@ -122,7 +122,7 @@ export default function Checkout() {
     >
       <div className="checkout-brand">
         <h1 onClick={() => navigate('/')}>ATALAIA</h1>
-        <p>SECURE CHECKOUT</p>
+        <p>{t('checkout.secureCheckout')}</p>
       </div>
 
       <div className="checkout-grid">
@@ -136,7 +136,7 @@ export default function Checkout() {
             {error && <div className="checkout-error">{error}</div>}
 
             <section className="checkout-section">
-              <h2>1. SHIPPING DETAILS</h2>
+              <h2>{t('checkout.shippingDetails')}</h2>
 
               <div className="form-group">
                 <input
@@ -144,7 +144,7 @@ export default function Checkout() {
                   name="endereco"
                   value={formData.endereco}
                   onChange={handleChange}
-                  placeholder="STREET ADDRESS *"
+                  placeholder={t('checkout.streetAddress')}
                   required
                 />
               </div>
@@ -156,7 +156,7 @@ export default function Checkout() {
                     name="numero"
                     value={formData.numero}
                     onChange={handleChange}
-                    placeholder="NUMBER *"
+                    placeholder={t('checkout.number')}
                     required
                   />
                 </div>
@@ -166,7 +166,7 @@ export default function Checkout() {
                     name="complemento"
                     value={formData.complemento}
                     onChange={handleChange}
-                    placeholder="APT / SUITE"
+                    placeholder={t('checkout.apt')}
                   />
                 </div>
               </div>
@@ -178,7 +178,7 @@ export default function Checkout() {
                     name="cidade"
                     value={formData.cidade}
                     onChange={handleChange}
-                    placeholder="CITY *"
+                    placeholder={t('checkout.city')}
                     required
                   />
                 </div>
@@ -188,7 +188,7 @@ export default function Checkout() {
                     name="estado"
                     value={formData.estado}
                     onChange={handleChange}
-                    placeholder="STATE *"
+                    placeholder={t('checkout.stateLabel')}
                     required
                   />
                 </div>
@@ -198,7 +198,7 @@ export default function Checkout() {
                     name="cep"
                     value={formData.cep}
                     onChange={handleChange}
-                    placeholder="ZIP CODE *"
+                    placeholder={t('checkout.zipLabel')}
                     required
                   />
                 </div>
@@ -210,21 +210,21 @@ export default function Checkout() {
                   name="telefone"
                   value={formData.telefone}
                   onChange={handleChange}
-                  placeholder="PHONE NUMBER"
+                  placeholder={t('checkout.phoneLabel')}
                 />
               </div>
 
               {isGrandeSP() && (
                 <div className={`same-day-banner ${isBeforeNoon() ? 'active' : 'inactive'}`}>
                   {isBeforeNoon()
-                    ? 'ATALAIA BLACK: Same-Day delivery available — arrives by 9PM today'
-                    : 'Grande SP detected — order before 12PM for Same-Day delivery'}
+                    ? t('checkout.sameDayActive')
+                    : t('checkout.sameDayInactive')}
                 </div>
               )}
             </section>
 
             <section className="checkout-section">
-              <h2>2. PAYMENT METHOD</h2>
+              <h2>{t('checkout.paymentLabel')}</h2>
 
               <div className="payment-methods">
                 <label className={`payment-method ${formData.metodo_pagamento === 'cartao_credito' ? 'selected' : ''}`}>
@@ -235,7 +235,7 @@ export default function Checkout() {
                     checked={formData.metodo_pagamento === 'cartao_credito'}
                     onChange={handleChange}
                   />
-                  <span>CREDIT CARD</span>
+                  <span>{t('checkout.creditCard')}</span>
                 </label>
 
                 <label className={`payment-method ${formData.metodo_pagamento === 'pix' ? 'selected' : ''}`}>
@@ -246,8 +246,8 @@ export default function Checkout() {
                     checked={formData.metodo_pagamento === 'pix'}
                     onChange={handleChange}
                   />
-                  <span>PIX</span>
-                  <span className="pix-badge">5% OFF</span>
+                  <span>{t('checkout.pix')}</span>
+                  <span className="pix-badge">{t('checkout.pixBadge')}</span>
                 </label>
 
                 <label className={`payment-method ${formData.metodo_pagamento === 'boleto' ? 'selected' : ''}`}>
@@ -258,13 +258,13 @@ export default function Checkout() {
                     checked={formData.metodo_pagamento === 'boleto'}
                     onChange={handleChange}
                   />
-                  <span>BOLETO</span>
+                  <span>{t('checkout.boleto')}</span>
                 </label>
               </div>
             </section>
 
             <button type="submit" className="btn btn-primary checkout-submit-btn" disabled={loading}>
-              {loading ? 'PROCESSING...' : 'COMPLETE PURCHASE'}
+              {loading ? t('checkout.processing') : t('checkout.completePurchase')}
             </button>
           </form>
         </motion.div>
@@ -275,7 +275,7 @@ export default function Checkout() {
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.6 }}
         >
-          <h2>ORDER SUMMARY</h2>
+          <h2>{t('checkout.orderSummary')}</h2>
 
           <div className="checkout-items">
             {items.map(item => (
@@ -286,7 +286,7 @@ export default function Checkout() {
                 </div>
                 <div className="item-details-checkout">
                   <h3>{item.nome}</h3>
-                  <p>{item.tamanho ? `SIZE: ${item.tamanho}` : ''} {item.cor ? `| COLOR: ${item.cor}` : ''}</p>
+                  <p>{item.tamanho ? `${t('checkout.size')}: ${item.tamanho}` : ''} {item.cor ? `| ${t('checkout.color')}: ${item.cor}` : ''}</p>
                 </div>
                 <div className="item-price-checkout">
                   R$ {(item.preco * item.quantidade).toFixed(2)}
@@ -297,21 +297,21 @@ export default function Checkout() {
 
           <div className="checkout-totals">
             <div className="totals-row">
-              <span>SUBTOTAL</span>
+              <span>{t('checkout.subtotal')}</span>
               <span>R$ {parseFloat(total).toFixed(2)}</span>
             </div>
             {pixDiscount > 0 && (
               <div className="totals-row discount-row">
-                <span>PIX DISCOUNT (5%)</span>
+                <span>{t('checkout.pixDiscount')}</span>
                 <span>− R$ {pixDiscount.toFixed(2)}</span>
               </div>
             )}
             <div className="totals-row">
-              <span>SHIPPING</span>
-              <span>COMPLIMENTARY</span>
+              <span>{t('checkout.shippingLabel')}</span>
+              <span>{t('checkout.complimentary')}</span>
             </div>
             <div className="totals-row grand-total">
-              <span>TOTAL</span>
+              <span>{t('checkout.total')}</span>
               <span>R$ {totalWithShipping.toFixed(2)}</span>
             </div>
           </div>
