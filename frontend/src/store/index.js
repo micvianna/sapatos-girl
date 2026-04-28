@@ -18,14 +18,14 @@ export const useAuthStore = create((set, get) => ({
         senha,
         telefone
       });
-      
+
       localStorage.setItem('token', response.data.token);
-      set({ 
+      set({
         token: response.data.token,
         user: response.data.user,
         loading: false
       });
-      
+
       return response.data;
     } catch (error) {
       const errorMsg = error.response?.data?.error || 'Erro ao registrar';
@@ -41,14 +41,14 @@ export const useAuthStore = create((set, get) => ({
         email,
         senha
       });
-      
+
       localStorage.setItem('token', response.data.token);
-      set({ 
+      set({
         token: response.data.token,
         user: response.data.user,
         loading: false
       });
-      
+
       return response.data;
     } catch (error) {
       const errorMsg = error.response?.data?.error || 'Erro ao fazer login';
@@ -71,13 +71,13 @@ export const useCartStore = create((set, get) => ({
   addToCart: async (produtoId, quantidade, tamanho, cor) => {
     const { token } = useAuthStore.getState();
     set({ loading: true });
-    
+
     try {
-      await axios.post(`${API_URL}/cart/adicionar`, 
+      await axios.post(`${API_URL}/cart/adicionar`,
         { produtoId, quantidade, tamanho, cor },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      
+
       // Fetch cart
       get().fetchCart();
       set({ loading: false });
@@ -90,13 +90,13 @@ export const useCartStore = create((set, get) => ({
   fetchCart: async () => {
     const { token } = useAuthStore.getState();
     if (!token) return;
-    
+
     try {
-      const response = await axios.get(`${API_URL}/cart`, 
+      const response = await axios.get(`${API_URL}/cart`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      
-      set({ 
+
+      set({
         items: response.data.itens,
         total: response.data.total
       });
@@ -108,11 +108,24 @@ export const useCartStore = create((set, get) => ({
   removeFromCart: async (itemId) => {
     const { token } = useAuthStore.getState();
     try {
-      await axios.delete(`${API_URL}/cart/${itemId}`, 
+      await axios.delete(`${API_URL}/cart/${itemId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      
+
       get().fetchCart();
+    } catch (error) {
+      throw error;
+    }
+  },
+
+  clearCart: async () => {
+    const { token } = useAuthStore.getState();
+    try {
+      await axios.delete(`${API_URL}/cart/limpar`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      set({ items: [], total: 0 });
     } catch (error) {
       throw error;
     }
@@ -121,11 +134,11 @@ export const useCartStore = create((set, get) => ({
   updateQuantity: async (itemId, quantidade) => {
     const { token } = useAuthStore.getState();
     try {
-      await axios.put(`${API_URL}/cart/${itemId}`, 
+      await axios.put(`${API_URL}/cart/${itemId}`,
         { quantidade },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      
+
       get().fetchCart();
     } catch (error) {
       throw error;
