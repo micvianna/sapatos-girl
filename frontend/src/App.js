@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useAuthStore } from './store';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import MiniCart from './components/MiniCart';
 
 // Pages
 import Home from './pages/Home';
@@ -13,6 +14,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Account from './pages/Account';
 import Admin from './pages/Admin';
+import ProductDetail from './pages/ProductDetail';
 
 // Institutional & Service
 import About from './pages/About';
@@ -41,6 +43,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/products" element={<Products />} />
+            <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/account" element={token ? <Account /> : <Navigate to="/login" />} />
@@ -60,6 +63,7 @@ function App() {
           </Routes>
         </main>
         <Footer />
+        <MiniCart />
       </div>
     </Router>
   );
