@@ -1,0 +1,74 @@
+{
+  "common": {
+    "appName": "ATALAIA - Calzado de Lujo",
+    "home": "Inicio",
+    "products": "Productos",
+    "cart": "Carrito",
+    "account": "Mi Cuenta",
+    "logout": "Salir",
+    "login": "Iniciar Sesión",
+    "register": "Registrarse",
+    "search": "Buscar",
+    "categories": "Categorías"
+  },
+  "product": {
+    "addToCart": "Agregar al Carrito",
+    "size": "Talla",
+    "color": "Color",
+    "price": "Precio",
+    "inStock": "En Stock",
+    "outOfStock": "Sin Stock",
+    "quantity": "Cantidad",
+    "description": "Descripción",
+    "details": "Detalles",
+    "reviews": "Reseñas"
+  },
+  "cart": {
+    "title": "Mi Carrito",
+    "empty": "Tu carrito está vacío",
+    "subtotal": "Subtotal",
+    "shipping": "Envío",
+    "total": "Total",
+    "continue": "Seguir Comprando",
+    "checkout": "Finalizar Compra",
+    "remove": "Eliminar",
+    "update": "Actualizar"
+  },
+  "checkout": {
+    "shippingInfo": "Información de Envío",
+    "address": "Dirección",
+    "city": "Ciudad",
+    "state": "Estado/Provincia",
+    "zipCode": "Código Postal",
+    "phone": "Teléfono",
+    "paymentMethod": "Método de Pago",
+    "creditCard": "Tarjeta de Crédito",
+    "debit": "Débito",
+    "paypal": "PayPal",
+    "pix": "PIX",
+    "orderSummary": "Resumen del Pedido",
+    "placeOrder": "Confirmar Pedido",
+    "orderConfirmed": "¡Pedido Confirmado!"
+  },
+  "auth": {
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "name": "Nombre Completo",
+    "register": "Registro",
+    "login": "Iniciar Sesión",
+    "createAccount": "Crear Cuenta",
+    "alreadyHaveAccount": "¿Ya tienes una cuenta?",
+    "dontHaveAccount": "¿No tienes una cuenta?",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "rememberMe": "Recuérdame",
+    "signIn": "Entrar",
+    "signUp": "Registrarse"
+  },
+  "messages": {
+    "success": "Operación realizada con éxito",
+    "error": "Error al procesar la solicitud",
+    "addedToCart": "Producto agregado al carrito",
+    "removedFromCart": "Producto eliminado del carrito",
+    "logoutSuccess": "Has cerrado sesión"
+  }
+}
