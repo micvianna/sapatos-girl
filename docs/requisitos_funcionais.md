@@ -44,8 +44,9 @@
 | RF-PROD-04 | O sistema deve permitir busca textual por nome ou descrição (ILIKE) | ✅ Implementado |
 | RF-PROD-05 | O sistema deve retornar detalhes de um produto específico por ID | ✅ Implementado |
 | RF-PROD-06 | Produtos inativos (`ativo = false`) não devem aparecer nas listagens públicas | ✅ Implementado |
-| RF-PROD-07 | A Home Page deve exibir carrossel de até 4 produtos em cada seção temática | ✅ Implementado |
-| RF-PROD-08 | Cada card de produto deve exibir imagem, nome, preço e botão "COMPRAR" | ✅ Implementado |
+| RF-PROD-07 | A Home Page deve exibir seções editoriais curadas e animações de scroll (`framer-motion`) | ✅ Implementado |
+| RF-PROD-08 | A Listagem (PLP) deve seguir um layout "edge-to-edge" minimalista com filtros superiores e sem sidebars | ✅ Implementado |
+| RF-PROD-09 | Cada card de produto foca na imagem; as ações (Wishlist, Quick Add) só ficam visíveis no estado de `hover` | ✅ Implementado |
 | RF-PROD-09 | O sistema deve suportar as categorias: Botas, Sandálias, Sapatilhas, Bolsas, Acessórios, Tênis, Scarpins | ✅ Implementado |
 
 ---
@@ -56,8 +57,8 @@
 |----|-----------|--------|
 | RF-CART-01 | Usuário autenticado pode adicionar produto ao carrinho (com quantidade, tamanho e cor opcionais) | ✅ Implementado |
 | RF-CART-02 | O sistema deve criar automaticamente um carrinho ativo se o usuário não possuir um | ✅ Implementado |
-| RF-CART-03 | Usuário pode visualizar os itens do carrinho com nome, preço, imagem, quantidade, subtotal e total | ✅ Implementado |
-| RF-CART-04 | Usuário pode remover um item específico do carrinho | ✅ Implementado |
+| RF-CART-03 | A interface do Carrinho foi substituída por um "Mini-Cart Drawer", acessível de qualquer página via Slider lateral | ✅ Implementado |
+| RF-CART-04 | Usuário pode remover um item específico diretamente do Mini-Cart | ✅ Implementado |
 | RF-CART-05 | Usuário pode esvaziar o carrinho inteiro | ✅ Implementado |
 | RF-CART-06 | Usuário pode atualizar a quantidade de um item (mínimo 1) | ✅ Implementado |
 | RF-CART-07 | O carrinho deve calcular automaticamente o total geral | ✅ Implementado |
@@ -74,8 +75,9 @@
 | RF-ORD-04 | Após criar o pedido, o carrinho ativo deve ser desativado (`ativo = false`) | ✅ Implementado |
 | RF-ORD-05 | Os itens do pedido devem registrar preço unitário no momento da compra | ✅ Implementado |
 | RF-ORD-06 | Usuário pode consultar histórico de pedidos ordenados por data (mais recente primeiro) | ✅ Implementado |
-| RF-ORD-07 | O checkout deve exibir resumo dos itens, subtotal, frete fixo (R$ 20,00) e total geral | ✅ Implementado |
-| RF-ORD-08 | O checkout deve suportar os métodos: Cartão de Crédito, PIX, Boleto | ✅ Implementado |
+| RF-ORD-07 | O checkout deve operar no formato "Distraction-Free", em um layout minimalista sem menus adjacentes | ✅ Implementado |
+| RF-ORD-08 | O checkout deve exibir resumo dos itens e frete cortesia interativo em uma coluna estática (Sticky) | ✅ Implementado |
+| RF-ORD-09 | O checkout deve suportar os métodos: Cartão de Crédito, PIX, Boleto | ✅ Implementado |
 
 ---
 
@@ -127,9 +129,10 @@
 
 | ID | Requisito | Status |
 |----|-----------|--------|
-| RF-UI-01 | O Header deve contar links para: NEW IN, BOTAS, SAPATOS, BOLSAS, ACESSÓRIOS, SALE | ✅ Implementado |
-| RF-UI-02 | O Header deve exibir ícones de busca, conta, configurações (admin) e carrinho | ✅ Implementado |
-| RF-UI-03 | O Footer deve conter links institucionais: Sobre, Lojas, Carreiras, Contato | ✅ Implementado |
+| RF-UI-01 | O Header deve manter estilo glassmórfico interativo, tornando-se opaco conforme o scroll flui | ✅ Implementado |
+| RF-UI-02 | O Header deve conter links para: NEW IN, BOTAS, SAPATOS, BOLSAS, ACESSÓRIOS | ✅ Implementado |
+| RF-UI-03 | O Header deve exibir ícones em traços finos: Menu, Search (animado), Conta, Configurações e Sacola | ✅ Implementado |
+| RF-UI-04 | O Footer deve conter links institucionais: Sobre, Lojas, Carreiras, Contato | ✅ Implementado |
 | RF-UI-04 | O Footer deve conter links de serviço: FAQ, Trocas, Entregas, Pagamento, Privacidade | ✅ Implementado |
 | RF-UI-05 | A aplicação deve suportar internacionalização (i18n) | ✅ Implementado |
 | RF-UI-06 | Rotas protegidas (/account, /cart, /checkout) devem redirecionar para /login se não autenticado | ✅ Implementado |
@@ -159,12 +162,12 @@
 |--------|:---:|
 | Autenticação | 9 |
 | Perfil | 4 |
-| Catálogo | 9 |
+| Catálogo | 10 |
 | Carrinho | 7 |
-| Pedidos | 8 |
+| Pedidos | 9 |
 | Wishlist | 4 |
 | Cupons | 4 |
 | Admin | 15 |
-| Navegação/UI | 7 |
+| Navegação/UI | 8 |
 | Institucional | 9 |
-| **TOTAL** | **76** |
+| **TOTAL** | **79** |

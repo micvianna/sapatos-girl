@@ -70,6 +70,11 @@ export const useCartStore = create((set, get) => ({
   items: [],
   total: 0,
   loading: false,
+  isCartOpen: false,
+
+  openCart: () => set({ isCartOpen: true }),
+  closeCart: () => set({ isCartOpen: false }),
+  toggleCart: () => set((state) => ({ isCartOpen: !state.isCartOpen })),
 
   addToCart: async (produtoId, quantidade, tamanho, cor) => {
     const { token } = useAuthStore.getState();
@@ -83,7 +88,7 @@ export const useCartStore = create((set, get) => ({
 
       // Fetch cart
       get().fetchCart();
-      set({ loading: false });
+      set({ loading: false, isCartOpen: true }); // Open cart magically when an item is added
     } catch (error) {
       set({ loading: false });
       throw error;

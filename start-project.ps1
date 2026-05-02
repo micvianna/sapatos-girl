@@ -19,7 +19,7 @@ if (-not (Get-Command psql -ErrorAction SilentlyContinue)) {
 # Instalar dependências do backend
 Write-Host "📦 Instalando dependências do backend..." -ForegroundColor Cyan
 Set-Location "backend"
-npm install
+npm ci
 if ($LASTEXITCODE -ne 0) {
     Write-Host "❌ Erro ao instalar dependências do backend." -ForegroundColor Red
     exit 1
@@ -28,7 +28,7 @@ if ($LASTEXITCODE -ne 0) {
 # Instalar dependências do frontend
 Write-Host "📦 Instalando dependências do frontend..." -ForegroundColor Cyan
 Set-Location "..\frontend"
-npm install
+npm ci
 if ($LASTEXITCODE -ne 0) {
     Write-Host "❌ Erro ao instalar dependências do frontend." -ForegroundColor Red
     exit 1

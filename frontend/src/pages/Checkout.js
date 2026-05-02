@@ -6,6 +6,8 @@ import { useCartStore, useAuthStore } from '../store';
 import axios from 'axios';
 import './Checkout.css';
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 export default function Checkout() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -24,30 +26,6 @@ export default function Checkout() {
   });
   const [error, setError] = useState('');
 
-  // RN04: Grande São Paulo cities for Same-Day delivery preview
-  const GRANDE_SP_CITIES = [
-    'são paulo', 'sao paulo', 'guarulhos', 'campinas', 'são bernardo do campo',
-    'sao bernardo do campo', 'santo andré', 'santo andre', 'osasco', 'barueri',
-    'são caetano do sul', 'sao caetano do sul', 'diadema', 'mauá', 'maua',
-    'carapicuíba', 'carapicuiba', 'mogi das cruzes', 'suzano', 'taboão da serra',
-    'taboao da serra', 'itaquaquecetuba', 'embu das artes', 'cotia',
-    'itapecerica da serra', 'itapevi', 'jandira', 'santana de parnaíba', 'cajamar',
-    'franco da rocha', 'caieiras', 'aruja', 'ferraz de vasconcelos', 'poá', 'poa',
-    'ribeirão pires', 'ribeirao pires', 'rio grande da serra'
-  ];
-
-  const isGrandeSP = () => {
-    if (!formData.cidade || !formData.estado) return false;
-    return formData.estado.toUpperCase() === 'SP' &&
-      GRANDE_SP_CITIES.includes(formData.cidade.toLowerCase().trim());
-  };
-
-  const isBeforeNoon = () => {
-    return new Date().getHours() < 12;
-  };
-
-  const showSameDay = isGrandeSP() && isBeforeNoon();
-
   // Scroll to top on load for distraction-free focus
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -59,6 +37,11 @@ export default function Checkout() {
     setError('');
   };
 
+  /**
+   * Monta o endereço completo e envia o pedido ao backend.
+   * Regras de negócio (Grande SP, Pix, anti-fraude) são calculadas
+   * exclusivamente pelo servidor — o frontend apenas exibe o resultado.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -76,7 +59,7 @@ export default function Checkout() {
       };
 
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/orders/criar`,
+        `${API_URL}/api/orders/criar`,
         payload,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -213,14 +196,6 @@ export default function Checkout() {
                   placeholder={t('checkout.phoneLabel')}
                 />
               </div>
-
-              {isGrandeSP() && (
-                <div className={`same-day-banner ${isBeforeNoon() ? 'active' : 'inactive'}`}>
-                  {isBeforeNoon()
-                    ? t('checkout.sameDayActive')
-                    : t('checkout.sameDayInactive')}
-                </div>
-              )}
             </section>
 
             <section className="checkout-section">

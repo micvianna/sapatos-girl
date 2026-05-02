@@ -21,18 +21,24 @@ router.post('/validate', async (req, res) => {
 
         const cupom = result.rows[0];
 
-        // Verificar validade
-        if (cupom.validade && new Date(cupom.validade) < new Date()) {
+        // Verificar expiração — usa campo real do schema: 'expiracao'
+        if (cupom.expiracao && new Date(cupom.expiracao) < new Date()) {
             return res.status(400).json({ error: 'Cupom expirado' });
         }
 
+        // Verificar uso máximo
+        if (cupom.uso_atual >= cupom.uso_max) {
+            return res.status(400).json({ error: 'Cupom atingiu o limite de usos' });
+        }
+
+        // Retornar os campos reais do schema: 'desconto' e 'tipo'
         res.json({
             message: 'Cupom aplicado com sucesso!',
-            desconto_percentual: cupom.desconto_percentual,
-            desconto_fixo: cupom.desconto_fixo
+            desconto: cupom.desconto,
+            tipo: cupom.tipo,
         });
     } catch (err) {
-        console.error(err);
+        console.error('[coupons/validate]', err.message);
         res.status(500).json({ error: 'Erro ao validar cupom' });
     }
 });

@@ -87,7 +87,13 @@ export default function Home() {
 
       {/* Main Hero Banner */}
       <section className="hero">
-        <div className="hero-image-placeholder">
+        <div className="hero-image-wrapper">
+          <img
+            src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop"
+            alt="Coleção Atalaia — modelo usando look completo da nova temporada com sapatos e acessórios de luxo"
+            className="hero-image-bg"
+          />
+          <div className="hero-overlay" aria-hidden="true"></div>
           <motion.div
             className="hero-text-overlay"
             initial={{ y: 30, opacity: 0 }}

@@ -2,30 +2,9 @@ const express = require('express');
 const auth = require('../middleware/auth');
 const { pool } = require('../server');
 const { v4: uuidv4 } = require('uuid');
+const { isGrandeSP, calcPixDiscount, calcDeliveryEstimate } = require('../utils/businessRules');
 
 const router = express.Router();
-
-// RN04: Grande São Paulo cities for Same-Day delivery
-const GRANDE_SP_CITIES = [
-  'são paulo', 'sao paulo', 'guarulhos', 'campinas', 'são bernardo do campo',
-  'sao bernardo do campo', 'santo andré', 'santo andre', 'osasco', 'barueri',
-  'são caetano do sul', 'sao caetano do sul', 'diadema', 'mauá', 'maua',
-  'carapicuíba', 'carapicuiba', 'mogi das cruzes', 'suzano', 'taboão da serra',
-  'taboao da serra', 'itaquaquecetuba', 'embu das artes', 'cotia', 'itapecerica da serra',
-  'itapevi', 'jandira', 'santana de parnaíba', 'cajamar', 'franco da rocha',
-  'caieiras', 'aruja', 'ferraz de vasconcelos', 'poá', 'poa', 'itaquaquecetuba',
-  'ribeirão pires', 'ribeirao pires', 'rio grande da serra'
-];
-
-function isGrandeSP(cidade, estado) {
-  if (!cidade || !estado) return false;
-  return estado.toUpperCase() === 'SP' && GRANDE_SP_CITIES.includes(cidade.toLowerCase().trim());
-}
-
-function isBeforeNoon() {
-  const now = new Date();
-  return now.getHours() < 12;
-}
 
 // Criar pedido
 router.post('/criar', auth, async (req, res) => {
@@ -63,15 +42,14 @@ router.post('/criar', auth, async (req, res) => {
       total += produto.rows[0].preco * item.quantidade;
     }
 
-    // RN02: 5% discount for Pix Instantâneo
-    const descontoPix = metodo_pagamento === 'pix' ? total * 0.05 : 0;
+    // RN02: Desconto Pix via módulo centralizado
+    const descontoPix = calcPixDiscount(total, metodo_pagamento);
     total = total - descontoPix;
 
-    // RN04: Same-Day delivery for Grande São Paulo before noon
-    const sameDay = isGrandeSP(cidade, estado) && isBeforeNoon();
-    const prazoEntrega = sameDay ? 'Same-Day (até 21h00)' : 'Padrão (3-7 dias úteis)';
+    // RN04: Entrega Same-Day via módulo centralizado
+    const { sameDay, prazoEntrega } = calcDeliveryEstimate(cidade, estado);
 
-    // RN06: Anti-fraud — first purchase with credit card goes into analysis
+    // RN06: Anti-fraude — primeira compra com cartão entra em análise
     const pedidosAnteriores = await pool.query(
       'SELECT COUNT(*) FROM pedidos WHERE usuario_id = $1',
       [req.userId]
@@ -114,7 +92,7 @@ router.post('/criar', auth, async (req, res) => {
       emAnalise: statusPedido === 'em_analise'
     });
   } catch (err) {
-    console.error(err);
+    console.error('[orders/criar]', err.message);
     res.status(500).json({ error: 'Erro ao criar pedido' });
   }
 });
@@ -129,7 +107,7 @@ router.get('/', auth, async (req, res) => {
 
     res.json(result.rows);
   } catch (err) {
-    console.error(err);
+    console.error('[orders:GET]', err.message);
     res.status(500).json({ error: 'Erro ao buscar pedidos' });
   }
 });

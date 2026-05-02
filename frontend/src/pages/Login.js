@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../store';
 import './Auth.css';
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 export default function Login() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -13,25 +15,58 @@ export default function Login() {
     senha: ''
   });
   const [localError, setLocalError] = useState('');
-  const [isResetting, setIsResetting] = useState(false);
+  const [resetStep, setResetStep] = useState('none'); // 'none' | 'request' | 'confirm'
+  const [resetToken, setResetToken] = useState('');
 
-  const handleReset = async (e) => {
+  const handleResetRequest = async (e) => {
     e.preventDefault();
-    if (!formData.email || !formData.senha) {
+    if (!formData.email) {
       setLocalError(t('auth.emailRequired'));
       return;
     }
     try {
-      const response = await fetch('http://localhost:5000/api/auth/reset', {
+      const response = await fetch(`${API_URL}/api/auth/reset/request`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: formData.email, novaSenha: formData.senha })
+        body: JSON.stringify({ email: formData.email })
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || t('auth.resetError'));
+
+      // Em ambiente de desenvolvimento, o backend retorna o token
+      if (data.resetToken) {
+        setResetToken(data.resetToken);
+        setResetStep('confirm');
+        setLocalError('');
+      } else {
+        alert(data.message);
+        setResetStep('none');
+        setFormData({ email: '', senha: '' });
+        setLocalError('');
+      }
+    } catch (err) {
+      setLocalError(err.message);
+    }
+  };
+
+  const handleResetConfirm = async (e) => {
+    e.preventDefault();
+    if (!formData.senha) {
+      setLocalError(t('auth.emailRequired'));
+      return;
+    }
+    try {
+      const response = await fetch(`${API_URL}/api/auth/reset/confirm`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: resetToken, novaSenha: formData.senha })
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || t('auth.resetError'));
 
       alert(t('auth.resetSuccess'));
-      setIsResetting(false);
+      setResetStep('none');
+      setResetToken('');
       setFormData({ email: '', senha: '' });
       setLocalError('');
     } catch (err) {
@@ -65,6 +100,8 @@ export default function Login() {
     }
   };
 
+  const isResetting = resetStep !== 'none';
+
   return (
     <div className="auth-container">
       <div className="auth-card">
@@ -74,52 +111,92 @@ export default function Login() {
           <div className="error-message">{localError || error}</div>
         )}
 
-        <form onSubmit={isResetting ? handleReset : handleSubmit}>
-          <div className="form-group">
-            <label>{t('auth.email')}</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder={t('auth.email')}
-              required
-            />
-          </div>
+        {resetStep === 'none' && (
+          <form onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label>{t('auth.email')}</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder={t('auth.email')}
+                required
+              />
+            </div>
 
-          <div className="form-group">
-            <label>{isResetting ? t('auth.newPassword') : t('auth.password')}</label>
-            <input
-              type="password"
-              name="senha"
-              value={formData.senha}
-              onChange={handleChange}
-              placeholder={isResetting ? t('auth.newPasswordPlaceholder') : t('auth.password')}
-              required
-            />
-          </div>
+            <div className="form-group">
+              <label>{t('auth.password')}</label>
+              <input
+                type="password"
+                name="senha"
+                value={formData.senha}
+                onChange={handleChange}
+                placeholder={t('auth.password')}
+                required
+              />
+            </div>
 
-          {!isResetting && (
             <div className="remember-me">
               <input type="checkbox" id="remember" />
               <label htmlFor="remember">{t('auth.rememberMe')}</label>
             </div>
-          )}
 
-          <button type="submit" className="btn btn-primary" disabled={loading}>
-            {isResetting ? t('auth.resetCta') : (loading ? t('auth.signingIn') : t('auth.signIn'))}
-          </button>
-        </form>
+            <button type="submit" className="btn btn-primary" disabled={loading}>
+              {loading ? t('auth.signingIn') : t('auth.signIn')}
+            </button>
+          </form>
+        )}
 
-        {!isResetting && (
+        {resetStep === 'request' && (
+          <form onSubmit={handleResetRequest}>
+            <div className="form-group">
+              <label>{t('auth.email')}</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder={t('auth.email')}
+                required
+              />
+            </div>
+
+            <button type="submit" className="btn btn-primary">
+              {t('auth.resetCta')}
+            </button>
+          </form>
+        )}
+
+        {resetStep === 'confirm' && (
+          <form onSubmit={handleResetConfirm}>
+            <div className="form-group">
+              <label>{t('auth.newPassword')}</label>
+              <input
+                type="password"
+                name="senha"
+                value={formData.senha}
+                onChange={handleChange}
+                placeholder={t('auth.newPasswordPlaceholder')}
+                required
+              />
+            </div>
+
+            <button type="submit" className="btn btn-primary">
+              {t('auth.resetCta')}
+            </button>
+          </form>
+        )}
+
+        {resetStep === 'none' && (
           <p className="auth-link" style={{ marginTop: '15px' }}>
-            <a onClick={() => setIsResetting(true)} style={{ cursor: 'pointer', fontWeight: 'bold' }}>{t('auth.forgotPassword')}</a>
+            <a onClick={() => setResetStep('request')} style={{ cursor: 'pointer', fontWeight: 'bold' }}>{t('auth.forgotPassword')}</a>
           </p>
         )}
 
         {isResetting && (
           <p className="auth-link" style={{ marginTop: '15px' }}>
-            <a onClick={() => setIsResetting(false)} style={{ cursor: 'pointer', fontWeight: 'bold' }}>{t('auth.backToLogin')}</a>
+            <a onClick={() => { setResetStep('none'); setLocalError(''); }} style={{ cursor: 'pointer', fontWeight: 'bold' }}>{t('auth.backToLogin')}</a>
           </p>
         )}
 

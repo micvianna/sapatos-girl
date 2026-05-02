@@ -116,7 +116,7 @@ export default function Admin() {
                 <h2 className="admin-title">ADMIN</h2>
                 <nav className="admin-nav">
                     {['dashboard', 'users', 'products', 'coupons'].map(t => (
-                        <button key={t} className={`admin-nav-btn ${tab === t ? 'active' : ''}`} onClick={() => setTab(t)}>
+                        <button key={t} data-testid={`tab-${t}`} className={`admin-nav-btn ${tab === t ? 'active' : ''}`} onClick={() => setTab(t)}>
                             {{ dashboard: '📊 Dashboard', users: '👥 Usuários', products: '👟 Produtos', coupons: '🎫 Cupons' }[t]}
                         </button>
                     ))}
@@ -136,9 +136,9 @@ export default function Admin() {
                     <section className="admin-section">
                         <h2>Dashboard</h2>
                         <div className="stats-grid">
-                            <div className="stat-card"><span className="stat-num">{stats.usuarios}</span><span className="stat-label">Usuários</span></div>
-                            <div className="stat-card"><span className="stat-num">{stats.produtos}</span><span className="stat-label">Produtos Ativos</span></div>
-                            <div className="stat-card"><span className="stat-num">{stats.cupons}</span><span className="stat-label">Cupons Ativos</span></div>
+                            <div className="stat-card" data-testid="card-stat-usuarios"><span className="stat-num" data-testid="stat-num-usuarios">{stats.usuarios}</span><span className="stat-label">Usuários</span></div>
+                            <div className="stat-card" data-testid="card-stat-produtos"><span className="stat-num" data-testid="stat-num-produtos">{stats.produtos}</span><span className="stat-label">Produtos Ativos</span></div>
+                            <div className="stat-card" data-testid="card-stat-cupons"><span className="stat-num" data-testid="stat-num-cupons">{stats.cupons}</span><span className="stat-label">Cupons Ativos</span></div>
                         </div>
                         <div className="quick-links">
                             <button onClick={() => setTab('users')}>Gerenciar Usuários →</button>
@@ -188,6 +188,9 @@ export default function Admin() {
                                     <div className="form-row" key={field}>
                                         <label>{field.charAt(0).toUpperCase() + field.slice(1)}</label>
                                         <input
+                                            name={field}
+                                            id={`product-${field}`}
+                                            data-testid={`input-product-${field}`}
                                             value={editingProduct ? (editingProduct[field] || '') : (newProduct[field] || '')}
                                             onChange={e => editingProduct ? setEditingProduct({ ...editingProduct, [field]: e.target.value }) : setNewProduct({ ...newProduct, [field]: e.target.value })}
                                             placeholder={field}
@@ -196,11 +199,11 @@ export default function Admin() {
                                 ))}
                                 <div className="form-row">
                                     <label>Estoque</label>
-                                    <input type="number" value={editingProduct ? editingProduct.estoque : newProduct.estoque}
+                                    <input type="number" name="estoque" id="product-estoque" data-testid="input-product-estoque" value={editingProduct ? editingProduct.estoque : newProduct.estoque}
                                         onChange={e => editingProduct ? setEditingProduct({ ...editingProduct, estoque: e.target.value }) : setNewProduct({ ...newProduct, estoque: e.target.value })} />
                                 </div>
                                 <div className="form-actions">
-                                    <button className="btn-save" onClick={saveProduct}>{editingProduct ? '💾 Salvar' : '+ Criar Produto'}</button>
+                                    <button className="btn-save" data-testid="btn-save-product" onClick={saveProduct}>{editingProduct ? '💾 Salvar' : '+ Criar Produto'}</button>
                                     {editingProduct && <button className="btn-cancel" onClick={() => setEditingProduct(null)}>✕ Cancelar</button>}
                                 </div>
                             </div>
@@ -237,18 +240,18 @@ export default function Admin() {
                         <div className="admin-card">
                             <h3>+ Novo Cupom</h3>
                             <form className="coupon-form" onSubmit={createCoupon}>
-                                <div className="form-row"><label>Código</label><input required placeholder="Ex: VERAO30" value={newCoupon.codigo} onChange={e => setNewCoupon({ ...newCoupon, codigo: e.target.value.toUpperCase() })} /></div>
-                                <div className="form-row"><label>Desconto</label><input required type="number" placeholder="20" value={newCoupon.desconto} onChange={e => setNewCoupon({ ...newCoupon, desconto: e.target.value })} /></div>
+                                <div className="form-row"><label>Código</label><input required name="codigo" data-testid="input-coupon-codigo" placeholder="Ex: VERAO30" value={newCoupon.codigo} onChange={e => setNewCoupon({ ...newCoupon, codigo: e.target.value.toUpperCase() })} /></div>
+                                <div className="form-row"><label>Desconto</label><input required name="desconto" data-testid="input-coupon-desconto" type="number" placeholder="20" value={newCoupon.desconto} onChange={e => setNewCoupon({ ...newCoupon, desconto: e.target.value })} /></div>
                                 <div className="form-row">
                                     <label>Tipo</label>
-                                    <select value={newCoupon.tipo} onChange={e => setNewCoupon({ ...newCoupon, tipo: e.target.value })}>
+                                    <select name="tipo" data-testid="input-coupon-tipo" value={newCoupon.tipo} onChange={e => setNewCoupon({ ...newCoupon, tipo: e.target.value })}>
                                         <option value="percent">% Percentual</option>
                                         <option value="fixed">R$ Valor Fixo</option>
                                     </select>
                                 </div>
-                                <div className="form-row"><label>Expiração</label><input type="datetime-local" value={newCoupon.expiracao} onChange={e => setNewCoupon({ ...newCoupon, expiracao: e.target.value })} /></div>
-                                <div className="form-row"><label>Uso Máximo</label><input type="number" value={newCoupon.uso_max} onChange={e => setNewCoupon({ ...newCoupon, uso_max: e.target.value })} /></div>
-                                <div className="form-actions"><button className="btn-save" type="submit">🎫 Criar Cupom</button></div>
+                                <div className="form-row"><label>Expiração</label><input type="datetime-local" name="expiracao" data-testid="input-coupon-expiracao" value={newCoupon.expiracao} onChange={e => setNewCoupon({ ...newCoupon, expiracao: e.target.value })} /></div>
+                                <div className="form-row"><label>Uso Máximo</label><input type="number" name="uso_max" data-testid="input-coupon-uso_max" value={newCoupon.uso_max} onChange={e => setNewCoupon({ ...newCoupon, uso_max: e.target.value })} /></div>
+                                <div className="form-actions"><button className="btn-save" data-testid="btn-save-coupon" type="submit">🎫 Criar Cupom</button></div>
                             </form>
                         </div>
 
@@ -263,7 +266,7 @@ export default function Admin() {
                                             <td>{c.tipo === 'percent' ? 'Percentual' : 'Valor Fixo'}</td>
                                             <td>{c.uso_atual} / {c.uso_max}</td>
                                             <td>{c.expiracao ? new Date(c.expiracao).toLocaleDateString('pt-BR') : '—'}</td>
-                                            <td><button className="btn-delete" onClick={() => deleteCoupon(c.id, c.codigo)}>✕ Remover</button></td>
+                                            <td className="action-btns"><button className="btn-delete" data-testid={`btn-delete-coupon-${c.codigo}`} onClick={() => deleteCoupon(c.id, c.codigo)}>✕ Remover</button></td>
                                         </tr>
                                     ))}
                                 </tbody>

@@ -32,7 +32,7 @@ export default function MiniCart() {
                         animate={{ x: 0 }}
                         exit={{ x: '100%' }}
                         transition={{ type: 'tween', duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-                        onClick={(e) => e.stopPropagation()} // stop click from closing drawer
+                        onClick={(e) => e.stopPropagation()}
                     >
                         <div className="minicart-header">
                             <h2>{t('cart.title')} ({items.length})</h2>

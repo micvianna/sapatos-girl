@@ -29,17 +29,22 @@
   transform: scale(1.05);
 }
 
-/* Wishlist heart */
+/* Wishlist heart — always accessible, meets WCAG 2.5.5 (44x44px min) */
 .wishlist-btn {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: transparent;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: rgba(255, 255, 255, 0.7);
   border: none;
+  border-radius: 50%;
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 1.2rem;
   color: var(--text-primary);
-  opacity: 0;
-  transform: translateY(-10px);
+  opacity: 0.6;
   transition: all 0.4s ease;
   z-index: 10;
   cursor: pointer;
@@ -47,7 +52,7 @@
 
 .product-card:hover .wishlist-btn {
   opacity: 1;
-  transform: translateY(0);
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .wishlist-btn:hover {
@@ -56,8 +61,8 @@
 
 .wishlist-btn.favorited {
   opacity: 1;
-  transform: translateY(0);
   color: #d32f2f;
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .wishlist-btn.favorited:hover {

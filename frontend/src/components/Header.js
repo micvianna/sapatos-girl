@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiShoppingCart, FiUser, FiSearch, FiMenu, FiX } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -81,12 +81,11 @@ export default function Header() {
 
           <div className="header-right">
             <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
-              <a href="#new" className={currentCategory === 'new' ? 'active' : ''} onClick={(e) => { e.preventDefault(); navigate('/products?category=new'); setMenuOpen(false); }}>{t('header.newIn')}</a>
-              <a href="#botas" className={currentCategory === 'botas' ? 'active' : ''} onClick={(e) => { e.preventDefault(); navigate('/products?category=botas'); setMenuOpen(false); }}>{t('header.botas')}</a>
-              <a href="#shoes" className={currentCategory === 'shoes' ? 'active' : ''} onClick={(e) => { e.preventDefault(); navigate('/products?category=shoes'); setMenuOpen(false); }}>{t('header.sapatos')}</a>
-              <a href="#bags" className={currentCategory === 'bags' ? 'active' : ''} onClick={(e) => { e.preventDefault(); navigate('/products?category=bags'); setMenuOpen(false); }}>{t('header.bolsas')}</a>
-              <a href="#accessories" className={currentCategory === 'accessories' ? 'active' : ''} onClick={(e) => { e.preventDefault(); navigate('/products?category=accessories'); setMenuOpen(false); }}>{t('header.acessorios')}</a>
-              {/* <a href="#sale" className={`sale-link ${currentCategory === 'sale' ? 'active' : ''}`} onClick={(e) => { e.preventDefault(); navigate('/products?category=sale'); setMenuOpen(false); }}>{t('header.sale')}</a> */}
+              <NavLink to="/products?category=new" className={currentCategory === 'new' ? 'active' : ''} onClick={() => setMenuOpen(false)}>{t('header.newIn')}</NavLink>
+              <NavLink to="/products?category=botas" className={currentCategory === 'botas' ? 'active' : ''} onClick={() => setMenuOpen(false)}>{t('header.botas')}</NavLink>
+              <NavLink to="/products?category=shoes" className={currentCategory === 'shoes' ? 'active' : ''} onClick={() => setMenuOpen(false)}>{t('header.sapatos')}</NavLink>
+              <NavLink to="/products?category=bags" className={currentCategory === 'bags' ? 'active' : ''} onClick={() => setMenuOpen(false)}>{t('header.bolsas')}</NavLink>
+              <NavLink to="/products?category=accessories" className={currentCategory === 'accessories' ? 'active' : ''} onClick={() => setMenuOpen(false)}>{t('header.acessorios')}</NavLink>
             </div>
 
             {/* Language Switcher */}

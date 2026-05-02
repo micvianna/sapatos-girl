@@ -11,15 +11,15 @@ router.use(adminAuth);
 // USERS
 // ─────────────────────────────────────────────
 
-// GET /api/admin/users — list all users
+// GET /api/admin/users — list all active users
 router.get('/users', async (req, res) => {
     try {
         const result = await pool.query(
-            'SELECT id, nome, email, telefone, is_admin, data_criacao FROM usuarios ORDER BY data_criacao DESC'
+            'SELECT id, nome, email, telefone, is_admin, data_criacao FROM usuarios WHERE deleted_at IS NULL ORDER BY data_criacao DESC'
         );
         res.json(result.rows);
     } catch (err) {
-        console.error(err);
+        console.error('[admin/users:GET]', err.message);
         res.status(500).json({ error: 'Erro ao buscar usuários' });
     }
 });
@@ -27,26 +27,82 @@ router.get('/users', async (req, res) => {
 // PATCH /api/admin/users/:id/toggle-admin — promote/demote
 router.patch('/users/:id/toggle-admin', async (req, res) => {
     try {
-        const result = await pool.query(
-            'UPDATE usuarios SET is_admin = NOT is_admin WHERE id = $1 RETURNING id, nome, email, is_admin',
-            [req.params.id]
+        const targetId = req.params.id;
+        const currentAdminId = req.adminUser.userId;
+
+        // Impedir auto-promoção/remoção
+        if (targetId === currentAdminId) {
+            return res.status(403).json({ error: 'Não é permitido alterar seu próprio status de admin.' });
+        }
+
+        // Verificar se o alvo existe e não foi soft-deletado
+        const targetUser = await pool.query(
+            'SELECT id, is_admin FROM usuarios WHERE id = $1 AND deleted_at IS NULL',
+            [targetId]
         );
-        if (result.rows.length === 0) return res.status(404).json({ error: 'Usuário não encontrado' });
+        if (targetUser.rows.length === 0) {
+            return res.status(404).json({ error: 'Usuário não encontrado' });
+        }
+
+        // Se estiver removendo admin, verificar se é o último
+        if (targetUser.rows[0].is_admin) {
+            const adminCount = await pool.query(
+                'SELECT COUNT(*) FROM usuarios WHERE is_admin = true AND deleted_at IS NULL'
+            );
+            if (parseInt(adminCount.rows[0].count) <= 1) {
+                return res.status(403).json({ error: 'Não é possível remover o último administrador.' });
+            }
+        }
+
+        const result = await pool.query(
+            'UPDATE usuarios SET is_admin = NOT is_admin WHERE id = $1 AND deleted_at IS NULL RETURNING id, nome, email, is_admin',
+            [targetId]
+        );
+
         res.json(result.rows[0]);
     } catch (err) {
-        console.error(err);
+        console.error('[admin/users:PATCH toggle-admin]', err.message);
         res.status(500).json({ error: 'Erro ao atualizar usuário' });
     }
 });
 
-// DELETE /api/admin/users/:id
+// DELETE /api/admin/users/:id — soft-delete (campo deleted_at)
 router.delete('/users/:id', async (req, res) => {
     try {
-        const result = await pool.query('DELETE FROM usuarios WHERE id = $1 RETURNING id', [req.params.id]);
+        const targetId = req.params.id;
+        const currentAdminId = req.adminUser.userId;
+
+        // Impedir auto-remoção
+        if (targetId === currentAdminId) {
+            return res.status(403).json({ error: 'Não é permitido remover sua própria conta.' });
+        }
+
+        // Verificar se é admin e se é o último
+        const targetUser = await pool.query(
+            'SELECT id, is_admin FROM usuarios WHERE id = $1 AND deleted_at IS NULL',
+            [targetId]
+        );
+        if (targetUser.rows.length === 0) {
+            return res.status(404).json({ error: 'Usuário não encontrado' });
+        }
+
+        if (targetUser.rows[0].is_admin) {
+            const adminCount = await pool.query(
+                'SELECT COUNT(*) FROM usuarios WHERE is_admin = true AND deleted_at IS NULL'
+            );
+            if (parseInt(adminCount.rows[0].count) <= 1) {
+                return res.status(403).json({ error: 'Não é possível remover o último administrador.' });
+            }
+        }
+
+        const result = await pool.query(
+            'UPDATE usuarios SET deleted_at = NOW() WHERE id = $1 AND deleted_at IS NULL RETURNING id',
+            [targetId]
+        );
         if (result.rows.length === 0) return res.status(404).json({ error: 'Usuário não encontrado' });
-        res.json({ message: 'Usuário removido com sucesso' });
+        res.json({ message: 'Usuário desativado com sucesso' });
     } catch (err) {
-        console.error(err);
+        console.error('[admin/users:DELETE]', err.message);
         res.status(500).json({ error: 'Erro ao remover usuário' });
     }
 });
@@ -61,7 +117,7 @@ router.get('/products', async (req, res) => {
         const result = await pool.query('SELECT * FROM produtos ORDER BY nome ASC');
         res.json(result.rows);
     } catch (err) {
-        console.error(err);
+        console.error('[admin/products:GET]', err.message);
         res.status(500).json({ error: 'Erro ao buscar produtos' });
     }
 });
@@ -79,7 +135,7 @@ router.post('/products', async (req, res) => {
         );
         res.status(201).json(result.rows[0]);
     } catch (err) {
-        console.error(err);
+        console.error('[admin/products:POST]', err.message);
         res.status(500).json({ error: 'Erro ao criar produto' });
     }
 });
@@ -96,7 +152,7 @@ router.put('/products/:id', async (req, res) => {
         if (result.rows.length === 0) return res.status(404).json({ error: 'Produto não encontrado' });
         res.json(result.rows[0]);
     } catch (err) {
-        console.error(err);
+        console.error('[admin/products:PUT]', err.message);
         res.status(500).json({ error: 'Erro ao atualizar produto' });
     }
 });
@@ -115,7 +171,7 @@ router.patch('/products/:id/stars', async (req, res) => {
         if (result.rows.length === 0) return res.status(404).json({ error: 'Produto não encontrado' });
         res.json(result.rows[0]);
     } catch (err) {
-        console.error(err);
+        console.error('[admin/products:PATCH stars]', err.message);
         res.status(500).json({ error: 'Erro ao atualizar estrelas' });
     }
 });
@@ -130,7 +186,7 @@ router.delete('/products/:id', async (req, res) => {
         if (result.rows.length === 0) return res.status(404).json({ error: 'Produto não encontrado' });
         res.json({ message: `Produto "${result.rows[0].nome}" desativado` });
     } catch (err) {
-        console.error(err);
+        console.error('[admin/products:DELETE]', err.message);
         res.status(500).json({ error: 'Erro ao remover produto' });
     }
 });
@@ -145,7 +201,7 @@ router.get('/coupons', async (req, res) => {
         const result = await pool.query('SELECT * FROM cupons ORDER BY criado_em DESC');
         res.json(result.rows);
     } catch (err) {
-        console.error(err);
+        console.error('[admin/coupons:GET]', err.message);
         res.status(500).json({ error: 'Erro ao buscar cupons' });
     }
 });
@@ -164,19 +220,22 @@ router.post('/coupons', async (req, res) => {
         res.status(201).json(result.rows[0]);
     } catch (err) {
         if (err.code === '23505') return res.status(400).json({ error: 'Código de cupom já existe' });
-        console.error(err);
+        console.error('[admin/coupons:POST]', err.message);
         res.status(500).json({ error: 'Erro ao criar cupom' });
     }
 });
 
-// DELETE /api/admin/coupons/:id
+// DELETE /api/admin/coupons/:id — soft-delete (ativo = false)
 router.delete('/coupons/:id', async (req, res) => {
     try {
-        const result = await pool.query('DELETE FROM cupons WHERE id = $1 RETURNING codigo', [req.params.id]);
+        const result = await pool.query(
+            'UPDATE cupons SET ativo = false WHERE id = $1 AND ativo = true RETURNING codigo',
+            [req.params.id]
+        );
         if (result.rows.length === 0) return res.status(404).json({ error: 'Cupom não encontrado' });
-        res.json({ message: `Cupom "${result.rows[0].codigo}" removido` });
+        res.json({ message: `Cupom "${result.rows[0].codigo}" desativado` });
     } catch (err) {
-        console.error(err);
+        console.error('[admin/coupons:DELETE]', err.message);
         res.status(500).json({ error: 'Erro ao remover cupom' });
     }
 });
@@ -187,7 +246,7 @@ router.delete('/coupons/:id', async (req, res) => {
 router.get('/stats', async (req, res) => {
     try {
         const [users, products, coupons] = await Promise.all([
-            pool.query('SELECT COUNT(*) FROM usuarios'),
+            pool.query('SELECT COUNT(*) FROM usuarios WHERE deleted_at IS NULL'),
             pool.query('SELECT COUNT(*) FROM produtos WHERE ativo = true'),
             pool.query('SELECT COUNT(*) FROM cupons WHERE ativo = true'),
         ]);
@@ -197,7 +256,7 @@ router.get('/stats', async (req, res) => {
             cupons: parseInt(coupons.rows[0].count),
         });
     } catch (err) {
-        console.error(err);
+        console.error('[admin/stats:GET]', err.message);
         res.status(500).json({ error: 'Erro ao buscar estatísticas' });
     }
 });
