@@ -13,6 +13,31 @@ export default function Login() {
     senha: ''
   });
   const [localError, setLocalError] = useState('');
+  const [isResetting, setIsResetting] = useState(false);
+
+  const handleReset = async (e) => {
+    e.preventDefault();
+    if (!formData.email || !formData.senha) {
+      setLocalError(t('auth.emailRequired'));
+      return;
+    }
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/reset', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: formData.email, novaSenha: formData.senha })
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || t('auth.resetError'));
+
+      alert(t('auth.resetSuccess'));
+      setIsResetting(false);
+      setFormData({ email: '', senha: '' });
+      setLocalError('');
+    } catch (err) {
+      setLocalError(err.message);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,30 +47,34 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.email || !formData.senha) {
-      setLocalError('Email e senha são obrigatórios');
+      setLocalError(t('auth.emailRequired'));
       return;
     }
 
     try {
-      await login(formData.email, formData.senha);
-      navigate('/');
+      const data = await login(formData.email, formData.senha);
+      if (data?.user?.is_admin) {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
     } catch (err) {
-      setLocalError(err.response?.data?.error || 'Erro ao fazer login');
+      setLocalError(err.response?.data?.error || t('auth.errorLogin'));
     }
   };
 
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h2>{t('auth.login')}</h2>
-        
-        {(error || localError) && (
-          <div className="error-message">{error || localError}</div>
+        <h2>{isResetting ? t('auth.resetPassword') : t('auth.login')}</h2>
+
+        {(localError || error) && (
+          <div className="error-message">{localError || error}</div>
         )}
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={isResetting ? handleReset : handleSubmit}>
           <div className="form-group">
             <label>{t('auth.email')}</label>
             <input
@@ -59,29 +88,43 @@ export default function Login() {
           </div>
 
           <div className="form-group">
-            <label>{t('auth.password')}</label>
+            <label>{isResetting ? t('auth.newPassword') : t('auth.password')}</label>
             <input
               type="password"
               name="senha"
               value={formData.senha}
               onChange={handleChange}
-              placeholder={t('auth.password')}
+              placeholder={isResetting ? t('auth.newPasswordPlaceholder') : t('auth.password')}
               required
             />
           </div>
 
-          <div className="remember-me">
-            <input type="checkbox" id="remember" />
-            <label htmlFor="remember">{t('auth.rememberMe')}</label>
-          </div>
+          {!isResetting && (
+            <div className="remember-me">
+              <input type="checkbox" id="remember" />
+              <label htmlFor="remember">{t('auth.rememberMe')}</label>
+            </div>
+          )}
 
           <button type="submit" className="btn btn-primary" disabled={loading}>
-            {loading ? 'Entrando...' : t('auth.signIn')}
+            {isResetting ? t('auth.resetCta') : (loading ? t('auth.signingIn') : t('auth.signIn'))}
           </button>
         </form>
 
+        {!isResetting && (
+          <p className="auth-link" style={{ marginTop: '15px' }}>
+            <a onClick={() => setIsResetting(true)} style={{ cursor: 'pointer', fontWeight: 'bold' }}>{t('auth.forgotPassword')}</a>
+          </p>
+        )}
+
+        {isResetting && (
+          <p className="auth-link" style={{ marginTop: '15px' }}>
+            <a onClick={() => setIsResetting(false)} style={{ cursor: 'pointer', fontWeight: 'bold' }}>{t('auth.backToLogin')}</a>
+          </p>
+        )}
+
         <p className="auth-link">
-          {t('auth.dontHaveAccount')} <a onClick={() => navigate('/register')}>{t('common.register')}</a>
+          {t('auth.dontHaveAccount')} <a onClick={() => navigate('/register')} style={{ cursor: 'pointer' }}>{t('common.register')}</a>
         </p>
       </div>
     </div>

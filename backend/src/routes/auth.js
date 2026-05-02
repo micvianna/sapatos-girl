@@ -39,7 +39,7 @@ router.post('/register', async (req, res) => {
 
     // Gerar token
     const token = jwt.sign(
-      { userId, email },
+      { userId, email, is_admin: false },
       process.env.JWT_SECRET || 'secret',
       { expiresIn: process.env.JWT_EXPIRE || '7d' }
     );
@@ -47,7 +47,7 @@ router.post('/register', async (req, res) => {
     res.status(201).json({
       message: 'Usuário criado com sucesso',
       token,
-      user: { id: userId, nome, email }
+      user: { id: userId, nome, email, is_admin: false }
     });
   } catch (err) {
     console.error(err);
@@ -85,7 +85,7 @@ router.post('/login', async (req, res) => {
 
     // Gerar token
     const token = jwt.sign(
-      { userId: user.id, email: user.email },
+      { userId: user.id, email: user.email, is_admin: user.is_admin || false },
       process.env.JWT_SECRET || 'secret',
       { expiresIn: process.env.JWT_EXPIRE || '7d' }
     );
@@ -93,11 +93,38 @@ router.post('/login', async (req, res) => {
     res.json({
       message: 'Login realizado com sucesso',
       token,
-      user: { id: user.id, nome: user.nome, email: user.email }
+      user: { id: user.id, nome: user.nome, email: user.email, is_admin: user.is_admin || false }
     });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Erro ao fazer login' });
+  }
+});
+
+// Reset simplificado
+router.post('/reset', async (req, res) => {
+  try {
+    const { email, novaSenha } = req.body;
+    if (!email || !novaSenha) {
+      return res.status(400).json({ error: 'Email e nova senha são obrigatórios' });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const senhaHash = await bcrypt.hash(novaSenha, salt);
+
+    const result = await pool.query(
+      'UPDATE usuarios SET senha = $1 WHERE email = $2 RETURNING id',
+      [senhaHash, email]
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+
+    res.json({ message: 'Senha redefinida com sucesso' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro ao redefinir a senha' });
   }
 });
 

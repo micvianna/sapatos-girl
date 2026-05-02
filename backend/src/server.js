@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000'
+  origin: '*' // Permite todas as portas no ambiente de desenvolvimento
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -27,25 +27,36 @@ const pool = new Pool({
 // Test database connection
 pool.on('error', (err) => console.error('Pool error:', err));
 
+// Export early to avoid circular dependencies in routes
+module.exports = { app, pool };
+
+// Dummy comment to trigger nodemon restart
+
 // Routes
 app.get('/api/health', (req, res) => {
   res.json({ message: 'Server is running', status: 'ok' });
 });
 
 // Import routes - com try/catch para evitar erros de require circular
-let authRoutes, productRoutes, cartRoutes, orderRoutes, userRoutes;
+let authRoutes, productRoutes, cartRoutes, orderRoutes, userRoutes, wishlistRoutes, couponsRoutes, adminRoutes;
 try {
   authRoutes = require('./routes/auth');
   productRoutes = require('./routes/products');
   cartRoutes = require('./routes/cart');
   orderRoutes = require('./routes/orders');
   userRoutes = require('./routes/users');
-  
+  wishlistRoutes = require('./routes/wishlist');
+  couponsRoutes = require('./routes/coupons');
+  adminRoutes = require('./routes/admin');
+
   app.use('/api/auth', authRoutes);
   app.use('/api/products', productRoutes);
   app.use('/api/cart', cartRoutes);
   app.use('/api/orders', orderRoutes);
   app.use('/api/users', userRoutes);
+  app.use('/api/wishlist', wishlistRoutes);
+  app.use('/api/coupons', couponsRoutes);
+  app.use('/api/admin', adminRoutes);
 } catch (err) {
   console.warn('Algumas rotas não puderam ser carregadas:', err.message);
 }
@@ -64,5 +75,3 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
-
-module.exports = { app, pool };

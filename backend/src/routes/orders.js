@@ -5,6 +5,28 @@ const { v4: uuidv4 } = require('uuid');
 
 const router = express.Router();
 
+// RN04: Grande São Paulo cities for Same-Day delivery
+const GRANDE_SP_CITIES = [
+  'são paulo', 'sao paulo', 'guarulhos', 'campinas', 'são bernardo do campo',
+  'sao bernardo do campo', 'santo andré', 'santo andre', 'osasco', 'barueri',
+  'são caetano do sul', 'sao caetano do sul', 'diadema', 'mauá', 'maua',
+  'carapicuíba', 'carapicuiba', 'mogi das cruzes', 'suzano', 'taboão da serra',
+  'taboao da serra', 'itaquaquecetuba', 'embu das artes', 'cotia', 'itapecerica da serra',
+  'itapevi', 'jandira', 'santana de parnaíba', 'cajamar', 'franco da rocha',
+  'caieiras', 'aruja', 'ferraz de vasconcelos', 'poá', 'poa', 'itaquaquecetuba',
+  'ribeirão pires', 'ribeirao pires', 'rio grande da serra'
+];
+
+function isGrandeSP(cidade, estado) {
+  if (!cidade || !estado) return false;
+  return estado.toUpperCase() === 'SP' && GRANDE_SP_CITIES.includes(cidade.toLowerCase().trim());
+}
+
+function isBeforeNoon() {
+  const now = new Date();
+  return now.getHours() < 12;
+}
+
 // Criar pedido
 router.post('/criar', auth, async (req, res) => {
   try {
@@ -41,13 +63,31 @@ router.post('/criar', auth, async (req, res) => {
       total += produto.rows[0].preco * item.quantidade;
     }
 
+    // RN02: 5% discount for Pix Instantâneo
+    const descontoPix = metodo_pagamento === 'pix' ? total * 0.05 : 0;
+    total = total - descontoPix;
+
+    // RN04: Same-Day delivery for Grande São Paulo before noon
+    const sameDay = isGrandeSP(cidade, estado) && isBeforeNoon();
+    const prazoEntrega = sameDay ? 'Same-Day (até 21h00)' : 'Padrão (3-7 dias úteis)';
+
+    // RN06: Anti-fraud — first purchase with credit card goes into analysis
+    const pedidosAnteriores = await pool.query(
+      'SELECT COUNT(*) FROM pedidos WHERE usuario_id = $1',
+      [req.userId]
+    );
+    const primeiraCompra = parseInt(pedidosAnteriores.rows[0].count) === 0;
+    const statusPedido = (metodo_pagamento === 'cartao_credito' && primeiraCompra)
+      ? 'em_analise'
+      : 'pendente';
+
     // Criar pedido
     const pedidoId = uuidv4();
     await pool.query(
       `INSERT INTO pedidos (id, usuario_id, total, status, endereco, cidade, estado, cep, 
        metodo_pagamento, data_criacao) 
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW())`,
-      [pedidoId, req.userId, total.toFixed(2), 'pendente', endereco, cidade, estado, cep, metodo_pagamento]
+      [pedidoId, req.userId, total.toFixed(2), statusPedido, endereco, cidade, estado, cep, metodo_pagamento]
     );
 
     // Criar itens do pedido
@@ -66,7 +106,12 @@ router.post('/criar', auth, async (req, res) => {
     res.json({ 
       message: 'Pedido criado com sucesso',
       pedidoId,
-      total: total.toFixed(2)
+      total: total.toFixed(2),
+      descontoPix: descontoPix.toFixed(2),
+      metodo_pagamento,
+      prazoEntrega,
+      status: statusPedido,
+      emAnalise: statusPedido === 'em_analise'
     });
   } catch (err) {
     console.error(err);
