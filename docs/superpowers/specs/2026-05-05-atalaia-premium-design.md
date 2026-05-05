@@ -347,7 +347,7 @@
 **Main grid:**
 - ProductCard grid: 3-col desktop, 2-col tablet, 1-col mobile
 - Cards fully featured (hover-swap, quick-add, badges, swatches)
-- Infinite scroll OR pagination (TBD: choose based on DB perf)
+- Infinite scroll (modern, feels premium, simpler UX)
 
 **Top bar (above grid):**
 - Results count: "XX produtos"
