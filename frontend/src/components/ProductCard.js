@@ -114,7 +114,13 @@ export default function ProductCard({ productId }) {
     <div className="product-card" onClick={() => navigate(`/product/${product.id}`)}>
       <div className="product-image-container">
         <img src={product.imagem} alt={product.nome} className="product-image" />
-        <button className={`wishlist-btn ${favorited ? 'favorited' : ''}`} onClick={handleWishlist} disabled={wishlistLoading}>
+        <button
+          className={`wishlist-btn ${favorited ? 'favorited' : ''}`}
+          onClick={handleWishlist}
+          disabled={wishlistLoading}
+          aria-label={favorited ? t('wishlist.removeFromFavorites', 'Remover dos favoritos') : t('wishlist.addToFavorites', 'Adicionar aos favoritos')}
+          aria-pressed={favorited}
+        >
           {favorited ? <FaHeart /> : <FiHeart />}
         </button>
 
