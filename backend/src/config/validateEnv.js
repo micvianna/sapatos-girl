@@ -5,6 +5,12 @@
  */
 const REQUIRED_ENV_VARS = [
   'JWT_SECRET',
+  'DB_HOST',
+  'DB_PORT',
+  'DB_NAME',
+  'DB_USER',
+  'DB_PASSWORD',
+  'NODE_ENV',
 ];
 
 function validateEnv() {
@@ -16,6 +22,8 @@ function validateEnv() {
     console.error('Configure-as no arquivo .env antes de iniciar o servidor.');
     process.exit(1);
   }
+
+  console.log('✅ Todas as variáveis de ambiente obrigatórias validadas');
 }
 
 module.exports = validateEnv;
