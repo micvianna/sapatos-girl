@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useCartStore, useAuthStore } from '../store';
 import axios from 'axios';
 import API_URL from '../config/api';
+import { calcPixDiscount } from '../utils/businessRules';
 import './Checkout.css';
 
 export default function Checkout() {
@@ -78,10 +79,9 @@ export default function Checkout() {
     }
   };
 
-  const shippingCost = items.length > 0 ? 0 : 0; // Complimentary shipping
-  const pixDiscount = formData.metodo_pagamento === 'pix' ? parseFloat(total) * 0.05 : 0;
-  const discountedTotal = parseFloat(total) - pixDiscount;
-  const totalWithShipping = discountedTotal + shippingCost;
+  const shippingCost = 0; // Complimentary shipping
+  const pixDiscount = calcPixDiscount(total, formData.metodo_pagamento);
+  const totalWithShipping = parseFloat(total) - pixDiscount + shippingCost;
 
   if (items.length === 0) {
     return (
