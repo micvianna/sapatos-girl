@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuthStore } from '../store';
+import API_URL from '../config/api';
 import './Auth.css';
-
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 export default function Login() {
   const { t } = useTranslation();

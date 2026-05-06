@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { motion } from 'framer-motion';
 import ProductCard from '../components/ProductCard';
+import API_URL from '../config/api';
 import './Products.css';
 
 export default function Products() {
@@ -43,7 +44,7 @@ export default function Products() {
         if (filters.preco_max) params.append('preco_max', filters.preco_max);
 
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/products?${params.toString()}`
+          `${API_URL}/api/products?${params.toString()}`
         );
         setProducts(response.data);
       } catch (error) {

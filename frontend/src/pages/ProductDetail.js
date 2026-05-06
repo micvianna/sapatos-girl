@@ -5,9 +5,8 @@ import { motion } from 'framer-motion';
 import axios from 'axios';
 import { FiArrowLeft } from 'react-icons/fi';
 import { useCartStore, useAuthStore } from '../store';
+import API_URL from '../config/api';
 import './ProductDetail.css';
-
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 export default function ProductDetail() {
   const { id } = useParams();

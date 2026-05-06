@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import ProductCard from '../components/ProductCard';
+import API_URL from '../config/api';
 import './Home.css';
 
 export default function Home() {
@@ -30,7 +31,7 @@ export default function Home() {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/products`
+          `${API_URL}/api/products`
         );
         setProducts(response.data);
       } catch (error) {

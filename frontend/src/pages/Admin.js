@@ -2,9 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store';
 import axios from 'axios';
+import API_URL from '../config/api';
 import './Admin.css';
 
-const API = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API = `${API_URL}/api`;
 
 function StarRating({ value, onChange }) {
     return (

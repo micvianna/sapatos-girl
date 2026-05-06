@@ -5,9 +5,8 @@ import { FaHeart } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore, useAuthStore } from '../store';
 import axios from 'axios';
+import API_URL from '../config/api';
 import './ProductCard.css';
-
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 export default function ProductCard({ productId }) {
   const { t } = useTranslation();

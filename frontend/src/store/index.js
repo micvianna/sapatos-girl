@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 import axios from 'axios';
+import API_URL from '../config/api';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+const API = `${API_URL}/api`;
 
 export const useAuthStore = create((set, get) => ({
   user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null,
@@ -12,7 +13,7 @@ export const useAuthStore = create((set, get) => ({
   register: async (nome, email, senha, telefone) => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.post(`${API_URL}/auth/register`, {
+      const response = await axios.post(`${API}/auth/register`, {
         nome,
         email,
         senha,
@@ -38,7 +39,7 @@ export const useAuthStore = create((set, get) => ({
   login: async (email, senha) => {
     set({ loading: true, error: null });
     try {
-      const response = await axios.post(`${API_URL}/auth/login`, {
+      const response = await axios.post(`${API}/auth/login`, {
         email,
         senha
       });
@@ -81,7 +82,7 @@ export const useCartStore = create((set, get) => ({
     set({ loading: true });
 
     try {
-      await axios.post(`${API_URL}/cart/adicionar`,
+      await axios.post(`${API}/cart/adicionar`,
         { produtoId, quantidade, tamanho, cor },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -100,7 +101,7 @@ export const useCartStore = create((set, get) => ({
     if (!token) return;
 
     try {
-      const response = await axios.get(`${API_URL}/cart`,
+      const response = await axios.get(`${API}/cart`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -116,7 +117,7 @@ export const useCartStore = create((set, get) => ({
   removeFromCart: async (itemId) => {
     const { token } = useAuthStore.getState();
     try {
-      await axios.delete(`${API_URL}/cart/${itemId}`,
+      await axios.delete(`${API}/cart/${itemId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -129,7 +130,7 @@ export const useCartStore = create((set, get) => ({
   clearCart: async () => {
     const { token } = useAuthStore.getState();
     try {
-      await axios.delete(`${API_URL}/cart/limpar`,
+      await axios.delete(`${API}/cart/limpar`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -142,7 +143,7 @@ export const useCartStore = create((set, get) => ({
   updateQuantity: async (itemId, quantidade) => {
     const { token } = useAuthStore.getState();
     try {
-      await axios.put(`${API_URL}/cart/${itemId}`,
+      await axios.put(`${API}/cart/${itemId}`,
         { quantidade },
         { headers: { Authorization: `Bearer ${token}` } }
       );
