@@ -1,5 +1,6 @@
 const express = require('express');
 const { pool } = require('../server');
+const adminAuth = require('../middleware/adminAuth');
 
 const router = express.Router();
 
@@ -119,7 +120,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Criar novo produto
-router.post('/', async (req, res) => {
+router.post('/', adminAuth, async (req, res) => {
   try {
     const {
       nome,
@@ -138,18 +139,29 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'nome e preco são obrigatórios' });
     }
 
+    const precoNormalizado = parseFloat(preco);
+    const estoqueNormalizado = estoque != null ? parseInt(estoque, 10) : 0;
+
+    if (Number.isNaN(precoNormalizado) || precoNormalizado <= 0) {
+      return res.status(400).json({ error: 'preco deve ser um número maior que zero' });
+    }
+
+    if (Number.isNaN(estoqueNormalizado) || estoqueNormalizado < 0) {
+      return res.status(400).json({ error: 'estoque deve ser um número maior ou igual a zero' });
+    }
+
     const result = await pool.query(
       'INSERT INTO produtos (id, nome, descricao, categoria, preco, tamanhos, cores, imagem, imagens, estoque, ativo) VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, $8, $9, COALESCE($10, true)) RETURNING *',
       [
         nome,
         descricao || '',
         categoria || '',
-        parseFloat(preco),
+        precoNormalizado,
         tamanhos || '',
         cores || '',
         imagem || '',
         imagens ? JSON.stringify(imagens) : null,
-        estoque != null ? parseInt(estoque, 10) : 0,
+        estoqueNormalizado,
         ativo != null ? ativo : true
       ]
     );
