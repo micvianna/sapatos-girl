@@ -188,3 +188,36 @@
   background: #388e3c;
   border-color: #388e3c;
 }
+
+.pdp-benefits {
+  margin-top: 1.5rem;
+  border: 1px solid var(--border-light);
+  background: linear-gradient(180deg, #ffffff 0%, #fbfbfb 100%);
+}
+
+.pdp-benefit-item {
+  padding: 1rem 1.1rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.pdp-benefit-item:last-child {
+  border-bottom: none;
+}
+
+.pdp-benefit-item strong {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 0.35rem;
+  color: var(--text-primary);
+}
+
+.pdp-benefit-item span {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}

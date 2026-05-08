@@ -149,6 +149,21 @@ export default function ProductDetail() {
                   ? t('product.adding')
                   : t('product.addToBag')}
           </button>
+
+          <div className="pdp-benefits">
+            <div className="pdp-benefit-item">
+              <strong>Frete Premium</strong>
+              <span>Entrega prioritaria para capitais e regiao metropolitana.</span>
+            </div>
+            <div className="pdp-benefit-item">
+              <strong>Troca Facilitada</strong>
+              <span>Primeira troca em ate 30 dias com suporte dedicado.</span>
+            </div>
+            <div className="pdp-benefit-item">
+              <strong>Pagamento Seguro</strong>
+              <span>Checkout protegido com aprovacao e antifraude.</span>
+            </div>
+          </div>
         </motion.div>
       </div>
     </motion.div>
