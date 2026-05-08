@@ -1,5 +1,5 @@
 .footer {
-  background-color: #000;
+  background: linear-gradient(180deg, #090909 0%, #000 55%, #101010 100%);
   color: #fff;
   padding: 60px 0 20px;
   font-size: 13px;
@@ -22,6 +22,18 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 2px;
+  position: relative;
+  display: inline-block;
+}
+
+.footer-section h4::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 28px;
+  height: 1px;
+  background: #c2a578;
 }
 
 .footer-section p {

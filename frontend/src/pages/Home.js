@@ -30,10 +30,16 @@ export default function Home() {
 
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(
-          `${API_URL}/api/products`
-        );
-        setProducts(response.data);
+        const highlightsResponse = await axios.get(`${API_URL}/api/products/highlights?limit=8`);
+        const highlightItems = highlightsResponse.data?.itens || [];
+
+        if (highlightItems.length > 0) {
+          setProducts(highlightItems);
+          return;
+        }
+
+        const fallbackResponse = await axios.get(`${API_URL}/api/products?limit=8`);
+        setProducts(fallbackResponse.data);
       } catch (error) {
         console.error('Erro ao buscar produtos:', error);
       } finally {
@@ -105,6 +111,31 @@ export default function Home() {
             <p>{t('home.heroSubtitle')}</p>
             <button className="btn btn-hero" onClick={() => navigate('/products')}>{t('home.heroCta')}</button>
           </motion.div>
+        </div>
+      </section>
+
+      <section className="editorial-strip">
+        <div className="editorial-card">
+          <span className="editorial-label">{t('common.new') || 'New'}</span>
+          <h3>Curadoria da Semana</h3>
+          <p>Peças selecionadas para compor looks versáteis com assinatura Atalaia.</p>
+          <button className="btn btn-outline" onClick={() => navigate('/products?category=new')}>
+            Explorar curadoria
+          </button>
+        </div>
+        <div className="editorial-metrics">
+          <div>
+            <strong>+120</strong>
+            <span>novidades mensais</span>
+          </div>
+          <div>
+            <strong>48h</strong>
+            <span>envio prioritário</span>
+          </div>
+          <div>
+            <strong>4.9/5</strong>
+            <span>avaliação média</span>
+          </div>
         </div>
       </section>
 

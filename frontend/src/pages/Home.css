@@ -1,5 +1,8 @@
 .home {
   width: 100%;
+  background:
+    radial-gradient(circle at 5% 30%, rgba(194, 165, 120, 0.08) 0%, rgba(194, 165, 120, 0) 35%),
+    radial-gradient(circle at 95% 70%, rgba(10, 32, 45, 0.06) 0%, rgba(10, 32, 45, 0) 40%);
 }
 
 /* ==========================================================================
@@ -150,6 +153,89 @@
 .btn-hero:hover {
   background: var(--text-inverse);
   color: var(--text-primary);
+}
+
+/* ==========================================================================
+   EDITORIAL STRIP
+   ========================================================================== */
+.editorial-strip {
+  margin: -3.5rem auto 0;
+  max-width: 1300px;
+  padding: 0 2rem;
+  position: relative;
+  z-index: 8;
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 1rem;
+}
+
+.editorial-card,
+.editorial-metrics {
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid var(--border-light);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(12px);
+}
+
+.editorial-card {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.editorial-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent-gold);
+  font-weight: 700;
+}
+
+.editorial-card h3 {
+  font-size: 2rem;
+  letter-spacing: 0.03em;
+}
+
+.editorial-card p {
+  color: var(--text-secondary);
+  max-width: 55ch;
+}
+
+.editorial-card .btn {
+  width: fit-content;
+  margin-top: 0.35rem;
+}
+
+.editorial-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+  text-align: center;
+}
+
+.editorial-metrics div {
+  padding: 2rem 1rem;
+  border-right: 1px solid var(--border-light);
+}
+
+.editorial-metrics div:last-child {
+  border-right: none;
+}
+
+.editorial-metrics strong {
+  display: block;
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+.editorial-metrics span {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
 }
 
 /* ==========================================================================
@@ -372,6 +458,11 @@
    RESPONSIVE
    ========================================================================== */
 @media (max-width: 1200px) {
+  .editorial-strip {
+    grid-template-columns: 1fr;
+    margin-top: -2.2rem;
+  }
+
   .products-carousel {
     grid-template-columns: repeat(2, 1fr);
     column-gap: 20px;
@@ -383,6 +474,33 @@
 }
 
 @media (max-width: 768px) {
+  .editorial-strip {
+    padding: 0 1rem;
+    margin-top: -2rem;
+  }
+
+  .editorial-card {
+    padding: 1.5rem;
+  }
+
+  .editorial-card h3 {
+    font-size: 1.5rem;
+  }
+
+  .editorial-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .editorial-metrics div {
+    border-right: none;
+    border-bottom: 1px solid var(--border-light);
+    padding: 1rem;
+  }
+
+  .editorial-metrics div:last-child {
+    border-bottom: none;
+  }
+
   .hero-text-overlay h1 {
     font-size: 2.5rem;
   }
