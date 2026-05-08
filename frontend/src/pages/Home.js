@@ -141,17 +141,17 @@ export default function Home() {
 
       {/* Categories Horizontal Links */}
       <section className="category-links">
-        <div className="cat-link" onClick={() => navigate('/products?category=botas')}>{t('home.botas')}</div>
-        <div className="cat-link" onClick={() => navigate('/products?category=sandalias')}>{t('home.sandálias')}</div>
-        <div className="cat-link" onClick={() => navigate('/products?category=sapatilhas')}>{t('home.sapatilhas')}</div>
-        <div className="cat-link" onClick={() => navigate('/products?category=bolsas')}>{t('home.bolsas')}</div>
+        <button type="button" className="cat-link" onClick={() => navigate('/products?category=botas')}>{t('home.botas')}</button>
+        <button type="button" className="cat-link" onClick={() => navigate('/products?category=sandalias')}>{t('home.sandálias')}</button>
+        <button type="button" className="cat-link" onClick={() => navigate('/products?category=sapatilhas')}>{t('home.sapatilhas')}</button>
+        <button type="button" className="cat-link" onClick={() => navigate('/products?category=bolsas')}>{t('home.bolsas')}</button>
       </section>
 
       {/* Section: ITENS ESPECIAIS */}
       <section className="product-section">
         <div className="section-header">
           <h2 className="section-title">{t('home.mustHaves')}</h2>
-          <a href="#" className="section-link" onClick={(e) => { e.preventDefault(); navigate('/products'); }}>{t('common.viewAll')}</a>
+          <button type="button" className="section-link section-link-btn" onClick={() => navigate('/products')}>{t('common.viewAll')}</button>
         </div>
         {loading ? (
           <div className="loading">{t('common.loading')}</div>
@@ -202,7 +202,7 @@ export default function Home() {
       <section className="product-section alternate-bg">
         <div className="section-header">
           <h2 className="section-title">{t('home.essentialsTitle')}</h2>
-          <a href="#" className="section-link" onClick={(e) => { e.preventDefault(); navigate('/products'); }}>{t('common.discover')}</a>
+          <button type="button" className="section-link section-link-btn" onClick={() => navigate('/products')}>{t('common.discover')}</button>
         </div>
         {loading ? (
           <div className="loading">{t('common.loading')}</div>
@@ -239,7 +239,7 @@ export default function Home() {
               <div className="insta-placeholder" style={{
                 backgroundImage: `url('https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?q=80&w=2070&auto=format&fit=crop&random=${item}')`
               }}></div>
-              <a href="#" className="insta-overlay">{t('home.instagramLink')}</a>
+              <button type="button" className="insta-overlay" onClick={() => navigate('/products')}>{t('home.instagramLink')}</button>
             </motion.div>
           ))}
         </div>

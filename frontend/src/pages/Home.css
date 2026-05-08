@@ -253,6 +253,8 @@
 }
 
 .cat-link {
+  border: none;
+  background: transparent;
   font-family: var(--font-body);
   font-size: 0.8rem;
   font-weight: 500;
@@ -279,6 +281,11 @@
 
 .cat-link:hover {
   color: var(--text-primary);
+}
+
+.cat-link:focus-visible {
+  outline: 1px solid var(--text-primary);
+  outline-offset: 3px;
 }
 
 .cat-link:hover::after {
@@ -326,6 +333,12 @@
   text-transform: uppercase;
   text-decoration: underline;
   text-underline-offset: 8px;
+}
+
+.section-link-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
 }
 
 .products-carousel {
@@ -434,6 +447,9 @@
 }
 
 .insta-overlay {
+  border: none;
+  background: transparent;
+  cursor: pointer;
   position: absolute;
   top: 50%;
   left: 50%;
