@@ -92,6 +92,10 @@
   color: var(--text-muted);
 }
 
+.filter-search input {
+  min-width: 240px;
+}
+
 .filter-price input {
   width: 100px;
   text-align: center;
@@ -182,6 +186,15 @@
   .filter-price {
     width: 100%;
     justify-content: center;
+  }
+
+  .filter-search {
+    width: 100%;
+  }
+
+  .filter-search input {
+    width: 100%;
+    text-align: center;
   }
 
   .products-title {

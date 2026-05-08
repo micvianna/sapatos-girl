@@ -18,7 +18,9 @@ export default function Products() {
     return {
       categoria: params.get('category') || '',
       preco_min: '',
-      preco_max: ''
+      preco_max: '',
+      busca: params.get('search') || '',
+      sort: 'nome_asc'
     };
   });
 
@@ -30,10 +32,11 @@ export default function Products() {
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const categoryParam = params.get('category') || '';
-    if (categoryParam !== filters.categoria) {
-      setFilters(prev => ({ ...prev, categoria: categoryParam }));
+    const searchParam = params.get('search') || '';
+    if (categoryParam !== filters.categoria || searchParam !== filters.busca) {
+      setFilters(prev => ({ ...prev, categoria: categoryParam, busca: searchParam }));
     }
-  }, [location.search]);
+  }, [location.search, filters.categoria, filters.busca]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -42,6 +45,12 @@ export default function Products() {
         if (filters.categoria) params.append('categoria', filters.categoria);
         if (filters.preco_min) params.append('preco_min', filters.preco_min);
         if (filters.preco_max) params.append('preco_max', filters.preco_max);
+        if (filters.busca) params.append('busca', filters.busca);
+
+        const [sortField, sortOrder] = filters.sort.split('_');
+        params.append('sort', sortField);
+        params.append('order', sortOrder);
+        params.append('limit', '48');
 
         const response = await axios.get(
           `${API_URL}/api/products?${params.toString()}`
@@ -88,12 +97,31 @@ export default function Products() {
 
       {/* Horizontal Minimalist Filters */}
       <div className="filters-bar">
+        <div className="filter-group filter-search">
+          <input
+            type="text"
+            name="busca"
+            placeholder={t('header.searchPlaceholder')}
+            value={filters.busca}
+            onChange={handleFilterChange}
+          />
+        </div>
+
         <div className="filter-group">
           <select name="categoria" value={filters.categoria} onChange={handleFilterChange}>
             <option value="">{t('products.allCategories')}</option>
             {categories.map(cat => (
               <option key={cat} value={cat}>{cat.toUpperCase()}</option>
             ))}
+          </select>
+        </div>
+
+        <div className="filter-group">
+          <select name="sort" value={filters.sort} onChange={handleFilterChange}>
+            <option value="nome_asc">A-Z</option>
+            <option value="preco_asc">{t('products.minPrice')}</option>
+            <option value="preco_desc">{t('products.maxPrice')}</option>
+            <option value="data_criacao_desc">{t('header.newIn')}</option>
           </select>
         </div>
 
@@ -115,11 +143,11 @@ export default function Products() {
           />
         </div>
 
-        {(filters.categoria || filters.preco_min || filters.preco_max) && (
+        {(filters.categoria || filters.preco_min || filters.preco_max || filters.busca) && (
           <button
             className="clear-filters-btn"
             onClick={() => {
-              setFilters({ categoria: '', preco_min: '', preco_max: '' });
+              setFilters({ categoria: '', preco_min: '', preco_max: '', busca: '', sort: 'nome_asc' });
               navigate('/products');
             }}
           >
@@ -138,7 +166,7 @@ export default function Products() {
             <button
               className="btn btn-outline"
               onClick={() => {
-                setFilters({ categoria: '', preco_min: '', preco_max: '' });
+                setFilters({ categoria: '', preco_min: '', preco_max: '', busca: '', sort: 'nome_asc' });
                 navigate('/products');
               }}
             >
