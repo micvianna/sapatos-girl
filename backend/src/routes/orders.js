@@ -2,6 +2,7 @@ const express = require('express');
 const auth = require('../middleware/auth');
 const { pool } = require('../server');
 const { v4: uuidv4 } = require('uuid');
+const { isGrandeSP, calcPixDiscount, calcDeliveryEstimate } = require('../utils/businessRules');
 
 const router = express.Router();
 
@@ -41,13 +42,30 @@ router.post('/criar', auth, async (req, res) => {
       total += produto.rows[0].preco * item.quantidade;
     }
 
+    // RN02: Desconto Pix via módulo centralizado
+    const descontoPix = calcPixDiscount(total, metodo_pagamento);
+    total = total - descontoPix;
+
+    // RN04: Entrega Same-Day via módulo centralizado
+    const { sameDay, prazoEntrega } = calcDeliveryEstimate(cidade, estado);
+
+    // RN06: Anti-fraude — primeira compra com cartão entra em análise
+    const pedidosAnteriores = await pool.query(
+      'SELECT COUNT(*) FROM pedidos WHERE usuario_id = $1',
+      [req.userId]
+    );
+    const primeiraCompra = parseInt(pedidosAnteriores.rows[0].count) === 0;
+    const statusPedido = (metodo_pagamento === 'cartao_credito' && primeiraCompra)
+      ? 'em_analise'
+      : 'pendente';
+
     // Criar pedido
     const pedidoId = uuidv4();
     await pool.query(
       `INSERT INTO pedidos (id, usuario_id, total, status, endereco, cidade, estado, cep, 
        metodo_pagamento, data_criacao) 
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW())`,
-      [pedidoId, req.userId, total.toFixed(2), 'pendente', endereco, cidade, estado, cep, metodo_pagamento]
+      [pedidoId, req.userId, total.toFixed(2), statusPedido, endereco, cidade, estado, cep, metodo_pagamento]
     );
 
     // Criar itens do pedido
@@ -66,10 +84,15 @@ router.post('/criar', auth, async (req, res) => {
     res.json({ 
       message: 'Pedido criado com sucesso',
       pedidoId,
-      total: total.toFixed(2)
+      total: total.toFixed(2),
+      descontoPix: descontoPix.toFixed(2),
+      metodo_pagamento,
+      prazoEntrega,
+      status: statusPedido,
+      emAnalise: statusPedido === 'em_analise'
     });
   } catch (err) {
-    console.error(err);
+    console.error('[orders/criar]', err.message);
     res.status(500).json({ error: 'Erro ao criar pedido' });
   }
 });
@@ -84,7 +107,7 @@ router.get('/', auth, async (req, res) => {
 
     res.json(result.rows);
   } catch (err) {
-    console.error(err);
+    console.error('[orders:GET]', err.message);
     res.status(500).json({ error: 'Erro ao buscar pedidos' });
   }
 });
