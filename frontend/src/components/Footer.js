@@ -1,11 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { FiCreditCard, FiDollarSign, FiSmartphone, FiInstagram, FiFacebook, FiTwitter } from 'react-icons/fi';
+import { FiInstagram, FiFacebook, FiTwitter } from 'react-icons/fi';
 import './Footer.css';
 
 export default function Footer() {
-  const { t } = useTranslation();
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="footer">
@@ -51,11 +50,16 @@ export default function Footer() {
             <input type="email" placeholder="E-mail" />
             <button className="btn-newsletter">ENVIAR</button>
           </div>
+          <div className="trust-strip">
+            <span>COMPRA SEGURA</span>
+            <span>SUPORTE HUMANIZADO</span>
+            <span>ENTREGA RÁPIDA</span>
+          </div>
         </div>
       </div>
 
       <div className="footer-bottom">
-        <p>&copy; 2026 Shoe Style. Todos os direitos reservados. Nosso site utiliza cookies para garantir que você tenha melhor experiência.</p>
+        <p>&copy; {currentYear} Shoe Style. Todos os direitos reservados. Nosso site utiliza cookies para garantir que você tenha melhor experiência.</p>
       </div>
     </footer>
   );

@@ -114,6 +114,21 @@
   background: #ccc;
 }
 
+.trust-strip {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.trust-strip span {
+  border: 1px solid #2d2d2d;
+  color: #cfcfcf;
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  padding: 4px 8px;
+}
+
 .footer-bottom {
   text-align: center;
   padding-top: 40px;
@@ -132,6 +147,10 @@
   
   .social-links,
   .newsletter-form {
+    justify-content: center;
+  }
+
+  .trust-strip {
     justify-content: center;
   }
 }
