@@ -1,23 +1,45 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
+import { motion, AnimatePresence } from 'framer-motion';
 import ProductCard from '../components/ProductCard';
+import API_URL from '../config/api';
 import './Home.css';
 
 export default function Home() {
-  const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { t } = useTranslation();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const orderState = location.state || {};
+  const [showToast, setShowToast] = useState(!!orderState.orderSuccess);
+
   useEffect(() => {
+    if (showToast) {
+      const timer = setTimeout(() => setShowToast(false), 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [showToast]);
+
+  useEffect(() => {
+    // Scroll to top when loading
+    window.scrollTo(0, 0);
+
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/products`
-        );
-        setProducts(response.data);
+        const highlightsResponse = await axios.get(`${API_URL}/api/products/highlights?limit=8`);
+        const highlightItems = highlightsResponse.data?.itens || [];
+
+        if (highlightItems.length > 0) {
+          setProducts(highlightItems);
+          return;
+        }
+
+        const fallbackResponse = await axios.get(`${API_URL}/api/products?limit=8`);
+        setProducts(fallbackResponse.data);
       } catch (error) {
         console.error('Erro ao buscar produtos:', error);
       } finally {
@@ -29,69 +51,199 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="home">
+    <motion.div
+      className="home"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.8 }}
+    >
+      {/* Order Confirmation Toast */}
+      <AnimatePresence>
+        {showToast && orderState.orderSuccess && (
+          <motion.div
+            className={`order-toast ${orderState.emAnalise ? 'toast-analise' : 'toast-success'}`}
+            initial={{ y: -80, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -80, opacity: 0 }}
+            transition={{ duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
+            <div className="toast-content">
+              {orderState.emAnalise ? (
+                <>
+                  <h3>{t('checkout.orderUnderReview')}</h3>
+                  <p>{t('checkout.orderReviewMessage')}</p>
+                  <p className="toast-sub">{t('checkout.orderReviewSub')}</p>
+                </>
+              ) : (
+                <>
+                  <h3>{t('checkout.orderConfirmedTitle')}</h3>
+                  <p>{t('checkout.orderThankYou')}
+                    {orderState.prazoEntrega && ` ${t('checkout.estimatedDelivery')} ${orderState.prazoEntrega}`}
+                  </p>
+                  {orderState.descontoPix > 0 && (
+                    <p className="toast-sub">{t('checkout.pixDiscountApplied')} R$ {parseFloat(orderState.descontoPix).toFixed(2)}</p>
+                  )}
+                </>
+              )}
+              <button className="toast-close" onClick={() => setShowToast(false)}>×</button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Main Hero Banner */}
       <section className="hero">
-        <div className="hero-content">
-          <h1>ShoeStyle</h1>
-          <p>Descubra a coleção perfeita de sapatos femininos para cada ocasião</p>
-          <button className="btn btn-primary" onClick={() => navigate('/products')}>
-            {t('product.addToCart')} aos Produtos
+        <div className="hero-image-wrapper">
+          <img
+            src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop"
+            alt="Coleção Atalaia — modelo usando look completo da nova temporada com sapatos e acessórios de luxo"
+            className="hero-image-bg"
+          />
+          <div className="hero-overlay" aria-hidden="true"></div>
+          <motion.div
+            className="hero-text-overlay"
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.4, duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
+          >
+            <h1>{t('home.heroTitle')}</h1>
+            <p>{t('home.heroSubtitle')}</p>
+            <button className="btn btn-hero" onClick={() => navigate('/products')}>{t('home.heroCta')}</button>
+          </motion.div>
+        </div>
+      </section>
+
+      <section className="editorial-strip">
+        <div className="editorial-card">
+          <span className="editorial-label">{t('common.new') || 'New'}</span>
+          <h3>Curadoria da Semana</h3>
+          <p>Peças selecionadas para compor looks versáteis com assinatura Atalaia.</p>
+          <button className="btn btn-outline" onClick={() => navigate('/products?category=new')}>
+            Explorar curadoria
           </button>
         </div>
-      </section>
-
-      <section className="categories">
-        <h2>Categorias Populares</h2>
-        <div className="category-grid">
-          {[
-            { name: 'Sandálias', icon: '👡' },
-            { name: 'Tênis', icon: '👟' },
-            { name: 'Botas', icon: '🥾' },
-            { name: 'Scarpins', icon: '👠' }
-          ].map((cat, idx) => (
-            <div key={idx} className="category-card" onClick={() => navigate(`/products?categoria=${cat.name}`)}>
-              <div className="category-icon">{cat.icon}</div>
-              <h3>{cat.name}</h3>
-            </div>
-          ))}
+        <div className="editorial-metrics">
+          <div>
+            <strong>+120</strong>
+            <span>novidades mensais</span>
+          </div>
+          <div>
+            <strong>48h</strong>
+            <span>envio prioritário</span>
+          </div>
+          <div>
+            <strong>4.9/5</strong>
+            <span>avaliação média</span>
+          </div>
         </div>
       </section>
 
-      <section className="featured">
-        <h2>Produtos em Destaque</h2>
+      {/* Categories Horizontal Links */}
+      <section className="category-links">
+        <button type="button" className="cat-link" onClick={() => navigate('/products?category=botas')}>{t('home.botas')}</button>
+        <button type="button" className="cat-link" onClick={() => navigate('/products?category=sandalias')}>{t('home.sandálias')}</button>
+        <button type="button" className="cat-link" onClick={() => navigate('/products?category=sapatilhas')}>{t('home.sapatilhas')}</button>
+        <button type="button" className="cat-link" onClick={() => navigate('/products?category=bolsas')}>{t('home.bolsas')}</button>
+      </section>
+
+      {/* Section: ITENS ESPECIAIS */}
+      <section className="product-section">
+        <div className="section-header">
+          <h2 className="section-title">{t('home.mustHaves')}</h2>
+          <button type="button" className="section-link section-link-btn" onClick={() => navigate('/products')}>{t('common.viewAll')}</button>
+        </div>
         {loading ? (
-          <div>Carregando...</div>
+          <div className="loading">{t('common.loading')}</div>
         ) : (
-          <div className="products-grid">
-            {products.slice(0, 4).map(product => (
-              <ProductCard key={product.id} productId={product.id} />
+          <div className="products-carousel">
+            {products.slice(0, 4).map((product, index) => (
+              <motion.div
+                key={product.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+              >
+                <ProductCard productId={product.id} />
+              </motion.div>
             ))}
           </div>
         )}
       </section>
 
-      <section className="features">
-        <div className="feature">
-          <div className="feature-icon">🚚</div>
-          <h3>Frete Rápido</h3>
-          <p>Entrega em todo o Brasil com rastreamento</p>
-        </div>
-        <div className="feature">
-          <div className="feature-icon">🔒</div>
-          <h3>Compra Segura</h3>
-          <p>Sua privacidade e segurança são nossa prioridade</p>
-        </div>
-        <div className="feature">
-          <div className="feature-icon">💳</div>
-          <h3>Múltiplas Formas de Pagamento</h3>
-          <p>Cartão, PIX, Boleto e mais opções</p>
-        </div>
-        <div className="feature">
-          <div className="feature-icon">↩️</div>
-          <h3>Troca e Devolução</h3>
-          <p>30 dias para devolver ou trocar</p>
+      {/* Large Image Banner Break */}
+      <section className="banner-break">
+        <div className="banner-image-placeholder">
+          <div className="banner-content">
+            <motion.h2
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              {t('home.artTitle')}
+            </motion.h2>
+            <motion.button
+              className="btn btn-hero"
+              onClick={() => navigate('/products?category=bolsas')}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              {t('home.artCta')}
+            </motion.button>
+          </div>
         </div>
       </section>
-    </div>
+
+      {/* Section: ESSENTIALS */}
+      <section className="product-section alternate-bg">
+        <div className="section-header">
+          <h2 className="section-title">{t('home.essentialsTitle')}</h2>
+          <button type="button" className="section-link section-link-btn" onClick={() => navigate('/products')}>{t('common.discover')}</button>
+        </div>
+        {loading ? (
+          <div className="loading">{t('common.loading')}</div>
+        ) : (
+          <div className="products-carousel">
+            {products.slice(4, 8).map((product, index) => (
+              <motion.div
+                key={product.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+              >
+                <ProductCard productId={product.id} />
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Follow @Atalaia */}
+      <section className="instagram-section">
+        <h2 className="section-title">{t('home.instagram')}</h2>
+        <div className="insta-grid">
+          {[1, 2, 3, 4].map((item, index) => (
+            <motion.div
+              className="insta-item"
+              key={item}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: index * 0.15 }}
+            >
+              <div className="insta-placeholder" style={{
+                backgroundImage: `url('https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?q=80&w=2070&auto=format&fit=crop&random=${item}')`
+              }}></div>
+              <button type="button" className="insta-overlay" onClick={() => navigate('/products')}>{t('home.instagramLink')}</button>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+    </motion.div>
   );
 }
