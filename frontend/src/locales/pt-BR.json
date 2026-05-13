@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "ShoeStyle - Sapatos Femininos",
+    "appName": "ATALAIA - Calçados de Luxo",
     "home": "Início",
     "products": "Produtos",
     "cart": "Carrinho",
@@ -9,7 +9,36 @@
     "login": "Entrar",
     "register": "Cadastrar",
     "search": "Buscar",
-    "categories": "Categorias"
+    "categories": "Categorias",
+    "loading": "Carregando...",
+    "back": "Voltar",
+    "discover": "DESCUBRA",
+    "viewAll": "VER TODOS"
+  },
+  "header": {
+    "announcement": "FRETE GRÁTIS EM PEDIDOS ACIMA DE R$ 500",
+    "searchPlaceholder": "O que você procura?",
+    "newIn": "NEW IN",
+    "botas": "BOTAS",
+    "sapatos": "SAPATOS",
+    "bolsas": "BOLSAS",
+    "acessorios": "ACESSÓRIOS",
+    "sale": "SALE"
+  },
+  "home": {
+    "heroTitle": "NEW CLASSICS",
+    "heroSubtitle": "A COLEÇÃO OUTONO/INVERNO",
+    "heroCta": "DESCUBRA A CAMPANHA",
+    "botas": "BOTAS",
+    "sandálias": "SANDÁLIAS",
+    "sapatilhas": "SAPATILHAS",
+    "bolsas": "BOLSAS",
+    "mustHaves": "MUST HAVES",
+    "essentialsTitle": "THE ESSENTIALS",
+    "artTitle": "THE ART OF DETAIL",
+    "artCta": "COMPRE BOLSAS",
+    "instagram": "#ATALAIAGIRL",
+    "instagramLink": "INSTAGRAM"
   },
   "product": {
     "addToCart": "Adicionar ao Carrinho",
@@ -21,7 +50,31 @@
     "quantity": "Quantidade",
     "description": "Descrição",
     "details": "Detalhes",
-    "reviews": "Avaliações"
+    "reviews": "Avaliações",
+    "quickAdd": "ADICIONAR RÁPIDO",
+    "soldOut": "ESGOTADO",
+    "adding": "ADICIONANDO...",
+    "addToBag": "ADICIONAR À SACOLA",
+    "addedToBag": "ADICIONADO À SACOLA",
+    "productNotFound": "Produto não encontrado.",
+    "back": "VOLTAR"
+  },
+  "products": {
+    "title": "TODA A COLEÇÃO",
+    "pieces": "PEÇAS",
+    "allCategories": "TODAS AS CATEGORIAS",
+    "minPrice": "PREÇO MÍN",
+    "maxPrice": "PREÇO MÁX",
+    "clearFilters": "LIMPAR FILTROS",
+    "noResults": "Nenhum produto encontrado.",
+    "discoverMore": "DESCUBRA MAIS",
+    "categoryBotas": "Botas",
+    "categorySandálias": "Sandálias",
+    "categorySapatilhas": "Sapatilhas",
+    "categoryBolsas": "Bolsas",
+    "categoryAcessórios": "Acessórios",
+    "categoryTênis": "Tênis",
+    "categoryScarpins": "Scarpins"
   },
   "cart": {
     "title": "Meu Carrinho",
@@ -32,7 +85,10 @@
     "continue": "Continuar Comprando",
     "checkout": "Finalizar Compra",
     "remove": "Remover",
-    "update": "Atualizar"
+    "update": "Atualizar",
+    "clear": "LIMPAR CARRINHO",
+    "tamanho": "Tamanho",
+    "cor": "Cor"
   },
   "checkout": {
     "shippingInfo": "Informações de Entrega",
@@ -46,9 +102,46 @@
     "debit": "Débito",
     "paypal": "PayPal",
     "pix": "PIX",
+    "boleto": "BOLETO",
     "orderSummary": "Resumo do Pedido",
     "placeOrder": "Confirmar Pedido",
-    "orderConfirmed": "Pedido Confirmado!"
+    "orderConfirmed": "Pedido Confirmado!",
+    "secureCheckout": "CHECKOUT SEGURO",
+    "shippingDetails": "1. DADOS DE ENTREGA",
+    "streetAddress": "RUA *",
+    "number": "NÚMERO *",
+    "apt": "APT / COMPLEMENTO",
+    "stateLabel": "ESTADO *",
+    "zipLabel": "CEP *",
+    "phoneLabel": "TELEFONE",
+    "paymentLabel": "2. MÉTODO DE PAGAMENTO",
+    "completePurchase": "FINALIZAR COMPRA",
+    "processing": "PROCESSANDO...",
+    "subtotal": "SUBTOTAL",
+    "shippingLabel": "FRETE",
+    "complimentary": "GRATUITO",
+    "total": "TOTAL",
+    "size": "TAMANHO",
+    "color": "COR",
+    "emptyBag": "SUA SACOLA ESTÁ VAZIA.",
+    "discoverCollection": "DESCUBRA A COLEÇÃO",
+    "sameDayActive": "ATALAIA BLACK: Entrega Same-Day disponível — chega até 21h hoje",
+    "sameDayInactive": "Grande SP detectado — peça antes das 12h para entrega no mesmo dia",
+    "pixDiscount": "DESCONTO PIX (5%)",
+    "pixBadge": "5% OFF",
+    "orderConfirmedTitle": "PEDIDO CONFIRMADO",
+    "orderThankYou": "Obrigado pela sua compra.",
+    "estimatedDelivery": "Previsão de entrega:",
+    "pixDiscountApplied": "Desconto Pix aplicado:",
+    "orderUnderReview": "PEDIDO EM ANÁLISE",
+    "orderReviewMessage": "Primeira compra com cartão de crédito — em análise anti-fraude (até 48h).",
+    "orderReviewSub": "Você receberá um email assim que for aprovado."
+  },
+  "account": {
+    "title": "Minha Conta",
+    "name": "Nome",
+    "email": "Email",
+    "logout": "Sair da Conta"
   },
   "auth": {
     "email": "Email",
@@ -62,13 +155,29 @@
     "forgotPassword": "Esqueceu sua senha?",
     "rememberMe": "Lembrar-me",
     "signIn": "Entrar",
-    "signUp": "Cadastrar"
+    "signUp": "Cadastrar",
+    "resetPassword": "Redefinir Senha",
+    "newPassword": "Nova Senha",
+    "newPasswordPlaceholder": "Sua nova senha segura",
+    "resetCta": "Redefinir Senha",
+    "signingIn": "Entrando...",
+    "registering": "Cadastrando...",
+    "backToLogin": "Voltar para o Login",
+    "emailRequired": "Email e senha são obrigatórios",
+    "errorLogin": "Erro ao fazer login",
+    "errorRegister": "Erro ao registrar",
+    "resetSuccess": "Senha redefinida com sucesso! Agora você pode fazer o Login.",
+    "resetError": "Erro ao resetar senha",
+    "phone": "Telefone",
+    "phonePlaceholder": "(11) 999999999",
+    "requiredFields": "Preencha todos os campos obrigatórios"
   },
   "messages": {
     "success": "Operação realizada com sucesso",
     "error": "Erro ao processar solicitação",
     "addedToCart": "Produto adicionado ao carrinho",
     "removedFromCart": "Produto removido do carrinho",
-    "logoutSuccess": "Você foi desconectado"
+    "logoutSuccess": "Você foi desconectado",
+    "removeConfirm": "Tem certeza que deseja esvaziar o carrinho?"
   }
 }

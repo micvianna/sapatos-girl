@@ -1,62 +1,65 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { FiCreditCard, FiDollarSign, FiSmartphone } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+import { FiInstagram, FiFacebook, FiTwitter } from 'react-icons/fi';
 import './Footer.css';
 
 export default function Footer() {
-  const { t } = useTranslation();
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="footer">
       <div className="footer-content">
         <div className="footer-section">
-          <h4>ShoeStyle</h4>
-          <p>Sua loja favorita de sapatos femininos com as melhores marcas e preços.</p>
+          <h4>SHOE STYLE</h4>
+          <p>O que você está procurando? A potência do real.</p>
           <div className="social-links">
-            <a href="#facebook">Facebook</a>
-            <a href="#instagram">Instagram</a>
-            <a href="#twitter">Twitter</a>
+            <a href="#instagram"><FiInstagram /></a>
+            <a href="#facebook"><FiFacebook /></a>
+            <a href="#twitter"><FiTwitter /></a>
           </div>
         </div>
 
         <div className="footer-section">
-          <h4>Links Rápidos</h4>
+          <h4>INSTITUCIONAL</h4>
           <ul>
-            <li><a href="/">Início</a></li>
-            <li><a href="/products">Produtos</a></li>
-            <li><a href="#faq">FAQ</a></li>
-            <li><a href="#contact">Contato</a></li>
+            <li><Link to="/sobre">A Marca</Link></li>
+            <li><Link to="/lojas">Lojas Físicas</Link></li>
+            <li><Link to="/carreiras">Trabalhe Conosco</Link></li>
+            <li><Link to="/contato">Contato</Link></li>
+            <li><Link to="/politica-privacidade">Política de Privacidade</Link></li>
           </ul>
         </div>
 
         <div className="footer-section">
-          <h4>Atendimento</h4>
-          <p>📧 contato@shoestyle.com</p>
-          <p>📱 (11) 9999-9999</p>
-          <p>🕐 Seg-Sex: 9h às 18h</p>
+          <h4>ATENDIMENTO</h4>
+          <ul>
+            <li><Link to="/faq">Dúvidas Frequentes</Link></li>
+            <li><Link to="/trocas">Trocas e Devoluções</Link></li>
+            <li><Link to="/entregas">Prazos de Entrega</Link></li>
+            <li><Link to="/pagamento">Formas de Pagamento</Link></li>
+          </ul>
+          <br />
+          <p>sac@shoestyle.com.br</p>
+          <p>(11) 4004-0000</p>
         </div>
 
         <div className="footer-section">
-          <h4>Segurança e Pagamento</h4>
-          <div className="payment-methods">
-            <div className="payment-method">
-              <FiCreditCard />
-              <span>Cartão</span>
-            </div>
-            <div className="payment-method">
-              <FiDollarSign />
-              <span>PIX</span>
-            </div>
-            <div className="payment-method">
-              <FiSmartphone />
-              <span>Boleto</span>
-            </div>
+          <h4>NOVIDADES</h4>
+          <p>Receba nossas ofertas e novidades exclusivas.</p>
+          <div className="newsletter-form">
+            <input type="email" placeholder="E-mail" />
+            <button className="btn-newsletter">ENVIAR</button>
+          </div>
+          <div className="trust-strip">
+            <span>COMPRA SEGURA</span>
+            <span>SUPORTE HUMANIZADO</span>
+            <span>ENTREGA RÁPIDA</span>
           </div>
         </div>
       </div>
 
       <div className="footer-bottom">
-        <p>&copy; 2024 ShoeStyle. Todos os direitos reservados.</p>
+        <p>&copy; {currentYear} Shoe Style. Todos os direitos reservados. Nosso site utiliza cookies para garantir que você tenha melhor experiência.</p>
       </div>
     </footer>
   );
