@@ -13,6 +13,7 @@ export default function Home() {
   const { t } = useTranslation();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [productsError, setProductsError] = useState('');
 
   const orderState = location.state || {};
   const [showToast, setShowToast] = useState(!!orderState.orderSuccess);
@@ -30,6 +31,7 @@ export default function Home() {
 
     const fetchProducts = async () => {
       try {
+        setProductsError('');
         const highlightsResponse = await axios.get(`${API_URL}/api/products/highlights?limit=8`);
         const highlightItems = highlightsResponse.data?.itens || [];
 
@@ -42,6 +44,7 @@ export default function Home() {
         setProducts(fallbackResponse.data);
       } catch (error) {
         console.error('Erro ao buscar produtos:', error);
+        setProductsError('Não foi possível carregar os produtos no momento.');
       } finally {
         setLoading(false);
       }
@@ -155,6 +158,8 @@ export default function Home() {
         </div>
         {loading ? (
           <div className="loading">{t('common.loading')}</div>
+        ) : productsError ? (
+          <div className="loading">{productsError}</div>
         ) : (
           <div className="products-carousel">
             {products.slice(0, 4).map((product, index) => (
@@ -206,6 +211,8 @@ export default function Home() {
         </div>
         {loading ? (
           <div className="loading">{t('common.loading')}</div>
+        ) : productsError ? (
+          <div className="loading">{productsError}</div>
         ) : (
           <div className="products-carousel">
             {products.slice(4, 8).map((product, index) => (
