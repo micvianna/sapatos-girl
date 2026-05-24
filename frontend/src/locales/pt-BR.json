@@ -38,7 +38,20 @@
     "artTitle": "THE ART OF DETAIL",
     "artCta": "COMPRE BOLSAS",
     "instagram": "#ATALAIAGIRL",
-    "instagramLink": "INSTAGRAM"
+    "instagramLink": "INSTAGRAM",
+    "testimonialsTitle": "O QUE ELAS DIZEM",
+    "testimonial1Text": "A bota é simplesmente espetacular. O couro é extremamente macio e o acabamento é impecável. Confortável desde o primeiro dia de uso.",
+    "testimonial1Author": "Amanda S.",
+    "testimonial1Location": "São Paulo",
+    "testimonial1Product": "Bota Marrom Cano Longo",
+    "testimonial2Text": "Minha sandália rosa se tornou a peça favorita do meu closet. O tom de rosa é chic e moderno, e o salto é super estável.",
+    "testimonial2Author": "Carolina M.",
+    "testimonial2Location": "Rio de Janeiro",
+    "testimonial2Product": "Sandália Feminina Rosa",
+    "testimonial3Text": "Estava procurando por um scarpin elegante para o trabalho que aguentasse o dia todo. Encontrei aqui. Perfeito!",
+    "testimonial3Author": "Helena R.",
+    "testimonial3Location": "Belo Horizonte",
+    "testimonial3Product": "Scarpin Preto Elegante"
   },
   "product": {
     "addToCart": "Adicionar ao Carrinho",

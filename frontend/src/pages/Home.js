@@ -53,6 +53,36 @@ export default function Home() {
     fetchProducts();
   }, []);
 
+  const testimonials = [
+    {
+      id: 1,
+      rating: 5,
+      text: t('home.testimonial1Text'),
+      author: t('home.testimonial1Author'),
+      location: t('home.testimonial1Location'),
+      product: t('home.testimonial1Product'),
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=256&auto=format&fit=crop'
+    },
+    {
+      id: 2,
+      rating: 5,
+      text: t('home.testimonial2Text'),
+      author: t('home.testimonial2Author'),
+      location: t('home.testimonial2Location'),
+      product: t('home.testimonial2Product'),
+      avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=256&auto=format&fit=crop'
+    },
+    {
+      id: 3,
+      rating: 5,
+      text: t('home.testimonial3Text'),
+      author: t('home.testimonial3Author'),
+      location: t('home.testimonial3Location'),
+      product: t('home.testimonial3Product'),
+      avatar: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?q=80&w=256&auto=format&fit=crop'
+    }
+  ];
+
   return (
     <motion.div
       className="home"
@@ -228,6 +258,40 @@ export default function Home() {
             ))}
           </div>
         )}
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="testimonials-section">
+        <div className="section-header">
+          <h2 className="section-title">{t('home.testimonialsTitle')}</h2>
+        </div>
+        <div className="testimonials-grid">
+          {testimonials.map((item, index) => (
+            <motion.div
+              className="testimonial-card"
+              key={item.id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ duration: 0.8, delay: index * 0.15 }}
+            >
+              <div className="testimonial-stars">
+                {Array.from({ length: item.rating }).map((_, i) => (
+                  <span key={i} className="star">★</span>
+                ))}
+              </div>
+              <p className="testimonial-text">"{item.text}"</p>
+              <div className="testimonial-user">
+                <img src={item.avatar} alt={item.author} className="testimonial-avatar" />
+                <div className="testimonial-meta">
+                  <span className="testimonial-author">{item.author}</span>
+                  <span className="testimonial-location">{item.location}</span>
+                  <span className="testimonial-product">{item.product}</span>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </section>
 
       {/* Follow @Atalaia */}

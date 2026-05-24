@@ -38,7 +38,20 @@
     "artTitle": "THE ART OF DETAIL",
     "artCta": "SHOP BAGS",
     "instagram": "#ATALAIAGIRL",
-    "instagramLink": "INSTAGRAM"
+    "instagramLink": "INSTAGRAM",
+    "testimonialsTitle": "WHAT THEY SAY",
+    "testimonial1Text": "The boots are absolutely spectacular. The leather is extremely soft and the finish is flawless. Comfortable from the very first day.",
+    "testimonial1Author": "Amanda S.",
+    "testimonial1Location": "São Paulo",
+    "testimonial1Product": "Brown Long Shaft Boots",
+    "testimonial2Text": "My pink sandals became my favorite closet piece. The pink shade is chic and modern, and the block heel is super stable.",
+    "testimonial2Author": "Carolina M.",
+    "testimonial2Location": "Rio de Janeiro",
+    "testimonial2Product": "Pink Leather Sandals",
+    "testimonial3Text": "I was looking for elegant pumps for work that would last all day. Found them here. Simply perfect!",
+    "testimonial3Author": "Helena R.",
+    "testimonial3Location": "Belo Horizonte",
+    "testimonial3Product": "Elegant Black Pumps"
   },
   "product": {
     "addToCart": "Add to Cart",
