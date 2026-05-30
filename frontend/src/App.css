@@ -104,6 +104,8 @@ ul, ol {
   white-space: nowrap;
   position: relative;
   overflow: hidden;
+  transform: rotate(-7deg);
+  margin: -15px 10px;
 }
 
 .btn:hover {

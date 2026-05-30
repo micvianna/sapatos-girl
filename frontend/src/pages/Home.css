@@ -113,12 +113,13 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.6) 100%);
+  background: rgba(255, 255, 255, 0.7);
   z-index: 1;
 }
 
 .hero-text-overlay {
-  text-align: center;
+  text-align: left;
+  margin-left: -10%;
   color: var(--text-inverse);
   position: relative;
   z-index: 2;
@@ -343,9 +344,8 @@
 
 .products-carousel {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  column-gap: 2px;
-  /* Ultra minimal gap */
+  grid-template-columns: repeat(4, 450px);
+  column-gap: 50px;
   row-gap: 4rem;
 }
 
@@ -432,6 +432,11 @@
   transform: translateY(-5px);
   box-shadow: var(--shadow-hover);
   border-color: var(--accent-gold);
+}
+
+.testimonial-card:nth-child(2) {
+  margin-top: 150px;
+  margin-bottom: -150px;
 }
 
 .testimonial-stars {
