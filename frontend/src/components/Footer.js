@@ -26,6 +26,7 @@ export default function Footer() {
             <li><Link to="/lojas">Lojas Físicas</Link></li>
             <li><Link to="/carreiras">Trabalhe Conosco</Link></li>
             <li><Link to="/contato">Contato</Link></li>
+            <li><Link to="/reviews">Depoimentos</Link></li>
             <li><Link to="/politica-privacidade">Política de Privacidade</Link></li>
           </ul>
         </div>

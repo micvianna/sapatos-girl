@@ -118,6 +118,13 @@ INSERT INTO produtos (id, nome, descricao, categoria, preco, tamanhos, cores, im
 (gen_random_uuid(), 'Pulseira Corrente Ouro', 'Pulseira corrente em banho de ouro 18k com medalhão ATALAIA.', 'Acessórios', 590.00, 'Único', 'Dourado', 'https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd?auto=format&fit=crop&q=80&w=800', 50),
 (gen_random_uuid(), 'Cachecol Cashmere Premium', 'Cachecol em cashmere 100% com acabamento franjado.', 'Acessórios', 780.00, 'Único', 'Preto,Cinza,Marinho', 'https://images.unsplash.com/photo-1601628828688-6b54d0f5f1d0?auto=format&fit=crop&q=80&w=800', 20);
 
+-- Novos produtos (Sapatos e Bolsas) adicionados para testes
+INSERT INTO produtos (id, nome, descricao, categoria, preco, tamanhos, cores, imagem, estoque) VALUES
+(gen_random_uuid(), 'Bota Coturno Verniz', 'Coturno em verniz brilhante com salto tratorado de 6cm e cadarço ajustável.', 'Botas', 1190.00, '35,36,37,38,39', 'Preto', 'https://images.unsplash.com/photo-1608256246200-53e635b5b65f?auto=format&fit=crop&q=80&w=800', 15),
+(gen_random_uuid(), 'Sandália Minimalist Nude', 'Sandália elegante de salto fino com tiras minimalistas e fechamento traseiro.', 'Sandálias', 850.00, '34,35,36,37,38', 'Nude,Dourado', 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&q=80&w=800', 25),
+(gen_random_uuid(), 'Bolsa Baguete Clássica', 'Bolsa baguete estilo vintage anos 90 com alça de ombro curta e detalhe metálico.', 'Bolsas', 1950.00, 'Único', 'Preto,Caramelo,Verde', 'https://images.unsplash.com/photo-1584916201218-f4242ceb4809?auto=format&fit=crop&q=80&w=800', 10),
+(gen_random_uuid(), 'Mochila Couro Soft', 'Mochila espaçosa em couro soft premium, compartimento para notebook e bolsos externos.', 'Bolsas', 2200.00, 'Único', 'Preto,Marrom', 'https://images.unsplash.com/photo-1622560480654-d96214fdc887?auto=format&fit=crop&q=80&w=800', 8);
+
 -- Tabela de favoritos (wishlist)
 CREATE TABLE wishlist (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

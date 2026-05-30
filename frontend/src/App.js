@@ -15,6 +15,7 @@ import Register from './pages/Register';
 import Account from './pages/Account';
 import Admin from './pages/Admin';
 import ProductDetail from './pages/ProductDetail';
+import Reviews from './pages/Reviews';
 
 // Institutional & Service
 import About from './pages/About';
@@ -50,6 +51,7 @@ function App() {
             <Route path="/cart" element={token ? <Cart /> : <Navigate to="/login" />} />
             <Route path="/checkout" element={token ? <Checkout /> : <Navigate to="/login" />} />
             <Route path="/admin" element={isAdmin ? <Admin /> : <Navigate to="/login" />} />
+            <Route path="/reviews" element={<Reviews />} />
 
             <Route path="/sobre" element={<About />} />
             <Route path="/lojas" element={<Stores />} />
