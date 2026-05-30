@@ -1,28 +1,45 @@
 .footer {
-  background: #222;
-  color: #ccc;
-  padding: 3rem 0;
-  margin-top: 4rem;
+  background: linear-gradient(180deg, #090909 0%, #000 55%, #101010 100%);
+  color: #fff;
+  padding: 60px 0 20px;
+  font-size: 13px;
+  letter-spacing: 1px;
 }
 
 .footer-content {
-  max-width: 1200px;
-  margin: 0 auto;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 2rem;
-  padding: 0 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 40px;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 40px;
 }
 
 .footer-section h4 {
-  color: #ff1493;
-  margin-bottom: 1rem;
-  font-size: 1.1rem;
+  color: #fff;
+  margin-bottom: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  position: relative;
+  display: inline-block;
+}
+
+.footer-section h4::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 28px;
+  height: 1px;
+  background: #c2a578;
 }
 
 .footer-section p {
-  margin: 0.5rem 0;
+  color: #999;
   line-height: 1.6;
+  margin-bottom: 10px;
 }
 
 .footer-section ul {
@@ -32,68 +49,108 @@
 }
 
 .footer-section ul li {
-  margin: 0.5rem 0;
+  margin-bottom: 12px;
 }
 
-.footer-section a {
-  color: #ccc;
+.footer-section ul li a {
+  color: #999;
   text-decoration: none;
-  transition: color 0.2s;
+  transition: color 0.3s;
 }
 
-.footer-section a:hover {
-  color: #ff1493;
+.footer-section ul li a:hover {
+  color: #fff;
 }
 
 .social-links {
   display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: 15px;
+  margin-top: 20px;
 }
 
-.payment-methods {
+.social-links a {
+  color: #fff;
+  font-size: 20px;
+  transition: opacity 0.3s;
+}
+
+.social-links a:hover {
+  opacity: 0.7;
+}
+
+.newsletter-form {
   display: flex;
-  gap: 1rem;
+  margin-top: 20px;
+}
+
+.newsletter-form input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #333;
+  background: transparent;
+  color: #fff;
+  outline: none;
+  font-size: 12px;
+}
+
+.newsletter-form input::placeholder {
+  color: #666;
+}
+
+.btn-newsletter {
+  padding: 10px 20px;
+  background: #fff;
+  color: #000;
+  border: none;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: background 0.3s;
+}
+
+.btn-newsletter:hover {
+  background: #ccc;
+}
+
+.trust-strip {
+  margin-top: 18px;
+  display: flex;
   flex-wrap: wrap;
+  gap: 8px;
 }
 
-.payment-method {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.8rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  border: 1px solid rgba(255, 20, 147, 0.2);
-}
-
-.payment-method svg {
-  font-size: 1.5rem;
-  color: #ff1493;
+.trust-strip span {
+  border: 1px solid #2d2d2d;
+  color: #cfcfcf;
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  padding: 4px 8px;
 }
 
 .footer-bottom {
   text-align: center;
-  padding: 1rem;
-  border-top: 1px solid #444;
-  margin-top: 2rem;
-  color: #999;
+  padding-top: 40px;
+  margin-top: 40px;
+  border-top: 1px solid #333;
+  color: #666;
+  font-size: 11px;
 }
 
 @media (max-width: 768px) {
   .footer-content {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-  }
-
-  .footer-section h4 {
-    font-size: 1rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .footer-content {
     grid-template-columns: 1fr;
+    text-align: center;
+    padding: 0 20px;
+  }
+  
+  .social-links,
+  .newsletter-form {
+    justify-content: center;
+  }
+
+  .trust-strip {
+    justify-content: center;
   }
 }
