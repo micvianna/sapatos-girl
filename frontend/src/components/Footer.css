@@ -1,27 +1,51 @@
 .footer {
-  background: linear-gradient(180deg, #090909 0%, #000 55%, #101010 100%);
-  color: #fff;
-  padding: 60px 0 20px;
+  background-color: var(--bg-dark);
+  color: var(--text-inverse);
+  padding: 80px 0 30px;
   font-size: 13px;
-  letter-spacing: 1px;
+  letter-spacing: 0.05em;
+  border-top: 1px solid var(--border-dark);
 }
 
 .footer-content {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 40px;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 50px;
   max-width: 1440px;
   margin: 0 auto;
   padding: 0 40px;
 }
 
-.footer-section h4 {
-  color: #fff;
-  margin-bottom: 20px;
-  font-size: 14px;
-  font-weight: 700;
+.brand-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.footer-logo {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  letter-spacing: 0.3em;
+  color: var(--accent-gold);
   text-transform: uppercase;
-  letter-spacing: 2px;
+}
+
+.footer-tagline {
+  color: var(--text-muted);
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 30ch;
+}
+
+.footer-section h4 {
+  color: var(--text-inverse);
+  margin-bottom: 25px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
   position: relative;
   display: inline-block;
 }
@@ -30,16 +54,10 @@
   content: '';
   position: absolute;
   left: 0;
-  bottom: -6px;
-  width: 28px;
+  bottom: -8px;
+  width: 35px;
   height: 1px;
-  background: #c2a578;
-}
-
-.footer-section p {
-  color: #999;
-  line-height: 1.6;
-  margin-bottom: 10px;
+  background-color: var(--accent-gold);
 }
 
 .footer-section ul {
@@ -53,104 +71,69 @@
 }
 
 .footer-section ul li a {
-  color: #999;
+  color: var(--text-muted);
   text-decoration: none;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
   transition: color 0.3s;
 }
 
 .footer-section ul li a:hover {
-  color: #fff;
+  color: var(--accent-gold);
+}
+
+.footer-contact-info {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
 }
 
 .social-links {
   display: flex;
-  gap: 15px;
-  margin-top: 20px;
+  gap: 20px;
 }
 
 .social-links a {
-  color: #fff;
-  font-size: 20px;
-  transition: opacity 0.3s;
+  color: var(--text-inverse);
+  font-size: 1.2rem;
+  transition: color 0.3s, transform 0.3s;
 }
 
 .social-links a:hover {
-  opacity: 0.7;
-}
-
-.newsletter-form {
-  display: flex;
-  margin-top: 20px;
-}
-
-.newsletter-form input {
-  flex: 1;
-  padding: 10px;
-  border: 1px solid #333;
-  background: transparent;
-  color: #fff;
-  outline: none;
-  font-size: 12px;
-}
-
-.newsletter-form input::placeholder {
-  color: #666;
-}
-
-.btn-newsletter {
-  padding: 10px 20px;
-  background: #fff;
-  color: #000;
-  border: none;
-  cursor: pointer;
-  font-size: 11px;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: background 0.3s;
-}
-
-.btn-newsletter:hover {
-  background: #ccc;
-}
-
-.trust-strip {
-  margin-top: 18px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.trust-strip span {
-  border: 1px solid #2d2d2d;
-  color: #cfcfcf;
-  font-size: 10px;
-  letter-spacing: 1.2px;
-  padding: 4px 8px;
+  color: var(--accent-gold);
+  transform: translateY(-2px);
 }
 
 .footer-bottom {
   text-align: center;
   padding-top: 40px;
-  margin-top: 40px;
-  border-top: 1px solid #333;
-  color: #666;
+  margin-top: 60px;
+  border-top: 1px solid var(--border-dark);
+  color: var(--text-muted);
   font-size: 11px;
+  letter-spacing: 0.05em;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 992px) {
   .footer-content {
     grid-template-columns: 1fr;
+    gap: 40px;
     text-align: center;
-    padding: 0 20px;
   }
   
-  .social-links,
-  .newsletter-form {
+  .social-links {
     justify-content: center;
   }
-
-  .trust-strip {
-    justify-content: center;
+  
+  .footer-tagline {
+    margin: 0 auto;
+  }
+  
+  .footer-section h4::after {
+    left: 50%;
+    transform: translateX(-50%);
   }
 }

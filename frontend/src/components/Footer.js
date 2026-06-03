@@ -9,17 +9,19 @@ export default function Footer() {
   return (
     <footer className="footer">
       <div className="footer-content">
-        <div className="footer-section">
-          <h4>SHOE STYLE</h4>
-          <p>O que você está procurando? A potência do real.</p>
+        {/* Section 1: Brand centered column */}
+        <div className="footer-section brand-column">
+          <h2 className="footer-logo">ATALAIA</h2>
+          <p className="footer-tagline">A alta costura em calçados e bolsas femininas.</p>
           <div className="social-links">
-            <a href="#instagram"><FiInstagram /></a>
-            <a href="#facebook"><FiFacebook /></a>
-            <a href="#twitter"><FiTwitter /></a>
+            <a href="#instagram" aria-label="Instagram"><FiInstagram /></a>
+            <a href="#facebook" aria-label="Facebook"><FiFacebook /></a>
+            <a href="#twitter" aria-label="Twitter"><FiTwitter /></a>
           </div>
         </div>
 
-        <div className="footer-section">
+        {/* Section 2: Links */}
+        <div className="footer-section links-column">
           <h4>INSTITUCIONAL</h4>
           <ul>
             <li><Link to="/sobre">A Marca</Link></li>
@@ -30,7 +32,8 @@ export default function Footer() {
           </ul>
         </div>
 
-        <div className="footer-section">
+        {/* Section 3: Customer Care & sac */}
+        <div className="footer-section links-column">
           <h4>ATENDIMENTO</h4>
           <ul>
             <li><Link to="/faq">Dúvidas Frequentes</Link></li>
@@ -38,28 +41,15 @@ export default function Footer() {
             <li><Link to="/entregas">Prazos de Entrega</Link></li>
             <li><Link to="/pagamento">Formas de Pagamento</Link></li>
           </ul>
-          <br />
-          <p>sac@shoestyle.com.br</p>
-          <p>(11) 4004-0000</p>
-        </div>
-
-        <div className="footer-section">
-          <h4>NOVIDADES</h4>
-          <p>Receba nossas ofertas e novidades exclusivas.</p>
-          <div className="newsletter-form">
-            <input type="email" placeholder="E-mail" />
-            <button className="btn-newsletter">ENVIAR</button>
-          </div>
-          <div className="trust-strip">
-            <span>COMPRA SEGURA</span>
-            <span>SUPORTE HUMANIZADO</span>
-            <span>ENTREGA RÁPIDA</span>
+          <div className="footer-contact-info">
+            <p>sac@atalaia.com.br</p>
+            <p>(11) 4004-0000</p>
           </div>
         </div>
       </div>
 
       <div className="footer-bottom">
-        <p>&copy; {currentYear} Shoe Style. Todos os direitos reservados. Nosso site utiliza cookies para garantir que você tenha melhor experiência.</p>
+        <p>&copy; {currentYear} ATALAIA. Todos os direitos reservados. Feito com amor em couro de alta qualidade.</p>
       </div>
     </footer>
   );

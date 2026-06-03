@@ -1,19 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* Ultra-minimalist luxury palette */
-  --bg-primary: #FFFFFF;
-  --bg-secondary: #FAFAFA;
-  --bg-dark: #000000;
+  /* Rich Aristocratic Burgundy & Old Gold Palette */
+  --bg-primary: #FCFAF7; /* Soft silk cream */
+  --bg-secondary: #F6F1EA; /* Warm luxury linen */
+  --bg-dark: #231114; /* Deep dark burgundy wine */
   
-  --text-primary: #1A1A1A;
-  --text-secondary: #4A4A4A;
-  --text-muted: #8E8E8E;
-  --text-inverse: #FFFFFF;
+  --text-primary: #2C1A1D; /* Dark mulberry brown */
+  --text-secondary: #5C4B4E; /* Soft cocoa brown */
+  --text-muted: #9E8C8E; /* Muted rose gray */
+  --text-inverse: #FCFAF7;
   
-  --accent-gold: #C2A578; /* Subtle champagne gold */
-  --border-light: #EAEAEA;
-  --border-dark: #1A1A1A;
+  --accent-gold: #B38F4D; /* Rich antique gold */
+  --border-light: #E8E2D9; /* Fine cream sand border */
+  --border-dark: #3D292C; /* Dark wood border */
 
   /* Typography */
   --font-heading: 'Playfair Display', serif;
@@ -26,9 +26,9 @@
   --spacing-lg: 4rem;
   --spacing-xl: 8rem;
 
-  /* Shadows - Extremely subtle, almost imperceptible */
-  --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.03);
-  --shadow-hover: 0 10px 40px rgba(0, 0, 0, 0.06);
+  /* Shadows - Rich and deep */
+  --shadow-sm: 0 4px 20px rgba(35, 17, 20, 0.04);
+  --shadow-hover: 0 10px 40px rgba(35, 17, 20, 0.08);
 }
 
 * {

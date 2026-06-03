@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate, useLocation, NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { FiShoppingCart, FiUser, FiSearch, FiMenu, FiX } from 'react-icons/fi';
@@ -17,7 +17,7 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+
 
   const changeLanguage = (lng) => {
     i18n.changeLanguage(lng);
@@ -40,13 +40,7 @@ export default function Header() {
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const toggleSearch = () => setSearchOpen(!searchOpen);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+
 
   return (
     <>
@@ -60,12 +54,12 @@ export default function Header() {
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
         style={{
-          background: scrolled ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 255, 255, 0)',
-          borderBottom: scrolled ? '1px solid rgba(0, 0, 0, 0.05)' : '1px solid transparent',
-          backdropFilter: scrolled ? 'blur(20px)' : 'none'
+          background: 'var(--bg-primary)',
+          borderBottom: '1px solid var(--border-light)',
+          backdropFilter: 'blur(20px)'
         }}
       >
-        <div className="header-container">
+        <div className="header-top-row">
           <div className="header-left">
             <button className="icon-button mobile-menu" onClick={toggleMenu}>
               {menuOpen ? <FiX /> : <FiMenu />}
@@ -80,14 +74,6 @@ export default function Header() {
           </div>
 
           <div className="header-right">
-            <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
-              <NavLink to="/products?category=new" className={currentCategory === 'new' ? 'active' : ''} onClick={() => setMenuOpen(false)}>{t('header.newIn')}</NavLink>
-              <NavLink to="/products?category=botas" className={currentCategory === 'botas' ? 'active' : ''} onClick={() => setMenuOpen(false)}>{t('header.botas')}</NavLink>
-              <NavLink to="/products?category=shoes" className={currentCategory === 'shoes' ? 'active' : ''} onClick={() => setMenuOpen(false)}>{t('header.sapatos')}</NavLink>
-              <NavLink to="/products?category=bags" className={currentCategory === 'bags' ? 'active' : ''} onClick={() => setMenuOpen(false)}>{t('header.bolsas')}</NavLink>
-              <NavLink to="/products?category=accessories" className={currentCategory === 'accessories' ? 'active' : ''} onClick={() => setMenuOpen(false)}>{t('header.acessorios')}</NavLink>
-            </div>
-
             {/* Language Switcher */}
             <div className="lang-switcher" onClick={() => setLangOpen(!langOpen)}>
               <span className="lang-current">{langLabels[currentLang] || 'PT'}</span>
@@ -129,6 +115,15 @@ export default function Header() {
               {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
             </button>
           </div>
+        </div>
+
+        {/* Row 2: Navigation links row centered under logo */}
+        <div className={`nav-links-row ${menuOpen ? 'open' : ''}`}>
+          <NavLink to="/products?category=new" className={currentCategory === 'new' ? 'active' : ''} onClick={() => setMenuOpen(false)}>{t('header.newIn')}</NavLink>
+          <NavLink to="/products?category=botas" className={currentCategory === 'botas' ? 'active' : ''} onClick={() => setMenuOpen(false)}>{t('header.botas')}</NavLink>
+          <NavLink to="/products?category=shoes" className={currentCategory === 'shoes' ? 'active' : ''} onClick={() => setMenuOpen(false)}>{t('header.sapatos')}</NavLink>
+          <NavLink to="/products?category=bags" className={currentCategory === 'bags' ? 'active' : ''} onClick={() => setMenuOpen(false)}>{t('header.bolsas')}</NavLink>
+          <NavLink to="/products?category=accessories" className={currentCategory === 'accessories' ? 'active' : ''} onClick={() => setMenuOpen(false)}>{t('header.acessorios')}</NavLink>
         </div>
 
         <AnimatePresence>

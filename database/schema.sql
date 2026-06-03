@@ -118,6 +118,12 @@ INSERT INTO produtos (id, nome, descricao, categoria, preco, tamanhos, cores, im
 (gen_random_uuid(), 'Pulseira Corrente Ouro', 'Pulseira corrente em banho de ouro 18k com medalhão ATALAIA.', 'Acessórios', 590.00, 'Único', 'Dourado', 'https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd?auto=format&fit=crop&q=80&w=800', 50),
 (gen_random_uuid(), 'Cachecol Cashmere Premium', 'Cachecol em cashmere 100% com acabamento franjado.', 'Acessórios', 780.00, 'Único', 'Preto,Cinza,Marinho', 'https://images.unsplash.com/photo-1601628828688-6b54d0f5f1d0?auto=format&fit=crop&q=80&w=800', 20);
 
+-- Novos produtos de sapatos/bolsas adicionados para testes do Diff
+INSERT INTO produtos (id, nome, descricao, categoria, preco, tamanhos, cores, imagem, estoque) VALUES
+(gen_random_uuid(), 'Mule Veludo Merlot', 'Mule elegante em veludo cor vinho merlot, palmilha macia acolchoada e fivela metálica ouro.', 'Sapatilhas', 790.00, '34,35,36,37,38,39', 'Vinho', 'https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&q=80&w=800', 12),
+(gen_random_uuid(), 'Scarpin Croco Borgonha', 'Scarpin em couro legítimo texturizado croco na sofisticada cor borgonha, salto fino de 9cm.', 'Scarpins', 1250.00, '35,36,37,38,39', 'Borgonha', 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&q=80&w=800', 8),
+(gen_random_uuid(), 'Bolsa Clutch Vintage Ouro', 'Clutch de noite rígida em metal dourado envelhecido com textura gravada e alça de corrente.', 'Bolsas', 2150.00, 'Único', 'Dourado', 'https://images.unsplash.com/photo-1563903530908-af12c9cc2f19?auto=format&fit=crop&q=80&w=800', 15);
+
 -- Tabela de favoritos (wishlist)
 CREATE TABLE wishlist (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

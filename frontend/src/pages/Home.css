@@ -76,83 +76,78 @@
 /* ==========================================================================
    HERO SECTION
    ========================================================================== */
-.hero {
-  width: 100%;
-  height: 100vh;
-  position: relative;
-  overflow: hidden;
-  background-color: var(--bg-primary);
-  margin-top: -105px;
-  /* Offset the new header height to place image behind menu */
-}
-
-.hero-image-wrapper {
-  width: 100%;
-  height: 100%;
-  position: relative;
+.hero-split {
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding-bottom: 10vh;
+  width: 100%;
+  height: 90vh;
+  margin-top: -125px; /* Offset the header height */
+  background-color: var(--bg-dark);
+  color: var(--text-inverse);
 }
 
-.hero-image-bg {
-  position: absolute;
-  top: 0;
-  left: 0;
+.hero-split-left {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem;
+  background-color: var(--bg-dark);
+}
+
+.hero-split-content {
+  max-width: 500px;
+}
+
+.hero-split-tag {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 1.5rem;
+}
+
+.hero-split-content h1 {
+  font-family: var(--font-heading);
+  font-size: 3.8rem;
+  line-height: 1.1;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  margin-bottom: 2rem;
+  color: var(--text-inverse);
+}
+
+.hero-split-content p {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 3rem;
+}
+
+.hero-split-right {
+  flex: 1;
+  overflow: hidden;
+}
+
+.hero-split-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center;
-  z-index: 0;
-}
-
-.hero-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.6) 100%);
-  z-index: 1;
-}
-
-.hero-text-overlay {
-  text-align: center;
-  color: var(--text-inverse);
-  position: relative;
-  z-index: 2;
-  max-width: 800px;
-}
-
-.hero-text-overlay h1 {
-  font-family: var(--font-heading);
-  font-size: 5rem;
-  font-weight: 400;
-  letter-spacing: 0.15em;
-  margin-bottom: 1.5rem;
-  text-transform: uppercase;
-  color: var(--text-inverse);
-}
-
-.hero-text-overlay p {
-  font-family: var(--font-body);
-  font-size: 0.9rem;
-  font-weight: 300;
-  letter-spacing: 0.4em;
-  margin-bottom: 3rem;
-  text-transform: uppercase;
 }
 
 .btn-hero {
-  border-color: var(--text-inverse);
+  border-color: var(--accent-gold);
   color: var(--text-inverse);
   background: transparent;
 }
 
 .btn-hero:hover {
-  background: var(--text-inverse);
-  color: var(--text-primary);
+  background: var(--accent-gold);
+  color: var(--text-inverse);
+  border-color: var(--accent-gold);
 }
 
 /* ==========================================================================
@@ -538,5 +533,51 @@
 
   .insta-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ==========================================================================
+   BRAND PHILOSOPHY SECTION
+   ========================================================================== */
+.brand-philosophy {
+  background-color: var(--bg-secondary);
+  padding: 6rem 5%;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.philosophy-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4rem;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.philosophy-item {
+  text-align: center;
+  padding: 1rem;
+}
+
+.philosophy-item h3 {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.philosophy-item p {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+  .philosophy-container {
+    grid-template-columns: 1fr;
+    gap: 3rem;
   }
 }

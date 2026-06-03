@@ -95,26 +95,34 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      {/* Main Hero Banner */}
-      <section className="hero">
-        <div className="hero-image-wrapper">
+      {/* Main Hero Banner split 50/50 */}
+      <section className="hero-split">
+        <motion.div 
+          className="hero-split-left"
+          initial={{ opacity: 0, x: -50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <div className="hero-split-content">
+            <span className="hero-split-tag">COLEÇÃO EXCLUSIVA</span>
+            <h1>THE MAJESTY OF BURGUNDY</h1>
+            <p>Descubra o requinte do novo clássico em sapatos e bolsas de luxo.</p>
+            <button className="btn btn-hero" onClick={() => navigate('/products')}>{t('home.heroCta')}</button>
+          </div>
+        </motion.div>
+        
+        <motion.div 
+          className="hero-split-right"
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+        >
           <img
             src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop"
-            alt="Coleção Atalaia — modelo usando look completo da nova temporada com sapatos e acessórios de luxo"
-            className="hero-image-bg"
+            alt="Campanha Atalaia Burgundy"
+            className="hero-split-img"
           />
-          <div className="hero-overlay" aria-hidden="true"></div>
-          <motion.div
-            className="hero-text-overlay"
-            initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.4, duration: 1, ease: [0.25, 0.46, 0.45, 0.94] }}
-          >
-            <h1>{t('home.heroTitle')}</h1>
-            <p>{t('home.heroSubtitle')}</p>
-            <button className="btn btn-hero" onClick={() => navigate('/products')}>{t('home.heroCta')}</button>
-          </motion.div>
-        </div>
+        </motion.div>
       </section>
 
       <section className="editorial-strip">
@@ -138,6 +146,24 @@ export default function Home() {
           <div>
             <strong>4.9/5</strong>
             <span>avaliação média</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Brand Philosophy Section */}
+      <section className="brand-philosophy">
+        <div className="philosophy-container">
+          <div className="philosophy-item">
+            <h3>Feito à Mão</h3>
+            <p>Cada sapato e bolsa Atalaia é confeccionado artesanalmente por mestres sapateiros com atenção a cada detalhe.</p>
+          </div>
+          <div className="philosophy-item">
+            <h3>Couro Nobre</h3>
+            <p>Utilizamos apenas couros premium de origem certificada, garantindo durabilidade, maciez e conforto inigualáveis.</p>
+          </div>
+          <div className="philosophy-item">
+            <h3>Edições Limitadas</h3>
+            <p>Nossas coleções são produzidas em tiragens pequenas para garantir exclusividade e controle rigoroso de qualidade.</p>
           </div>
         </div>
       </section>

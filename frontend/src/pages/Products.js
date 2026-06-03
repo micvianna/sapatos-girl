@@ -94,100 +94,108 @@ export default function Products() {
         <h1 className="products-title">{filters.categoria || t('products.title')}</h1>
         <p className="products-count">{products.length} {t('products.pieces')}</p>
       </div>
+      {/* Double Column Layout (Sidebar + Grid) */}
+      <div className="products-layout-container">
+        {/* Sidebar Filters */}
+        <aside className="filters-sidebar">
+          <div className="sidebar-filter-section">
+            <h3>Buscar</h3>
+            <input
+              type="text"
+              name="busca"
+              placeholder={t('header.searchPlaceholder')}
+              value={filters.busca}
+              onChange={handleFilterChange}
+            />
+          </div>
 
-      {/* Horizontal Minimalist Filters */}
-      <div className="filters-bar">
-        <div className="filter-group filter-search">
-          <input
-            type="text"
-            name="busca"
-            placeholder={t('header.searchPlaceholder')}
-            value={filters.busca}
-            onChange={handleFilterChange}
-          />
-        </div>
+          <div className="sidebar-filter-section">
+            <h3>Categorias</h3>
+            <select name="categoria" value={filters.categoria} onChange={handleFilterChange}>
+              <option value="">{t('products.allCategories')}</option>
+              {categories.map(cat => (
+                <option key={cat} value={cat}>{cat.toUpperCase()}</option>
+              ))}
+            </select>
+          </div>
 
-        <div className="filter-group">
-          <select name="categoria" value={filters.categoria} onChange={handleFilterChange}>
-            <option value="">{t('products.allCategories')}</option>
-            {categories.map(cat => (
-              <option key={cat} value={cat}>{cat.toUpperCase()}</option>
-            ))}
-          </select>
-        </div>
+          <div className="sidebar-filter-section">
+            <h3>Ordenar Por</h3>
+            <select name="sort" value={filters.sort} onChange={handleFilterChange}>
+              <option value="nome_asc">A-Z</option>
+              <option value="preco_asc">{t('products.minPrice')}</option>
+              <option value="preco_desc">{t('products.maxPrice')}</option>
+              <option value="data_criacao_desc">{t('header.newIn')}</option>
+            </select>
+          </div>
 
-        <div className="filter-group">
-          <select name="sort" value={filters.sort} onChange={handleFilterChange}>
-            <option value="nome_asc">A-Z</option>
-            <option value="preco_asc">{t('products.minPrice')}</option>
-            <option value="preco_desc">{t('products.maxPrice')}</option>
-            <option value="data_criacao_desc">{t('header.newIn')}</option>
-          </select>
-        </div>
+          <div className="sidebar-filter-section">
+            <h3>Faixa de Preço</h3>
+            <div className="price-inputs">
+              <input
+                type="number"
+                name="preco_min"
+                placeholder="Mín"
+                value={filters.preco_min}
+                onChange={handleFilterChange}
+              />
+              <span className="price-separator">—</span>
+              <input
+                type="number"
+                name="preco_max"
+                placeholder="Máx"
+                value={filters.preco_max}
+                onChange={handleFilterChange}
+              />
+            </div>
+          </div>
 
-        <div className="filter-group filter-price">
-          <input
-            type="number"
-            name="preco_min"
-            placeholder={t('products.minPrice')}
-            value={filters.preco_min}
-            onChange={handleFilterChange}
-          />
-          <span className="price-separator">—</span>
-          <input
-            type="number"
-            name="preco_max"
-            placeholder={t('products.maxPrice')}
-            value={filters.preco_max}
-            onChange={handleFilterChange}
-          />
-        </div>
-
-        {(filters.categoria || filters.preco_min || filters.preco_max || filters.busca) && (
-          <button
-            className="clear-filters-btn"
-            onClick={() => {
-              setFilters({ categoria: '', preco_min: '', preco_max: '', busca: '', sort: 'nome_asc' });
-              navigate('/products');
-            }}
-          >
-            {t('products.clearFilters')}
-          </button>
-        )}
-      </div>
-
-      {/* Products Grid */}
-      <div className="products-main">
-        {loading ? (
-          <div className="loading-screen">{t('common.loading')}</div>
-        ) : products.length === 0 ? (
-          <div className="empty-products">
-            <p>{t('products.noResults')}</p>
+          {(filters.categoria || filters.preco_min || filters.preco_max || filters.busca) && (
             <button
-              className="btn btn-outline"
+              className="btn btn-outline btn-clear-sidebar"
               onClick={() => {
                 setFilters({ categoria: '', preco_min: '', preco_max: '', busca: '', sort: 'nome_asc' });
                 navigate('/products');
               }}
             >
-              {t('products.discoverMore')}
+              {t('products.clearFilters')}
             </button>
-          </div>
-        ) : (
-          <div className="products-grid">
-            {products.map((product, index) => (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.8, delay: (index % 4) * 0.1 }}
+          )}
+        </aside>
+
+        {/* Products Grid Column */}
+        <main className="products-main-content">
+          {loading ? (
+            <div className="loading-screen">{t('common.loading')}</div>
+          ) : products.length === 0 ? (
+            <div className="empty-products">
+              <p>{t('products.noResults')}</p>
+              <button
+                className="btn btn-outline"
+                onClick={() => {
+                  setFilters({ categoria: '', preco_min: '', preco_max: '', busca: '', sort: 'nome_asc' });
+                  navigate('/products');
+                }}
               >
-                <ProductCard productId={product.id} />
-              </motion.div>
-            ))}
-          </div>
-        )}
+                {t('products.discoverMore')}
+              </button>
+            </div>
+          ) : (
+            <div className="products-grid">
+              {products.map((product, index) => (
+                <motion.div
+                  key={product.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ duration: 0.8, delay: (index % 3) * 0.1 }}
+                >
+                  <ProductCard productId={product.id} />
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </main>
       </div>
     </motion.div>
   );

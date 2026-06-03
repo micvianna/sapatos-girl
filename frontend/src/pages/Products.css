@@ -9,7 +9,7 @@
    ========================================================================== */
 .products-hero {
   text-align: center;
-  padding: 6rem 1rem 3rem;
+  padding: 6rem 1rem 4rem;
   background-color: var(--bg-secondary);
   border-bottom: 1px solid var(--border-light);
 }
@@ -21,183 +21,249 @@
   font-weight: 400;
   text-transform: uppercase;
   color: var(--text-primary);
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .products-count {
   font-family: var(--font-body);
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   letter-spacing: 0.25em;
-  color: var(--text-muted);
+  color: var(--text-secondary);
   text-transform: uppercase;
 }
 
 /* ==========================================================================
-   HORIZONTAL FILTERS BAR
+   DOUBLE COLUMN LAYOUT (Sidebar + Grid)
    ========================================================================== */
-.filters-bar {
+.products-layout-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 4rem;
+}
+
+/* Sidebar Filters */
+.filters-sidebar {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 3rem;
-  padding: 1.5rem 2rem;
-  border-bottom: 1px solid var(--border-light);
-  background: var(--bg-primary);
+  flex-direction: column;
+  gap: 2.5rem;
+  border-right: 1px solid var(--border-light);
+  padding-right: 3rem;
+  height: fit-content;
   position: sticky;
-  top: 83px;
-  /* Just below header */
-  z-index: 900;
+  top: 140px; /* Sticks nicely under header */
+  z-index: 10;
 }
 
-.filter-group {
+.sidebar-filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sidebar-filter-section h3 {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+  font-weight: 500;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 0.5rem;
+}
+
+.sidebar-filter-section input[type="text"],
+.sidebar-filter-section select {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+  background: var(--bg-secondary);
+  padding: 0.75rem 1rem;
+  border-radius: 0;
+  width: 100%;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.sidebar-filter-section input[type="text"]:focus,
+.sidebar-filter-section select:focus {
+  outline: none;
+  border-color: var(--accent-gold);
+  background: var(--bg-primary);
+  box-shadow: 0 2px 8px rgba(179, 143, 77, 0.05);
+}
+
+.sidebar-filter-section select {
+  appearance: none;
+  padding-right: 2.5rem;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232C1A1D' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 0.9em;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Price Inputs */
+.price-inputs {
   display: flex;
   align-items: center;
+  gap: 0.5rem;
 }
 
-.filter-group select,
-.filter-group input {
+.price-inputs input {
   font-family: var(--font-body);
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.2em;
+  font-size: 0.8rem;
   color: var(--text-primary);
-  border: none;
-  border-bottom: 1px solid transparent;
-  background: transparent;
-  padding: 0.5rem 0;
-  text-transform: uppercase;
-  transition: border-color 0.3s ease;
-  width: auto;
-  cursor: pointer;
-}
-
-.filter-group select {
-  appearance: none;
-  padding-right: 1.5rem;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right center;
-  background-size: 1em;
-}
-
-.filter-group select:hover,
-.filter-group input:hover,
-.filter-group select:focus,
-.filter-group input:focus {
-  border-bottom-color: var(--text-primary);
-  outline: none;
-}
-
-.filter-group input::placeholder {
-  color: var(--text-muted);
-}
-
-.filter-search input {
-  min-width: 240px;
-}
-
-.filter-price input {
-  width: 100px;
+  border: 1px solid var(--border-light);
+  background: var(--bg-secondary);
+  padding: 0.75rem 0.5rem;
+  border-radius: 0;
+  width: 100%;
   text-align: center;
+  transition: all 0.3s ease;
+}
+
+.price-inputs input:focus {
+  outline: none;
+  border-color: var(--accent-gold);
+  background: var(--bg-primary);
 }
 
 .price-separator {
-  margin: 0 1rem;
-  color: var(--text-muted);
+  color: var(--text-secondary);
+  font-weight: 300;
 }
 
-.clear-filters-btn {
-  background: none;
-  border: none;
+/* Clear Filters Button */
+.btn-clear-sidebar {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 0.85rem;
   font-family: var(--font-body);
-  font-size: 0.7rem;
-  font-weight: 600;
-  letter-spacing: 0.2em;
-  color: var(--text-muted);
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
   text-transform: uppercase;
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--text-primary);
   cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  transition: color 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.clear-filters-btn:hover {
+.btn-clear-sidebar:hover {
+  background: var(--bg-dark);
   color: var(--accent-gold);
+  border-color: var(--bg-dark);
+  letter-spacing: 0.28em;
 }
 
 /* ==========================================================================
-   PRODUCTS GRID (Edge-to-Edge)
+   PRODUCTS GRID & MAIN CONTENT
    ========================================================================== */
-.products-main {
-  width: 100%;
+.products-main-content {
+  flex-grow: 1;
 }
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 2px;
-  /* Very thin gap between products */
-  background-color: var(--border-light);
-  /* Forms the grid lines */
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.5rem;
 }
 
 .loading-screen {
   text-align: center;
-  padding: var(--spacing-xl);
+  padding: 8rem 0;
   font-family: var(--font-heading);
-  font-size: 2rem;
+  font-size: 1.5rem;
   letter-spacing: 0.2em;
-  color: var(--text-muted);
-  background: var(--bg-primary);
+  color: var(--text-secondary);
+  text-transform: uppercase;
 }
 
 .empty-products {
   text-align: center;
-  padding: 10rem 2rem;
-  background: var(--bg-primary);
+  padding: 8rem 2rem;
+  border: 1px solid var(--border-light);
+  background: var(--bg-secondary);
 }
 
 .empty-products p {
   font-family: var(--font-heading);
   font-size: 1.5rem;
-  color: var(--text-muted);
+  color: var(--text-primary);
   margin-bottom: 2rem;
   letter-spacing: 0.05em;
 }
 
-/* Responsive */
-@media (max-width: 1200px) {
+/* ==========================================================================
+   RESPONSIVE STYLING
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .products-layout-container {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    padding: 2rem 1.5rem;
+  }
+
+  .filters-sidebar {
+    border-right: none;
+    padding-right: 0;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 3rem;
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+
+  .sidebar-filter-section {
+    flex: 1 1 200px;
+  }
+
+  .btn-clear-sidebar {
+    width: auto;
+    align-self: flex-end;
+    padding: 0.85rem 2rem;
+  }
+
   .products-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
   }
 }
 
-@media (max-width: 800px) {
-  .products-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .filters-bar {
-    flex-wrap: wrap;
-    gap: 1rem;
-    padding: 1rem;
-  }
-
-  .filter-price {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .filter-search {
-    width: 100%;
-  }
-
-  .filter-search input {
-    width: 100%;
-    text-align: center;
-  }
-
+@media (max-width: 768px) {
   .products-title {
     font-size: 2.5rem;
+  }
+  
+  .products-hero {
+    padding: 4rem 1rem 3rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .filters-sidebar {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .sidebar-filter-section {
+    width: 100%;
+    flex: none;
+  }
+
+  .btn-clear-sidebar {
+    width: 100%;
+  }
+
+  .products-grid {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
   }
 }
