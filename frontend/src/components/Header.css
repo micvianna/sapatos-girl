@@ -170,6 +170,14 @@
   color: var(--accent-gold);
 }
 
+.theme-toggle-btn svg {
+  transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.theme-toggle-btn:hover svg {
+  transform: rotate(30deg) scale(1.15);
+}
+
 /* ==========================================================================
    LANGUAGE SWITCHER
    ========================================================================== */

@@ -42,7 +42,7 @@
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: rgba(24, 24, 24, 0.8);
+  background: var(--wishlist-btn-bg);
   border: 1px solid var(--border-light);
   min-width: 40px;
   min-height: 40px;
@@ -91,7 +91,7 @@
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  background: linear-gradient(to top, rgba(18, 18, 18, 0.95) 0%, rgba(18, 18, 18, 0) 100%);
+  background: var(--hover-gradient);
   opacity: 0;
   transform: translateY(15px);
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);

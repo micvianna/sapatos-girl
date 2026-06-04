@@ -14,6 +14,8 @@
   --border-dark: #404040;    /* Pronounced grid border */
   
   --header-bg: rgba(18, 18, 18, 0.95);
+  --hover-gradient: linear-gradient(to top, rgba(18, 18, 18, 0.95) 0%, rgba(18, 18, 18, 0) 100%);
+  --wishlist-btn-bg: rgba(24, 24, 24, 0.8);
 
   /* Typography */
   --font-heading: 'Cormorant Garamond', serif;
@@ -48,6 +50,8 @@
   --border-dark: #BCAE98;    /* Pronounced border */
   
   --header-bg: rgba(255, 251, 242, 0.95);
+  --hover-gradient: linear-gradient(to top, rgba(255, 251, 242, 0.95) 0%, rgba(255, 251, 242, 0) 100%);
+  --wishlist-btn-bg: rgba(255, 255, 255, 0.8);
   
   --shadow-sm: 0 4px 30px rgba(0, 0, 0, 0.05);
   --shadow-hover: 0 10px 50px rgba(0, 0, 0, 0.1);
@@ -57,6 +61,55 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+/* Global Transitions for Cinematic Theme Switcher */
+body, 
+.app, 
+.main-content, 
+header, 
+footer, 
+section, 
+.viewfinder-container, 
+.cam-stats-overlay, 
+.cam-stats-overlay span, 
+.philosophy-item, 
+.editorial-metrics, 
+.editorial-metrics div, 
+.editorial-card, 
+.btn, 
+.cat-link, 
+.section-header, 
+.section-title, 
+.section-link, 
+input, 
+select, 
+textarea, 
+.announcement-bar, 
+.rec-indicator, 
+.camera-spec, 
+.minicart-drawer, 
+.minicart-footer, 
+.minicart-header, 
+.minicart-card, 
+.product-card, 
+.product-details, 
+.wishlist-btn, 
+.product-hover-overlay, 
+.btn-quick-add, 
+.search-dropdown, 
+h1, h2, h3, h4, h5, h6, 
+p, 
+a, 
+span, 
+label, 
+td, 
+th, 
+tr {
+  transition: background-color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              border-color 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              box-shadow 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 body {
@@ -158,6 +211,27 @@ ul, ol {
   right: 15px;
   border-left: none;
   border-top: none;
+}
+
+/* Viewfinder hover corners shift micro-animation */
+.viewfinder-container:hover .viewfinder-corner.tl {
+  top: 10px;
+  left: 10px;
+}
+
+.viewfinder-container:hover .viewfinder-corner.tr {
+  top: 10px;
+  right: 10px;
+}
+
+.viewfinder-container:hover .viewfinder-corner.bl {
+  bottom: 10px;
+  left: 10px;
+}
+
+.viewfinder-container:hover .viewfinder-corner.br {
+  bottom: 10px;
+  right: 10px;
 }
 
 /* Cam stats indicators for a technical film aesthetic */
