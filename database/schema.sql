@@ -11,6 +11,8 @@ CREATE TABLE usuarios (
   email VARCHAR(255) UNIQUE NOT NULL,
   senha VARCHAR(255) NOT NULL,
   telefone VARCHAR(20),
+  is_admin BOOLEAN DEFAULT false,
+  deleted_at TIMESTAMP DEFAULT NULL,
   data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -29,6 +31,7 @@ CREATE TABLE produtos (
   estoque INT DEFAULT 0,
   avaliacao DECIMAL(3, 2) DEFAULT 0,
   ativo BOOLEAN DEFAULT true,
+  estrelas INTEGER DEFAULT 0 CHECK (estrelas >= 0 AND estrelas <= 5),
   data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   data_atualizacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -133,8 +136,32 @@ CREATE TABLE wishlist (
   UNIQUE(usuario_id, produto_id)
 );
 
+-- Tabela de cupons
+CREATE TABLE cupons (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  codigo VARCHAR(50) UNIQUE NOT NULL,
+  desconto NUMERIC(5,2) NOT NULL,
+  tipo VARCHAR(10) NOT NULL DEFAULT 'percent' CHECK (tipo IN ('percent', 'fixed')),
+  expiracao TIMESTAMP,
+  uso_max INTEGER DEFAULT 100,
+  uso_atual INTEGER DEFAULT 0,
+  ativo BOOLEAN DEFAULT true,
+  criado_em TIMESTAMP DEFAULT NOW()
+);
+
+-- Tabela de password_reset_tokens
+CREATE TABLE password_reset_tokens (
+  id UUID PRIMARY KEY,
+  usuario_id UUID NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+  token_hash VARCHAR(64) NOT NULL,
+  expires_at TIMESTAMP NOT NULL,
+  used BOOLEAN DEFAULT false,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+
 -- Criar índices
 CREATE INDEX idx_usuarios_email ON usuarios(email);
 CREATE INDEX idx_produtos_categoria ON produtos(categoria);
 CREATE INDEX idx_carrinhos_usuario ON carrinhos(usuario_id);
 CREATE INDEX idx_pedidos_usuario ON pedidos(usuario_id);
+CREATE INDEX idx_reset_tokens_hash ON password_reset_tokens(token_hash);
