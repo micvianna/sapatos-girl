@@ -64,6 +64,24 @@ export const useAuthStore = create((set, get) => ({
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     set({ user: null, token: null });
+  },
+
+  fetchProfile: async () => {
+    const token = get().token;
+    if (!token) return;
+    try {
+      const response = await axios.get(`${API}/users/perfil`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      localStorage.setItem('user', JSON.stringify(response.data));
+      set({ user: response.data });
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 401 || error.response?.status === 403) {
+        get().logout();
+      }
+      throw error;
+    }
   }
 }));
 

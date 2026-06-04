@@ -32,8 +32,14 @@ import './i18n';
 import './App.css';
 
 function App() {
-  const { token, user } = useAuthStore();
+  const { token, user, fetchProfile } = useAuthStore();
   const isAdmin = token && user?.is_admin;
+
+  React.useEffect(() => {
+    if (token) {
+      fetchProfile().catch(() => {});
+    }
+  }, [token, fetchProfile]);
 
   return (
     <Router>
