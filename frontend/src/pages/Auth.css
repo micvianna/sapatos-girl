@@ -3,22 +3,27 @@
   justify-content: center;
   align-items: center;
   min-height: 60vh;
-  padding: 2rem;
+  padding: 8rem 2rem;
 }
 
 .auth-card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
+  background: var(--bg-secondary);
+  border-radius: 0;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+  padding: 40px;
   width: 100%;
-  max-width: 400px;
+  max-width: 450px;
 }
 
 .auth-card h2 {
   text-align: center;
-  color: #ff1493;
+  color: var(--text-primary);
   margin-bottom: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 20px;
+  font-family: var(--font-heading);
 }
 
 .form-group {
@@ -28,24 +33,29 @@
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #333;
-  font-weight: 600;
+  color: var(--text-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 1px;
+  font-family: var(--font-brand);
 }
 
 .form-group input {
   width: 100%;
-  padding: 0.75rem;
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  font-size: 0.95rem;
+  padding: 12px;
+  border: 1px solid var(--border-light);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border-radius: 0;
+  font-size: 12px;
   transition: all 0.2s;
   box-sizing: border-box;
+  outline: none;
 }
 
 .form-group input:focus {
-  outline: none;
-  border-color: #ff1493;
-  box-shadow: 0 0 0 3px rgba(255, 20, 147, 0.1);
+  border-color: var(--accent-gold);
 }
 
 .remember-me {
@@ -53,7 +63,8 @@
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
-  font-size: 0.9rem;
+  font-size: 12px;
+  color: var(--text-secondary);
 }
 
 .remember-me input {
@@ -61,37 +72,42 @@
 }
 
 .error-message {
-  background: #fff3cd;
-  border: 1px solid #ffc107;
-  color: #856404;
-  padding: 0.75rem;
-  border-radius: 8px;
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
+  background: rgba(255, 59, 48, 0.1);
+  border: 1px solid #ff3b30;
+  color: #ff3b30;
+  padding: 10px;
+  border-radius: 0;
+  margin-bottom: 15px;
+  font-size: 12px;
+  text-align: center;
+  font-family: var(--font-body);
 }
 
 .auth-link {
   text-align: center;
   margin-top: 1.5rem;
-  color: #666;
+  color: var(--text-muted);
+  font-size: 12px;
 }
 
 .auth-link a {
-  color: #ff1493;
+  color: var(--accent-gold);
   text-decoration: none;
   cursor: pointer;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
   transition: color 0.2s;
 }
 
 .auth-link a:hover {
-  color: #ff1493;
+  color: var(--text-primary);
   text-decoration: underline;
 }
 
 @media (max-width: 480px) {
   .auth-card {
-    padding: 1.5rem;
+    padding: 20px;
   }
 
   .form-group input {

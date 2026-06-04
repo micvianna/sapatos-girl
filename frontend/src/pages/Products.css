@@ -1,59 +1,114 @@
 .products-page {
-  padding: 2rem;
-  background: #f9f9f9;
-  min-height: 80vh;
+  background: var(--bg-primary);
+  min-height: 100vh;
+  padding-bottom: var(--spacing-xl);
 }
 
-.products-container {
-  max-width: 1200px;
+/* ==========================================================================
+   PRODUCTS HERO (Editorial Header)
+   ========================================================================== */
+.products-hero {
+  text-align: center;
+  padding: 6rem 1rem 4rem;
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.products-title {
+  font-family: var(--font-heading);
+  font-size: 3.5rem;
+  letter-spacing: 0.15em;
+  font-weight: 400;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.products-count {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  letter-spacing: 0.25em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   DOUBLE COLUMN LAYOUT (Sidebar + Grid)
+   ========================================================================== */
+.products-layout-container {
+  max-width: 1400px;
   margin: 0 auto;
+  padding: 4rem 2rem;
   display: grid;
-  grid-template-columns: 250px 1fr;
-  gap: 2rem;
+  grid-template-columns: 280px 1fr;
+  gap: 4rem;
 }
 
-.filters {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+/* Sidebar Filters */
+.filters-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  border-right: 1px solid var(--border-light);
+  padding-right: 3rem;
   height: fit-content;
   position: sticky;
-  top: 100px;
+  top: 140px; /* Sticks nicely under header */
+  z-index: 10;
 }
 
-.filters h2 {
-  margin: 0 0 1.5rem 0;
-  color: #333;
-  font-size: 1.2rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid #f0f0f0;
+.sidebar-filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-.filter-group {
-  margin-bottom: 1.5rem;
+.sidebar-filter-section h3 {
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+  font-weight: 500;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 0.5rem;
 }
 
-.filter-group h3 {
-  margin: 0 0 0.75rem 0;
-  color: #333;
-  font-size: 1rem;
-}
-
-.filter-group select {
+.sidebar-filter-section input[type="text"],
+.sidebar-filter-section select {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+  background: var(--bg-secondary);
+  padding: 0.75rem 1rem;
+  border-radius: 0;
   width: 100%;
-  padding: 0.6rem;
-  border: 2px solid #ddd;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.filter-group select:focus {
+.sidebar-filter-section input[type="text"]:focus,
+.sidebar-filter-section select:focus {
   outline: none;
-  border-color: #ff1493;
+  border-color: var(--accent-gold);
+  background: var(--bg-primary);
+  box-shadow: 0 2px 8px rgba(179, 143, 77, 0.05);
 }
 
+.sidebar-filter-section select {
+  appearance: none;
+  padding-right: 2.5rem;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232C1A1D' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 0.9em;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Price Inputs */
 .price-inputs {
   display: flex;
   align-items: center;
@@ -61,119 +116,154 @@
 }
 
 .price-inputs input {
-  flex: 1;
-  padding: 0.6rem;
-  border: 2px solid #ddd;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  transition: all 0.2s;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
+  background: var(--bg-secondary);
+  padding: 0.75rem 0.5rem;
+  border-radius: 0;
+  width: 100%;
+  text-align: center;
+  transition: all 0.3s ease;
 }
 
 .price-inputs input:focus {
   outline: none;
-  border-color: #ff1493;
+  border-color: var(--accent-gold);
+  background: var(--bg-primary);
 }
 
-.price-inputs span {
-  color: #999;
+.price-separator {
+  color: var(--text-secondary);
+  font-weight: 300;
 }
 
-.clear-filters {
+/* Clear Filters Button */
+.btn-clear-sidebar {
+  margin-top: 1rem;
   width: 100%;
-  padding: 0.75rem;
-  background: #f0f0f0;
-  border: none;
-  border-radius: 6px;
-  color: #333;
-  font-weight: 600;
+  padding: 0.85rem;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--text-primary);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.clear-filters:hover {
-  background: #e0e0e0;
+.btn-clear-sidebar:hover {
+  background: var(--bg-dark);
+  color: var(--accent-gold);
+  border-color: var(--bg-dark);
+  letter-spacing: 0.28em;
 }
 
-.products-main {
-  background: white;
-  border-radius: 8px;
-  padding: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.products-header {
-  margin-bottom: 2rem;
-}
-
-.products-header h1 {
-  margin: 0 0 0.5rem 0;
-  color: #333;
-  font-size: 2rem;
-}
-
-.products-header p {
-  margin: 0;
-  color: #666;
-  font-size: 0.95rem;
+/* ==========================================================================
+   PRODUCTS GRID & MAIN CONTENT
+   ========================================================================== */
+.products-main-content {
+  flex-grow: 1;
 }
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.5rem;
+}
+
+.loading-screen {
+  text-align: center;
+  padding: 8rem 0;
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  letter-spacing: 0.2em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
 }
 
 .empty-products {
   text-align: center;
-  padding: 4rem 2rem;
+  padding: 8rem 2rem;
+  border: 1px solid var(--border-light);
+  background: var(--bg-secondary);
 }
 
 .empty-products p {
-  font-size: 1.1rem;
-  color: #666;
-  margin-bottom: 1.5rem;
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 2rem;
+  letter-spacing: 0.05em;
+}
+
+/* ==========================================================================
+   RESPONSIVE STYLING
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .products-layout-container {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    padding: 2rem 1.5rem;
+  }
+
+  .filters-sidebar {
+    border-right: none;
+    padding-right: 0;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 3rem;
+    position: static;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+
+  .sidebar-filter-section {
+    flex: 1 1 200px;
+  }
+
+  .btn-clear-sidebar {
+    width: auto;
+    align-self: flex-end;
+    padding: 0.85rem 2rem;
+  }
+
+  .products-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
 }
 
 @media (max-width: 768px) {
-  .products-container {
-    grid-template-columns: 1fr;
+  .products-title {
+    font-size: 2.5rem;
   }
-
-  .filters {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    position: static;
-  }
-
-  .filter-group {
-    margin-bottom: 0;
-  }
-
-  .clear-filters {
-    grid-column: 1 / -1;
-  }
-
-  .products-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
-  }
-
-  .products-main {
-    padding: 1rem;
+  
+  .products-hero {
+    padding: 4rem 1rem 3rem;
   }
 }
 
-@media (max-width: 480px) {
-  .products-page {
-    padding: 1rem;
+@media (max-width: 576px) {
+  .filters-sidebar {
+    flex-direction: column;
+    gap: 1.5rem;
   }
 
-  .filters {
-    grid-template-columns: 1fr;
+  .sidebar-filter-section {
+    width: 100%;
+    flex: none;
+  }
+
+  .btn-clear-sidebar {
+    width: 100%;
   }
 
   .products-grid {
     grid-template-columns: 1fr;
+    gap: 2.5rem;
   }
 }

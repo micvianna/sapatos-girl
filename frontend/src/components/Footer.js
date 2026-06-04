@@ -1,62 +1,84 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { FiCreditCard, FiDollarSign, FiSmartphone } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
+import { FiInstagram, FiFacebook, FiTwitter } from 'react-icons/fi';
 import './Footer.css';
 
 export default function Footer() {
-  const { t } = useTranslation();
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="footer">
       <div className="footer-content">
-        <div className="footer-section">
-          <h4>ShoeStyle</h4>
-          <p>Sua loja favorita de sapatos femininos com as melhores marcas e preços.</p>
+        {/* Brand centered column - Cinematic Title */}
+        <div className="footer-section brand-column">
+          <span className="credits-role">STUDIO DIRECTION</span>
+          <h2 className="footer-logo">ATALAIA</h2>
+          <p className="footer-tagline">Conceito e alta costura em calçados e bolsas.</p>
           <div className="social-links">
-            <a href="#facebook">Facebook</a>
-            <a href="#instagram">Instagram</a>
-            <a href="#twitter">Twitter</a>
+            <a href="#instagram" aria-label="Instagram"><FiInstagram /></a>
+            <a href="#facebook" aria-label="Facebook"><FiFacebook /></a>
+            <a href="#twitter" aria-label="Twitter"><FiTwitter /></a>
           </div>
         </div>
 
-        <div className="footer-section">
-          <h4>Links Rápidos</h4>
+        {/* Section 2: Credits / Institutional */}
+        <div className="footer-section links-column">
+          <span className="credits-role">CREW / INSTITUCIONAL</span>
           <ul>
-            <li><a href="/">Início</a></li>
-            <li><a href="/products">Produtos</a></li>
-            <li><a href="#faq">FAQ</a></li>
-            <li><a href="#contact">Contato</a></li>
+            <li>
+              <span className="credits-job">ORIGIN</span>
+              <Link to="/sobre">A Marca</Link>
+            </li>
+            <li>
+              <span className="credits-job">STAGES</span>
+              <Link to="/lojas">Lojas Físicas</Link>
+            </li>
+            <li>
+              <span className="credits-job">TALENTS</span>
+              <Link to="/carreiras">Trabalhe Conosco</Link>
+            </li>
+            <li>
+              <span className="credits-job">INQUIRIES</span>
+              <Link to="/contato">Contato</Link>
+            </li>
+            <li>
+              <span className="credits-job">LEGAL CONTROLLERS</span>
+              <Link to="/politica-privacidade">Privacidade</Link>
+            </li>
           </ul>
         </div>
 
-        <div className="footer-section">
-          <h4>Atendimento</h4>
-          <p>📧 contato@shoestyle.com</p>
-          <p>📱 (11) 9999-9999</p>
-          <p>🕐 Seg-Sex: 9h às 18h</p>
-        </div>
-
-        <div className="footer-section">
-          <h4>Segurança e Pagamento</h4>
-          <div className="payment-methods">
-            <div className="payment-method">
-              <FiCreditCard />
-              <span>Cartão</span>
-            </div>
-            <div className="payment-method">
-              <FiDollarSign />
-              <span>PIX</span>
-            </div>
-            <div className="payment-method">
-              <FiSmartphone />
-              <span>Boleto</span>
-            </div>
+        {/* Section 3: Customer Care / Services */}
+        <div className="footer-section links-column">
+          <span className="credits-role">EXECUTIVE / ATENDIMENTO</span>
+          <ul>
+            <li>
+              <span className="credits-job">FAQ DEPARTMENT</span>
+              <Link to="/faq">Dúvidas Frequentes</Link>
+            </li>
+            <li>
+              <span className="credits-job">RETURN LOGISTICS</span>
+              <Link to="/trocas">Trocas e Devoluções</Link>
+            </li>
+            <li>
+              <span className="credits-job">SHIPPING SPEED</span>
+              <Link to="/entregas">Prazos de Entrega</Link>
+            </li>
+            <li>
+              <span className="credits-job">TRANSACTIONS</span>
+              <Link to="/pagamento">Pagamento</Link>
+            </li>
+          </ul>
+          <div className="footer-contact-info">
+            <p className="credits-job">DIRECT LINE</p>
+            <p>sac@atalaia.com.br</p>
+            <p>(11) 4004-0000</p>
           </div>
         </div>
       </div>
 
       <div className="footer-bottom">
-        <p>&copy; 2024 ShoeStyle. Todos os direitos reservados.</p>
+        <p className="credits-legal">&copy; {currentYear} ATALAIA STUDIOS. ALL SCENARIOS REGISTERED. MADE IN SPAIN & BRAZIL.</p>
       </div>
     </footer>
   );

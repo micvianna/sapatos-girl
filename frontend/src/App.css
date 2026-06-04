@@ -1,13 +1,104 @@
+:root {
+  /* Jason Bergh Cinematic Darkroom Palette */
+  --bg-primary: #121212;     /* Matte Charcoal black */
+  --bg-secondary: #181818;   /* Soft darkroom container */
+  --bg-dark: #0a0a0a;        /* Deep camera viewfinder overlay */
+  
+  --text-primary: #FFFBF2;   /* Warm aged-film cream */
+  --text-secondary: #A3A3A3; /* Raw steel gray */
+  --text-muted: #5A5A5A;     /* Shadow gray */
+  --text-inverse: #121212;
+  
+  --accent-gold: #FFEEC8;    /* Studio light sand gold */
+  --border-light: #262626;   /* Thin technical dark border */
+  --border-dark: #404040;    /* Pronounced grid border */
+  
+  --header-bg: rgba(18, 18, 18, 0.95);
+
+  /* Typography */
+  --font-heading: 'Cormorant Garamond', serif;
+  --font-body: 'Outfit', sans-serif;
+  --font-brand: 'Syne', sans-serif;
+  
+  /* Spatial System */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 2rem;
+  --spacing-lg: 4rem;
+  --spacing-xl: 8rem;
+
+  /* Shadows - Flat & technical (Awwwards design) */
+  --shadow-sm: 0 4px 30px rgba(0, 0, 0, 0.5);
+  --shadow-hover: 0 10px 50px rgba(0, 0, 0, 0.8);
+}
+
+:root[data-theme="light"] {
+  /* Jason Bergh Cinematic Lightroom Palette */
+  --bg-primary: #FFFBF2;     /* Warm aged-film cream paper */
+  --bg-secondary: #F5EFE4;   /* Soft cream container */
+  --bg-dark: #EAE2D5;        /* Deep warm gray viewfinder overlay */
+  
+  --text-primary: #121212;   /* Matte charcoal black */
+  --text-secondary: #5C5C5C; /* Raw steel gray */
+  --text-muted: #9E9E9E;     /* Shadow gray */
+  --text-inverse: #FFFBF2;   /* Warm aged-film cream */
+  
+  --accent-gold: #8A6D3A;    /* Contrast brass gold */
+  --border-light: #E0D7C6;   /* Light border */
+  --border-dark: #BCAE98;    /* Pronounced border */
+  
+  --header-bg: rgba(255, 251, 242, 0.95);
+  
+  --shadow-sm: 0 4px 30px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0 10px 50px rgba(0, 0, 0, 0.1);
+}
+
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-  margin: 0;
-  font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  font-family: var(--font-body);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f9f9f9;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 300;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+/* Italic Rebellion classes to match the editorial typography style */
+.italic-word {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-weight: 300;
+  color: var(--accent-gold);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+a:hover {
+  color: var(--accent-gold);
+}
+
+ul, ol {
+  list-style: none;
 }
 
 .app {
@@ -18,79 +109,199 @@ body {
 
 .main-content {
   flex: 1;
-  background-color: #f9f9f9;
-  animation: fadeIn 0.3s ease-in;
+  background-color: var(--bg-primary);
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+/* ==========================================================================
+   VIEWFINDER & CINEMATIC FRAMING
+   ========================================================================== */
+.viewfinder-container {
+  position: relative;
+  border: 1px solid var(--border-light);
+  overflow: hidden;
 }
 
-/* Global button styles */
+/* Corner indicators for viewfinder */
+.viewfinder-corner {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--accent-gold);
+  pointer-events: none;
+  z-index: 10;
+  transition: all 0.4s ease;
+}
+
+.viewfinder-corner.tl {
+  top: 15px;
+  left: 15px;
+  border-right: none;
+  border-bottom: none;
+}
+
+.viewfinder-corner.tr {
+  top: 15px;
+  right: 15px;
+  border-left: none;
+  border-bottom: none;
+}
+
+.viewfinder-corner.bl {
+  bottom: 15px;
+  left: 15px;
+  border-right: none;
+  border-top: none;
+}
+
+.viewfinder-corner.br {
+  bottom: 15px;
+  right: 15px;
+  border-left: none;
+  border-top: none;
+}
+
+/* Cam stats indicators for a technical film aesthetic */
+.cam-stats-overlay {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-brand);
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  z-index: 8;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+/* ==========================================================================
+   BUTTONS (Cinematic Technical Dials)
+   ========================================================================== */
 .btn {
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.9rem 2.5rem;
+  border: 1px solid var(--border-dark);
+  background: transparent;
+  color: var(--text-primary);
   cursor: pointer;
-  font-size: 0.95rem;
-  font-weight: 600;
-  transition: all 0.3s;
+  font-size: 0.75rem;
+  font-weight: 500;
+  font-family: var(--font-brand);
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   white-space: nowrap;
+  position: relative;
+  border-radius: 0;
+}
+
+.btn:hover {
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+  letter-spacing: 0.3em;
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
-  color: white;
+  background: var(--text-primary);
+  color: var(--text-inverse);
+  border-color: var(--text-primary);
 }
 
-.btn-primary:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(255, 20, 147, 0.3);
-}
-
-.btn-primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.btn-primary:hover {
+  background: transparent;
+  color: var(--accent-gold);
+  border-color: var(--accent-gold);
 }
 
 .btn-outline {
   background: transparent;
-  color: #ff1493;
-  border: 2px solid #ff1493;
+  color: var(--text-primary);
+  border: 1px solid var(--border-light);
 }
 
 .btn-outline:hover {
-  background: #ff1493;
-  color: white;
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
 }
 
-/* Scrollbar */
+.btn:disabled, .btn-primary:disabled {
+  background: #1f1f1f;
+  border-color: var(--border-light);
+  color: var(--text-muted);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Minimal Technical Input Fields */
+input, select, textarea {
+  font-family: var(--font-body);
+  border: 1px solid var(--border-light);
+  background: var(--bg-secondary);
+  padding: 0.9rem 1.2rem;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+  width: 100%;
+  border-radius: 0;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--accent-gold);
+  background: var(--bg-primary);
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--text-muted);
+  font-weight: 300;
+}
+
+/* Scrollbar (Minimalist Darkroom style) */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--bg-dark);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ff1493;
-  border-radius: 10px;
+  background: var(--border-dark);
+  border-radius: 0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #ff69b4;
+  background: var(--accent-gold);
 }
 
-/* Responsive */
+/* Utilities */
+.section {
+  padding: var(--spacing-lg) 5%;
+}
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
 @media (max-width: 768px) {
+  .section {
+    padding: var(--spacing-md) 1rem;
+  }
+  
+  .container {
+    padding: 0 1rem;
+  }
+  
   .btn {
-    padding: 0.6rem 1.2rem;
-    font-size: 0.9rem;
+    padding: 0.8rem 2rem;
   }
 }
