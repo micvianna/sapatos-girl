@@ -32,7 +32,7 @@ import './i18n';
 import './App.css';
 
 function App() {
-  const { token, user, fetchProfile } = useAuthStore();
+  const { token, user, fetchProfile, theme } = useAuthStore();
   const isAdmin = token && user?.is_admin;
 
   React.useEffect(() => {
@@ -40,6 +40,10 @@ function App() {
       fetchProfile().catch(() => {});
     }
   }, [token, fetchProfile]);
+
+  React.useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
 
   return (
     <Router>

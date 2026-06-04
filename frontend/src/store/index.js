@@ -9,6 +9,7 @@ export const useAuthStore = create((set, get) => ({
   token: localStorage.getItem('token'),
   loading: false,
   error: null,
+  theme: localStorage.getItem('theme') || 'dark',
 
   register: async (nome, email, senha, telefone) => {
     set({ loading: true, error: null });
@@ -82,6 +83,13 @@ export const useAuthStore = create((set, get) => ({
       }
       throw error;
     }
+  },
+
+  toggleTheme: () => {
+    const newTheme = get().theme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('theme', newTheme);
+    document.documentElement.setAttribute('data-theme', newTheme);
+    set({ theme: newTheme });
   }
 }));
 

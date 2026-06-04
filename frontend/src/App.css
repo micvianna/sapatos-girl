@@ -12,6 +12,8 @@
   --accent-gold: #FFEEC8;    /* Studio light sand gold */
   --border-light: #262626;   /* Thin technical dark border */
   --border-dark: #404040;    /* Pronounced grid border */
+  
+  --header-bg: rgba(18, 18, 18, 0.95);
 
   /* Typography */
   --font-heading: 'Cormorant Garamond', serif;
@@ -28,6 +30,27 @@
   /* Shadows - Flat & technical (Awwwards design) */
   --shadow-sm: 0 4px 30px rgba(0, 0, 0, 0.5);
   --shadow-hover: 0 10px 50px rgba(0, 0, 0, 0.8);
+}
+
+:root[data-theme="light"] {
+  /* Jason Bergh Cinematic Lightroom Palette */
+  --bg-primary: #FFFBF2;     /* Warm aged-film cream paper */
+  --bg-secondary: #F5EFE4;   /* Soft cream container */
+  --bg-dark: #EAE2D5;        /* Deep warm gray viewfinder overlay */
+  
+  --text-primary: #121212;   /* Matte charcoal black */
+  --text-secondary: #5C5C5C; /* Raw steel gray */
+  --text-muted: #9E9E9E;     /* Shadow gray */
+  --text-inverse: #FFFBF2;   /* Warm aged-film cream */
+  
+  --accent-gold: #8A6D3A;    /* Contrast brass gold */
+  --border-light: #E0D7C6;   /* Light border */
+  --border-dark: #BCAE98;    /* Pronounced border */
+  
+  --header-bg: rgba(255, 251, 242, 0.95);
+  
+  --shadow-sm: 0 4px 30px rgba(0, 0, 0, 0.05);
+  --shadow-hover: 0 10px 50px rgba(0, 0, 0, 0.1);
 }
 
 * {

@@ -45,7 +45,7 @@
 }
 
 .header {
-  background: rgba(18, 18, 18, 0.9) !important;
+  background: var(--header-bg) !important;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   color: var(--text-primary);

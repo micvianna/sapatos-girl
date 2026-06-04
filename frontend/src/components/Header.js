@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation, NavLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FiShoppingCart, FiUser, FiSearch, FiMenu, FiX } from 'react-icons/fi';
+import { FiShoppingCart, FiUser, FiSearch, FiMenu, FiX, FiSun, FiMoon } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuthStore, useCartStore } from '../store';
 import './Header.css';
@@ -12,7 +12,7 @@ export default function Header() {
   const queryParams = new URLSearchParams(location.search);
   const currentCategory = queryParams.get('category');
   const { t, i18n } = useTranslation();
-  const { user, token } = useAuthStore();
+  const { user, token, theme, toggleTheme } = useAuthStore();
   const { items, openCart } = useCartStore();
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -103,9 +103,19 @@ export default function Header() {
             <button
               className="icon-button"
               onClick={() => navigate(token ? '/account' : '/login')}
+              title={token ? "Minha Conta" : "Entrar / Registrar"}
             >
               <FiUser />
             </button>
+
+            <button
+              className="icon-button theme-toggle-btn"
+              onClick={toggleTheme}
+              title={theme === 'dark' ? "Modo Claro" : "Modo Escuro"}
+            >
+              {theme === 'dark' ? <FiSun /> : <FiMoon />}
+            </button>
+
             {user?.is_admin && (
               <button
                 className="icon-button admin-link-btn"
@@ -118,6 +128,7 @@ export default function Header() {
             <button
               className="icon-button cart-badge-container"
               onClick={openCart}
+              title="Carrinho"
             >
               <FiShoppingCart />
               {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}

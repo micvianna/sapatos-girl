@@ -3,14 +3,14 @@
   justify-content: center;
   align-items: center;
   min-height: 60vh;
-  padding: 2rem;
+  padding: 8rem 2rem;
 }
 
 .auth-card {
-  background: white;
+  background: var(--bg-secondary);
   border-radius: 0;
-  box-shadow: none;
-  border: 1px solid #eaeaea;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
   padding: 40px;
   width: 100%;
   max-width: 450px;
@@ -18,11 +18,12 @@
 
 .auth-card h2 {
   text-align: center;
-  color: #000;
+  color: var(--text-primary);
   margin-bottom: 2rem;
   text-transform: uppercase;
   letter-spacing: 2px;
   font-size: 20px;
+  font-family: var(--font-heading);
 }
 
 .form-group {
@@ -32,17 +33,20 @@
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #000;
+  color: var(--text-secondary);
   font-weight: 500;
   text-transform: uppercase;
   font-size: 11px;
   letter-spacing: 1px;
+  font-family: var(--font-brand);
 }
 
 .form-group input {
   width: 100%;
   padding: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--border-light);
+  background: var(--bg-primary);
+  color: var(--text-primary);
   border-radius: 0;
   font-size: 12px;
   transition: all 0.2s;
@@ -51,7 +55,7 @@
 }
 
 .form-group input:focus {
-  border-color: #000;
+  border-color: var(--accent-gold);
 }
 
 .remember-me {
@@ -60,7 +64,7 @@
   gap: 0.5rem;
   margin-bottom: 1.5rem;
   font-size: 12px;
-  color: #666;
+  color: var(--text-secondary);
 }
 
 .remember-me input {
@@ -68,25 +72,26 @@
 }
 
 .error-message {
-  background: #fff;
-  border: 1px solid #ff0000;
-  color: #ff0000;
+  background: rgba(255, 59, 48, 0.1);
+  border: 1px solid #ff3b30;
+  color: #ff3b30;
   padding: 10px;
   border-radius: 0;
   margin-bottom: 15px;
   font-size: 12px;
   text-align: center;
+  font-family: var(--font-body);
 }
 
 .auth-link {
   text-align: center;
   margin-top: 1.5rem;
-  color: #666;
+  color: var(--text-muted);
   font-size: 12px;
 }
 
 .auth-link a {
-  color: #000;
+  color: var(--accent-gold);
   text-decoration: none;
   cursor: pointer;
   font-weight: 600;
@@ -96,7 +101,7 @@
 }
 
 .auth-link a:hover {
-  color: #666;
+  color: var(--text-primary);
   text-decoration: underline;
 }
 
