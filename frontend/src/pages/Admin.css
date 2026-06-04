@@ -274,3 +274,77 @@
 .star-rating { display: flex; gap: 3px; cursor: pointer; }
 .star { font-size: 18px; color: #444; transition: color 0.15s; user-select: none; }
 .star:hover, .star.filled { color: #c8a96e; }
+
+@media (max-width: 768px) {
+  .admin-layout {
+    flex-direction: column;
+  }
+
+  .admin-sidebar {
+    width: 100%;
+    min-height: auto;
+    position: static;
+    padding: 20px 0 10px;
+    border-right: none;
+    border-bottom: 1px solid #2a2a35;
+  }
+
+  .admin-brand {
+    text-align: center;
+    padding: 0 20px 5px;
+  }
+
+  .admin-title {
+    padding: 0 20px 15px;
+    font-size: 18px;
+    border-bottom: none;
+    text-align: center;
+  }
+
+  .admin-nav {
+    flex-direction: row;
+    padding: 10px 20px;
+    gap: 8px;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .admin-nav-btn {
+    padding: 8px 16px;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+
+  .admin-nav-btn.active {
+    border-left: none;
+    border-bottom: 2px solid #c8a96e;
+    border-radius: 0;
+    background: rgba(200, 169, 110, 0.08);
+  }
+
+  .admin-user-info {
+    display: none;
+  }
+
+  .admin-main {
+    padding: 20px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .stat-card {
+    padding: 20px;
+  }
+
+  .product-form, .coupon-form {
+    grid-template-columns: 1fr;
+  }
+}

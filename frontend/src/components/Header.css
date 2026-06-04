@@ -346,3 +346,44 @@
     display: flex;
   }
 }
+
+@media (max-width: 600px) {
+  .announcement-bar {
+    gap: 0.75rem;
+    padding: 8px 10px;
+    font-size: 0.55rem;
+    flex-wrap: wrap;
+  }
+  
+  .announcement-sep, 
+  .camera-spec {
+    display: none;
+  }
+
+  .logo h1 {
+    font-size: 1.4rem;
+    letter-spacing: 0.25em;
+  }
+
+  .header-top-row {
+    padding: 0.75rem 1rem;
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .logo {
+    text-align: center;
+  }
+
+  .header-left {
+    gap: 0.75rem;
+  }
+
+  .header-right {
+    gap: 0.75rem;
+  }
+
+  .lang-current {
+    font-size: 0.65rem;
+    padding: 0.25rem;
+  }
+}

@@ -192,7 +192,7 @@
 .pdp-benefits {
   margin-top: 1.5rem;
   border: 1px solid var(--border-light);
-  background: linear-gradient(180deg, #ffffff 0%, #fbfbfb 100%);
+  background: var(--bg-secondary);
 }
 
 .pdp-benefit-item {
@@ -220,4 +220,33 @@
   font-size: 0.8rem;
   color: var(--text-secondary);
   line-height: 1.5;
+}
+
+@media (max-width: 576px) {
+  .pdp-container {
+    padding: 6rem 1rem 3rem;
+  }
+  
+  .pdp-back {
+    margin-bottom: 2rem;
+  }
+  
+  .pdp-title {
+    font-size: 1.6rem;
+  }
+  
+  .pdp-price {
+    font-size: 1.1rem;
+  }
+  
+  .pdp-option {
+    padding: 0.4rem 1rem;
+    font-size: 0.7rem;
+  }
+  
+  .pdp-add-btn {
+    padding: 1rem;
+    font-size: 0.75rem;
+    margin-top: 1.5rem;
+  }
 }

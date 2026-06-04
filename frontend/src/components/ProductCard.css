@@ -172,3 +172,9 @@
   50% { opacity: 0.8; }
   100% { opacity: 0.6; }
 }
+
+@media (max-width: 1024px) {
+  .wishlist-btn {
+    opacity: 1;
+  }
+}
