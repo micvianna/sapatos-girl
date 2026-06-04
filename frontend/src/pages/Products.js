@@ -99,7 +99,7 @@ export default function Products() {
         {/* Sidebar Filters */}
         <aside className="filters-sidebar">
           <div className="sidebar-filter-section">
-            <h3>Buscar</h3>
+            <h3>PARAM // SEARCH</h3>
             <input
               type="text"
               name="busca"
@@ -110,7 +110,7 @@ export default function Products() {
           </div>
 
           <div className="sidebar-filter-section">
-            <h3>Categorias</h3>
+            <h3>PARAM // CATEGORY</h3>
             <select name="categoria" value={filters.categoria} onChange={handleFilterChange}>
               <option value="">{t('products.allCategories')}</option>
               {categories.map(cat => (
@@ -120,7 +120,7 @@ export default function Products() {
           </div>
 
           <div className="sidebar-filter-section">
-            <h3>Ordenar Por</h3>
+            <h3>PARAM // ORDER</h3>
             <select name="sort" value={filters.sort} onChange={handleFilterChange}>
               <option value="nome_asc">A-Z</option>
               <option value="preco_asc">{t('products.minPrice')}</option>
@@ -130,7 +130,7 @@ export default function Products() {
           </div>
 
           <div className="sidebar-filter-section">
-            <h3>Faixa de Preço</h3>
+            <h3>APERTURE // PRICE</h3>
             <div className="price-inputs">
               <input
                 type="number"

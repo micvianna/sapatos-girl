@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const { Pool } = require('pg');
+const swaggerUi = require('swagger-ui-express');
+const openapiSpec = require('./config/openapi.json');
 
 dotenv.config();
 
@@ -47,6 +49,11 @@ pool.on('error', (err) => console.error('Pool error:', err.message));
 module.exports = { app, pool };
 
 // Routes
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpec));
+app.get('/api/openapi.json', (req, res) => {
+  res.json(openapiSpec);
+});
+
 app.get('/api/health', (req, res) => {
   res.json({ message: 'Server is running', status: 'ok' });
 });

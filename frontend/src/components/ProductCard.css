@@ -5,7 +5,12 @@
   flex-direction: column;
   height: 100%;
   cursor: pointer;
-  /* For tailwind-like arbitrary groupings if needed conceptually */
+  border: 1px solid var(--border-light);
+  transition: border-color 0.4s ease;
+}
+
+.product-card:hover {
+  border-color: var(--border-dark);
 }
 
 /* ==========================================================================
@@ -15,58 +20,58 @@
   position: relative;
   aspect-ratio: 3/4;
   overflow: hidden;
-  background-color: var(--bg-secondary);
+  background-color: var(--bg-dark);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .product-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  opacity: 0.85;
+  transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
 }
 
 .product-card:hover .product-image {
-  transform: scale(1.05);
+  transform: scale(1.03);
+  opacity: 1;
 }
 
-/* Wishlist heart — always accessible, meets WCAG 2.5.5 (44x44px min) */
+/* Wishlist heart */
 .wishlist-btn {
   position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  background: rgba(255, 255, 255, 0.7);
-  border: none;
-  border-radius: 50%;
-  min-width: 44px;
-  min-height: 44px;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(24, 24, 24, 0.8);
+  border: 1px solid var(--border-light);
+  min-width: 40px;
+  min-height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: var(--text-primary);
-  opacity: 0.6;
-  transition: all 0.4s ease;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 10;
   cursor: pointer;
 }
 
 .product-card:hover .wishlist-btn {
   opacity: 1;
-  background: rgba(255, 255, 255, 0.9);
 }
 
 .wishlist-btn:hover {
   color: var(--accent-gold);
+  border-color: var(--accent-gold);
+  background: var(--bg-primary);
 }
 
 .wishlist-btn.favorited {
   opacity: 1;
-  color: #d32f2f;
-  background: rgba(255, 255, 255, 0.9);
-}
-
-.wishlist-btn.favorited:hover {
-  color: #b71c1c;
+  color: #ff3b30;
+  border-color: #ff3b30;
+  background: var(--bg-secondary);
 }
 
 .wishlist-btn:disabled {
@@ -86,10 +91,10 @@
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  background: linear-gradient(to top, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 100%);
+  background: linear-gradient(to top, rgba(18, 18, 18, 0.95) 0%, rgba(18, 18, 18, 0) 100%);
   opacity: 0;
-  transform: translateY(20px);
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: translateY(15px);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   z-index: 10;
 }
 
@@ -100,11 +105,11 @@
 
 .btn-quick-add {
   width: 100%;
-  padding: 1rem 0;
+  padding: 0.85rem 0;
   background: var(--text-primary);
   color: var(--text-inverse);
   border: 1px solid var(--text-primary);
-  font-family: var(--font-body);
+  font-family: var(--font-brand);
   font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 0.2rem;
@@ -114,12 +119,13 @@
 }
 
 .btn-quick-add:hover {
-  background: var(--bg-primary);
-  color: var(--text-primary);
+  background: transparent;
+  color: var(--accent-gold);
+  border-color: var(--accent-gold);
 }
 
 .btn-quick-add.disabled {
-  background: var(--border-light);
+  background: var(--bg-secondary);
   border-color: var(--border-light);
   color: var(--text-muted);
   cursor: not-allowed;
@@ -129,15 +135,15 @@
    PRODUCT DETAILS
    ========================================================================== */
 .product-details {
-  padding: 1.5rem 1rem 2rem;
+  padding: 1.5rem 1.2rem;
   text-align: center;
   background: var(--bg-primary);
 }
 
 .product-title {
-  font-family: var(--font-body);
+  font-family: var(--font-brand);
   font-size: 0.75rem;
-  font-weight: 400;
+  font-weight: 500;
   letter-spacing: 0.15em;
   color: var(--text-primary);
   text-transform: uppercase;
@@ -148,28 +154,21 @@
 .product-price {
   font-family: var(--font-body);
   font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--text-secondary);
+  font-weight: 400;
+  color: var(--accent-gold);
   letter-spacing: 0.05em;
 }
 
 /* Skeleton Loading */
 .product-card.skeleton {
-  background: var(--border-light);
+  background: var(--bg-secondary);
   aspect-ratio: 3/4;
   animation: pulse 1.5s infinite;
+  border-color: var(--border-light);
 }
 
 @keyframes pulse {
-  0% {
-    opacity: 0.6;
-  }
-
-  50% {
-    opacity: 0.9;
-  }
-
-  100% {
-    opacity: 0.6;
-  }
+  0% { opacity: 0.6; }
+  50% { opacity: 0.8; }
+  100% { opacity: 0.6; }
 }

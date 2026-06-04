@@ -45,7 +45,15 @@ export default function Header() {
   return (
     <>
       <div className="announcement-bar">
-        {t('header.announcement')}
+        <span className="announcement-txt">{t('header.announcement')}</span>
+        <span className="announcement-sep">/</span>
+        <span className="rec-indicator">
+          <span className="red-dot"></span>REC
+        </span>
+        <span className="announcement-sep">/</span>
+        <span className="camera-spec">ROLL A09_2026</span>
+        <span className="announcement-sep">/</span>
+        <span className="camera-spec">35MM FORMAT</span>
       </div>
 
       <motion.header

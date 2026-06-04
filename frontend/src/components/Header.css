@@ -1,24 +1,59 @@
 .announcement-bar {
-  background: linear-gradient(90deg, #111111 0%, #2b2b2b 50%, #111111 100%);
-  color: var(--text-inverse);
+  background: var(--bg-dark);
+  color: var(--accent-gold);
   text-align: center;
-  padding: 8px 15px;
-  font-size: 0.65rem;
+  padding: 10px 20px;
+  font-size: 0.6rem;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  font-weight: 400;
+  font-family: var(--font-brand);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.announcement-sep {
+  color: var(--text-muted);
+  opacity: 0.5;
+}
+
+.rec-indicator {
+  display: flex;
+  align-items: center;
+  color: #ff3b30;
+  font-weight: 700;
+}
+
+.red-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  background: #ff3b30;
+  border-radius: 50%;
+  margin-right: 6px;
+  animation: blink 1.5s infinite steps(2, start);
+}
+
+@keyframes blink {
+  to { visibility: hidden; }
+}
+
+.camera-spec {
+  color: var(--text-secondary);
 }
 
 .header {
-  background: rgba(255, 255, 255, 0.78);
+  background: rgba(18, 18, 18, 0.9) !important;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   color: var(--text-primary);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid var(--border-light) !important;
   position: sticky;
   top: 0;
   z-index: 1000;
-  transition: background-color 0.4s ease;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .header-top-row {
@@ -38,14 +73,13 @@
 
 .search-toggle {
   cursor: pointer;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: var(--text-primary);
-  transition: opacity 0.3s ease;
-  opacity: 0.8;
+  transition: all 0.3s ease;
 }
 
 .search-toggle:hover {
-  opacity: 1;
+  color: var(--accent-gold);
 }
 
 .logo {
@@ -56,11 +90,16 @@
   margin: 0;
   font-size: 2.2rem;
   font-family: var(--font-heading);
-  font-weight: 500;
-  letter-spacing: 0.35em;
+  font-weight: 300;
+  letter-spacing: 0.4em;
   cursor: pointer;
   text-transform: uppercase;
   color: var(--text-primary);
+  transition: all 0.4s ease;
+}
+
+.logo h1:hover {
+  color: var(--accent-gold);
 }
 
 .header-right {
@@ -75,21 +114,20 @@
   justify-content: center;
   align-items: center;
   gap: 3rem;
-  padding: 0.5rem 3rem 1.5rem;
+  padding: 0.75rem 3rem 1.5rem;
   max-width: 1600px;
   margin: 0 auto;
-  border-bottom: 1px solid var(--border-light);
 }
 
 .nav-links-row a {
   text-decoration: none;
   color: var(--text-secondary);
   font-size: 0.75rem;
-  font-family: var(--font-body);
+  font-family: var(--font-brand);
   font-weight: 500;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.25em;
   text-transform: uppercase;
-  transition: color 0.3s ease;
+  transition: all 0.3s ease;
   position: relative;
 }
 
@@ -112,26 +150,24 @@
 
 .nav-links-row a:hover,
 .nav-links-row a.active {
-  color: var(--text-primary);
+  color: var(--accent-gold);
 }
 
 .icon-button {
   background: none;
   border: none;
   color: var(--text-primary);
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   cursor: pointer;
   padding: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.3s ease;
-  opacity: 0.8;
-  position: relative;
+  transition: all 0.3s ease;
 }
 
 .icon-button:hover {
-  opacity: 1;
+  color: var(--accent-gold);
 }
 
 /* ==========================================================================
@@ -145,26 +181,25 @@
 }
 
 .lang-current {
-  font-family: var(--font-body);
+  font-family: var(--font-brand);
   font-size: 0.7rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
   color: var(--text-primary);
   padding: 0.5rem;
   display: block;
-  opacity: 0.8;
-  transition: opacity 0.3s;
+  transition: all 0.3s;
 }
 
 .lang-current:hover {
-  opacity: 1;
+  color: var(--accent-gold);
 }
 
 .lang-dropdown {
   position: absolute;
   top: 100%;
   right: 0;
-  background: var(--bg-primary);
+  background: var(--bg-secondary);
   border: 1px solid var(--border-light);
   min-width: 180px;
   box-shadow: var(--shadow-hover);
@@ -177,9 +212,9 @@
   padding: 0.75rem 1rem;
   background: none;
   border: none;
-  font-family: var(--font-body);
+  font-family: var(--font-brand);
   font-size: 0.7rem;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   color: var(--text-primary);
   cursor: pointer;
   text-align: left;
@@ -187,12 +222,14 @@
 }
 
 .lang-option:hover {
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
+  color: var(--accent-gold);
 }
 
 .lang-option.active {
   font-weight: 600;
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
+  color: var(--accent-gold);
 }
 
 @media (max-width: 768px) {
@@ -205,26 +242,26 @@
   }
 }
 
-/* Cart */
+/* Cart Badge */
 .cart-badge-container {
   position: relative;
 }
 
 .cart-badge {
   position: absolute;
-  top: 0px;
-  right: -5px;
-  background: var(--text-primary);
+  top: -2px;
+  right: -4px;
+  background: var(--accent-gold);
   color: var(--text-inverse);
-  font-size: 0.6rem;
-  width: 16px;
-  height: 16px;
+  font-size: 0.55rem;
+  width: 15px;
+  height: 15px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-body);
-  font-weight: 600;
+  font-family: var(--font-brand);
+  font-weight: 700;
 }
 
 .mobile-menu {
@@ -237,7 +274,7 @@
   top: 100%;
   left: 0;
   width: 100%;
-  background: var(--bg-primary);
+  background: var(--bg-secondary);
   padding: 4rem 2rem;
   display: flex;
   justify-content: center;
@@ -250,13 +287,14 @@
   width: 100%;
   max-width: 800px;
   border: none;
-  border-bottom: 1px solid var(--text-primary);
+  border-bottom: 1px solid var(--accent-gold);
   padding: 1rem 0;
   font-size: 1.5rem;
   font-family: var(--font-heading);
   outline: none;
   letter-spacing: 0.05em;
   background: transparent;
+  color: var(--text-primary);
 }
 
 .search-dropdown input::placeholder {
@@ -267,7 +305,7 @@
 .close-search {
   background: none;
   border: none;
-  font-size: 2rem;
+  font-size: 1.8rem;
   cursor: pointer;
   margin-left: 3rem;
   color: var(--text-primary);
@@ -276,6 +314,7 @@
 
 .close-search:hover {
   transform: rotate(90deg);
+  color: var(--accent-gold);
 }
 
 @media (max-width: 1024px) {
@@ -290,7 +329,7 @@
     top: 100%;
     left: 0;
     width: 100%;
-    background: var(--bg-primary);
+    background: var(--bg-secondary);
     flex-direction: column;
     gap: 1.5rem;
     padding: 2rem;

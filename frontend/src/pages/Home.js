@@ -93,9 +93,7 @@ export default function Home() {
             </div>
           </motion.div>
         )}
-      </AnimatePresence>
-
-      {/* Main Hero Banner split 50/50 */}
+      </AnimatePresence>      {/* Main Hero Banner split 50/50 */}
       <section className="hero-split">
         <motion.div 
           className="hero-split-left"
@@ -104,8 +102,8 @@ export default function Home() {
           transition={{ duration: 0.8 }}
         >
           <div className="hero-split-content">
-            <span className="hero-split-tag">COLEÇÃO EXCLUSIVA</span>
-            <h1>THE MAJESTY OF BURGUNDY</h1>
+            <span className="hero-split-tag">ROLL A09_2026 // SCENE 01</span>
+            <h1>THE MAJESTY <span className="italic-word">of</span> BURGUNDY</h1>
             <p>Descubra o requinte do novo clássico em sapatos e bolsas de luxo.</p>
             <button className="btn btn-hero" onClick={() => navigate('/products')}>{t('home.heroCta')}</button>
           </div>
@@ -117,18 +115,29 @@ export default function Home() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <img
-            src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop"
-            alt="Campanha Atalaia Burgundy"
-            className="hero-split-img"
-          />
+          <div className="viewfinder-container">
+            <div className="viewfinder-corner tl"></div>
+            <div className="viewfinder-corner tr"></div>
+            <div className="viewfinder-corner bl"></div>
+            <div className="viewfinder-corner br"></div>
+            <img
+              src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=2070&auto=format&fit=crop"
+              alt="Campanha Atalaia Burgundy"
+              className="hero-split-img"
+            />
+            <div className="cam-stats-overlay">
+              <span>LENS 50MM</span>
+              <span>F/1.8</span>
+              <span>ISO 400</span>
+            </div>
+          </div>
         </motion.div>
       </section>
 
       <section className="editorial-strip">
         <div className="editorial-card">
           <span className="editorial-label">{t('common.new') || 'New'}</span>
-          <h3>Curadoria da Semana</h3>
+          <h3>CURATED <span className="italic-word">weekly</span> LOOKS</h3>
           <p>Peças selecionadas para compor looks versáteis com assinatura Atalaia.</p>
           <button className="btn btn-outline" onClick={() => navigate('/products?category=new')}>
             Explorar curadoria
@@ -152,17 +161,21 @@ export default function Home() {
 
       {/* Brand Philosophy Section */}
       <section className="brand-philosophy">
+        <div className="philosophy-header">
+          <span className="credits-role">OUR ETHOS</span>
+          <h2>A BEAUTY <span className="italic-word">in the</span> PAUSE</h2>
+        </div>
         <div className="philosophy-container">
           <div className="philosophy-item">
-            <h3>Feito à Mão</h3>
+            <h3>FEITO À MÃO</h3>
             <p>Cada sapato e bolsa Atalaia é confeccionado artesanalmente por mestres sapateiros com atenção a cada detalhe.</p>
           </div>
           <div className="philosophy-item">
-            <h3>Couro Nobre</h3>
+            <h3>COURO NOBRE</h3>
             <p>Utilizamos apenas couros premium de origem certificada, garantindo durabilidade, maciez e conforto inigualáveis.</p>
           </div>
           <div className="philosophy-item">
-            <h3>Edições Limitadas</h3>
+            <h3>EDIÇÕES LIMITADAS</h3>
             <p>Nossas coleções são produzidas em tiragens pequenas para garantir exclusividade e controle rigoroso de qualidade.</p>
           </div>
         </div>
