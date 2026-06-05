@@ -23,6 +23,7 @@
     "sapatos": "SAPATOS",
     "bolsas": "BOLSAS",
     "acessorios": "ACESSÓRIOS",
+    "mules": "MULES",
     "sale": "SALE"
   },
   "home": {
@@ -74,7 +75,8 @@
     "categoryBolsas": "Bolsas",
     "categoryAcessórios": "Acessórios",
     "categoryTênis": "Tênis",
-    "categoryScarpins": "Scarpins"
+    "categoryScarpins": "Scarpins",
+    "categoryMules": "Mules"
   },
   "cart": {
     "title": "Meu Carrinho",

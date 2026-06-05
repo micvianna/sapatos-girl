@@ -1,6 +1,7 @@
 const express = require('express');
 const { pool } = require('../server');
 const adminAuth = require('../middleware/adminAuth');
+const { normalizeCategory } = require('../utils/categoryHelper');
 
 const router = express.Router();
 
@@ -36,9 +37,10 @@ router.get('/', async (req, res) => {
     const params = [];
 
     if (categoria) {
-      query += ' AND categoria = $' + (params.length + 1);
-      countQuery += ' AND categoria = $' + (params.length + 1);
-      params.push(categoria);
+      const normalized = normalizeCategory(categoria);
+      query += ' AND categoria ILIKE $' + (params.length + 1);
+      countQuery += ' AND categoria ILIKE $' + (params.length + 1);
+      params.push(normalized);
     }
 
     if (preco_min) {

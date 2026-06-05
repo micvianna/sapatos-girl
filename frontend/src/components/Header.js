@@ -142,6 +142,7 @@ export default function Header() {
           <NavLink to="/products?category=botas" className={currentCategory === 'botas' ? 'active' : ''} onClick={() => setMenuOpen(false)}>{t('header.botas')}</NavLink>
           <NavLink to="/products?category=shoes" className={currentCategory === 'shoes' ? 'active' : ''} onClick={() => setMenuOpen(false)}>{t('header.sapatos')}</NavLink>
           <NavLink to="/products?category=bags" className={currentCategory === 'bags' ? 'active' : ''} onClick={() => setMenuOpen(false)}>{t('header.bolsas')}</NavLink>
+          <NavLink to="/products?category=mules" className={currentCategory === 'mules' ? 'active' : ''} onClick={() => setMenuOpen(false)}>{t('header.mules')}</NavLink>
           <NavLink to="/products?category=accessories" className={currentCategory === 'accessories' ? 'active' : ''} onClick={() => setMenuOpen(false)}>{t('header.acessorios')}</NavLink>
         </div>
 

@@ -78,7 +78,8 @@ export default function Products() {
     t('products.categoryBolsas'),
     t('products.categoryAcessórios'),
     t('products.categoryTênis'),
-    t('products.categoryScarpins')
+    t('products.categoryScarpins'),
+    t('products.categoryMules')
   ];
 
   return (
