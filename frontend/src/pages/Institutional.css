@@ -1,0 +1,92 @@
+.institutional-container {
+    padding: 80px 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    min-height: 60vh;
+}
+
+.institutional-container h1 {
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--text-primary);
+    text-align: center;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 20px;
+}
+
+.institutional-container h2 {
+    font-size: 1.5rem;
+    margin: 40px 0 20px;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.institutional-container p {
+    line-height: 1.8;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+}
+
+.institutional-container ul {
+    margin-bottom: 20px;
+    padding-left: 20px;
+}
+
+.institutional-container li {
+    line-height: 1.8;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+
+.institutional-hero {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.institutional-hero img {
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
+    margin-bottom: 20px;
+}
+
+.faq-item {
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 20px;
+}
+
+.faq-item h3 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 40px;
+}
+
+@media (max-width: 768px) {
+    .contact-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.store-card {
+    background: var(--bg-secondary);
+    padding: 30px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.store-card h3 {
+    font-size: 1.4rem;
+    margin-bottom: 15px;
+}
