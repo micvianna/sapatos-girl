@@ -69,8 +69,8 @@
 
 .wishlist-btn.favorited {
   opacity: 1;
-  color: #ff3b30;
-  border-color: #ff3b30;
+  color: var(--error);
+  border-color: var(--error);
   background: var(--bg-secondary);
 }
 

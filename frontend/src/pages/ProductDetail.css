@@ -185,8 +185,8 @@
 }
 
 .pdp-add-btn.added {
-  background: #388e3c;
-  border-color: #388e3c;
+  background: var(--success);
+  border-color: var(--success);
 }
 
 .pdp-benefits {

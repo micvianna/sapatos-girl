@@ -198,9 +198,9 @@
   font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.1em;
-  color: #388e3c;
+  color: var(--success);
   padding: 0.25rem 0.6rem;
-  border: 1px solid #388e3c;
+  border: 1px solid var(--success);
 }
 
 /* ==========================================================================
@@ -210,8 +210,8 @@
   padding: 1rem;
   margin-bottom: 2rem;
   background: transparent;
-  border: 1px solid #d32f2f;
-  color: #d32f2f;
+  border: 1px solid var(--error);
+  color: var(--error);
   font-family: var(--font-body);
   font-size: 0.8rem;
   letter-spacing: 0.1em;
@@ -239,13 +239,13 @@
 }
 
 .same-day-banner.active {
-  background: rgba(56, 142, 60, 0.05);
-  border-color: #388e3c;
-  color: #388e3c;
+  background: var(--success-tint);
+  border-color: var(--success);
+  color: var(--success);
 }
 
 .same-day-banner.inactive {
-  background: rgba(194, 165, 120, 0.05);
+  background: var(--accent-tint);
   border-color: var(--accent-gold);
   color: var(--accent-gold);
 }
@@ -364,6 +364,6 @@
 }
 
 .totals-row.discount-row {
-  color: #388e3c;
+  color: var(--success);
   font-weight: 500;
 }

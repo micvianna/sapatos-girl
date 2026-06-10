@@ -189,18 +189,18 @@ export default function Login() {
 
         {resetStep === 'none' && (
           <p className="auth-link" style={{ marginTop: '15px' }}>
-            <a onClick={() => setResetStep('request')} style={{ cursor: 'pointer', fontWeight: 'bold' }}>{t('auth.forgotPassword')}</a>
+            <button type="button" className="link-button" onClick={() => setResetStep('request')}>{t('auth.forgotPassword')}</button>
           </p>
         )}
 
         {isResetting && (
           <p className="auth-link" style={{ marginTop: '15px' }}>
-            <a onClick={() => { setResetStep('none'); setLocalError(''); }} style={{ cursor: 'pointer', fontWeight: 'bold' }}>{t('auth.backToLogin')}</a>
+            <button type="button" className="link-button" onClick={() => { setResetStep('none'); setLocalError(''); }}>{t('auth.backToLogin')}</button>
           </p>
         )}
 
         <p className="auth-link">
-          {t('auth.dontHaveAccount')} <a onClick={() => navigate('/register')} style={{ cursor: 'pointer' }}>{t('common.register')}</a>
+          {t('auth.dontHaveAccount')} <button type="button" className="link-button" onClick={() => navigate('/register')}>{t('common.register')}</button>
         </p>
       </div>
     </div>

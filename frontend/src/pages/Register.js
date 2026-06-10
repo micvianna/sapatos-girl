@@ -101,7 +101,7 @@ export default function Register() {
         </form>
 
         <p className="auth-link">
-          {t('auth.alreadyHaveAccount')} <a onClick={() => navigate('/login')}>{t('auth.login')}</a>
+          {t('auth.alreadyHaveAccount')} <button type="button" className="link-button" onClick={() => navigate('/login')}>{t('auth.login')}</button>
         </p>
       </div>
     </div>

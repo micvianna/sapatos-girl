@@ -22,7 +22,7 @@
 .rec-indicator {
   display: flex;
   align-items: center;
-  color: #ff3b30;
+  color: var(--error);
   font-weight: 700;
 }
 
@@ -30,7 +30,7 @@
   display: inline-block;
   width: 7px;
   height: 7px;
-  background: #ff3b30;
+  background: var(--error);
   border-radius: 50%;
   margin-right: 6px;
   animation: blink 1.5s infinite steps(2, start);

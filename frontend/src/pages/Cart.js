@@ -29,7 +29,7 @@ export default function Cart() {
     };
 
     loadCart();
-  }, [token]);
+  }, [token, fetchCart, navigate]);
 
   const handleRemove = async (itemId) => {
     try {

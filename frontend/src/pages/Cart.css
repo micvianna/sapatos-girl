@@ -194,7 +194,7 @@
 }
 
 .remove-button:hover {
-  color: #ff3b30;
+  color: var(--error);
 }
 
 .cart-summary {

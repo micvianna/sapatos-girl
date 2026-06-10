@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store';
 import axios from 'axios';
@@ -35,25 +35,25 @@ export default function Admin() {
     const [newCoupon, setNewCoupon] = useState({ codigo: '', desconto: '', tipo: 'percent', expiracao: '', uso_max: 100 });
     const [feedback, setFeedback] = useState('');
 
-    const headers = { Authorization: `Bearer ${token}` };
+    const headers = useMemo(() => ({ Authorization: `Bearer ${token}` }), [token]);
 
     const showFeedback = (msg) => { setFeedback(msg); setTimeout(() => setFeedback(''), 3000); };
 
     const loadStats = useCallback(async () => {
         try { const r = await axios.get(`${API}/admin/stats`, { headers }); setStats(r.data); } catch { }
-    }, [token]);
+    }, [headers]);
 
     const loadUsers = useCallback(async () => {
         try { const r = await axios.get(`${API}/admin/users`, { headers }); setUsers(r.data); } catch { }
-    }, [token]);
+    }, [headers]);
 
     const loadProducts = useCallback(async () => {
         try { const r = await axios.get(`${API}/admin/products`, { headers }); setProducts(r.data); } catch { }
-    }, [token]);
+    }, [headers]);
 
     const loadCoupons = useCallback(async () => {
         try { const r = await axios.get(`${API}/admin/coupons`, { headers }); setCoupons(r.data); } catch { }
-    }, [token]);
+    }, [headers]);
 
     useEffect(() => {
         if (!token || !user?.is_admin) { navigate('/login'); return; }

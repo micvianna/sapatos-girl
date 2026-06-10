@@ -65,7 +65,7 @@
   font-family: var(--font-brand);
 }
 .admin-nav-btn:hover { background: var(--bg-primary); color: var(--text-primary); }
-.admin-nav-btn.active { background: rgba(184, 156, 99, 0.12); color: var(--accent-gold); border-left: 3px solid var(--accent-gold); }
+.admin-nav-btn.active { background: var(--accent-tint-strong); color: var(--accent-gold); border-left: 3px solid var(--accent-gold); }
 
 .admin-user-info {
   padding: 24px;
@@ -183,10 +183,10 @@
   vertical-align: middle;
   color: var(--text-primary);
 }
-.admin-table tbody tr:hover { background: rgba(184, 156, 99, 0.04); }
+.admin-table tbody tr:hover { background: var(--accent-tint); }
 .admin-table tbody tr:last-child td { border-bottom: none; }
 .row-inactive { opacity: 0.45; }
-.row-admin td { background: rgba(184, 156, 99, 0.04); }
+.row-admin td { background: var(--accent-tint); }
 
 /* Badges */
 .badge {
@@ -197,10 +197,10 @@
   letter-spacing: 1px;
   text-transform: uppercase;
 }
-.badge-admin { background: rgba(184, 156, 99, 0.15); color: var(--accent-gold); }
+.badge-admin { background: var(--accent-tint-strong); color: var(--accent-gold); }
 .badge-user { background: var(--bg-primary); color: var(--text-secondary); }
-.badge-active { background: rgba(72,199,142,0.12); color: #48c78e; }
-.badge-inactive { background: rgba(255,80,80,0.1); color: #ff5050; }
+.badge-active { background: var(--success-tint); color: var(--success); }
+.badge-inactive { background: var(--error-tint); color: var(--error); }
 
 /* Action buttons */
 .action-btns { display: flex; gap: 8px; }
@@ -216,10 +216,10 @@
 }
 .btn-edit { background: var(--bg-primary); color: var(--text-secondary); border: 1px solid var(--border-light); }
 .btn-edit:hover { background: var(--bg-secondary); color: var(--text-primary); }
-.btn-toggle { background: rgba(100,149,237,0.12); color: #6495ed; }
-.btn-toggle:hover { background: rgba(100,149,237,0.25); }
-.btn-delete { background: rgba(255,80,80,0.1); color: #ff5050; }
-.btn-delete:hover { background: rgba(255,80,80,0.2); }
+.btn-toggle { background: var(--info-tint); color: var(--info); }
+.btn-toggle:hover { background: var(--info-tint); filter: brightness(1.2); }
+.btn-delete { background: var(--error-tint); color: var(--error); }
+.btn-delete:hover { background: var(--error-tint); filter: brightness(1.2); }
 .btn-save { background: var(--accent-gold); color: var(--bg-primary); font-weight: 700; padding: 10px 20px; }
 .btn-save:hover { background: var(--text-primary); color: var(--bg-primary); }
 .btn-cancel { background: var(--bg-primary); color: var(--text-secondary); padding: 10px 20px; border: 1px solid var(--border-light); }
@@ -277,7 +277,7 @@
 
 /* Star Rating */
 .star-rating { display: flex; gap: 3px; cursor: pointer; }
-.star { font-size: 18px; color: #444; transition: color 0.15s; user-select: none; }
+.star { font-size: 18px; color: var(--border-dark); transition: color 0.15s; user-select: none; }
 .star:hover, .star.filled { color: var(--accent-gold); }
 
 @media (max-width: 768px) {
@@ -329,7 +329,7 @@
     border-left: none;
     border-bottom: 2px solid var(--accent-gold);
     border-radius: 0;
-    background: rgba(184, 156, 99, 0.08);
+    background: var(--accent-tint);
   }
 
   .admin-user-info {

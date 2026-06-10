@@ -17,6 +17,18 @@
   --hover-gradient: linear-gradient(to top, rgba(18, 18, 18, 0.95) 0%, rgba(18, 18, 18, 0) 100%);
   --wishlist-btn-bg: rgba(24, 24, 24, 0.8);
 
+  /* Semantic feedback colors (warm-tinted to match the darkroom palette) */
+  --success: #8FBF9A;
+  --success-tint: rgba(143, 191, 154, 0.1);
+  --error: #E2574C;
+  --error-tint: rgba(226, 87, 76, 0.1);
+  --info: #8FA8D8;
+  --info-tint: rgba(143, 168, 216, 0.12);
+
+  /* Translucent gold tints for highlights and active states */
+  --accent-tint: rgba(255, 238, 200, 0.06);
+  --accent-tint-strong: rgba(255, 238, 200, 0.14);
+
   /* Typography */
   --font-heading: 'Cormorant Garamond', serif;
   --font-body: 'Outfit', sans-serif;
@@ -52,6 +64,16 @@
   --header-bg: rgba(255, 251, 242, 0.95);
   --hover-gradient: linear-gradient(to top, rgba(255, 251, 242, 0.95) 0%, rgba(255, 251, 242, 0) 100%);
   --wishlist-btn-bg: rgba(255, 255, 255, 0.8);
+
+  --success: #2E7D4F;
+  --success-tint: rgba(46, 125, 79, 0.08);
+  --error: #C0392B;
+  --error-tint: rgba(192, 57, 43, 0.08);
+  --info: #3A5FA8;
+  --info-tint: rgba(58, 95, 168, 0.08);
+
+  --accent-tint: rgba(138, 109, 58, 0.07);
+  --accent-tint-strong: rgba(138, 109, 58, 0.16);
   
   --shadow-sm: 0 4px 30px rgba(0, 0, 0, 0.05);
   --shadow-hover: 0 10px 50px rgba(0, 0, 0, 0.1);
