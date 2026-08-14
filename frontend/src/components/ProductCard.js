@@ -53,7 +53,7 @@ export default function ProductCard({ productId }) {
   const colors = product.cores?.split(',') || [];
 
   return (
-    <div className="product-card">
+    <div className="product-card" data-testid="product-card">
       <div className="product-image">
         <img src={product.imagem} alt={product.nome} />
         <button className="wishlist-btn">
@@ -119,6 +119,7 @@ export default function ProductCard({ productId }) {
         </div>
 
         <button 
+          data-testid="add-to-cart"
           className="add-to-cart-btn"
           onClick={handleAddToCart}
           disabled={product.estoque === 0}

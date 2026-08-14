@@ -6,7 +6,10 @@
     "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
     "backend": "cd backend && npm run dev",
     "frontend": "cd frontend && npm start",
-    "dev": "concurrently \"npm run backend\" \"npm run frontend\""
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
+    "test:api": "python3 -m pytest -c tests/pytest.ini tests/api -v",
+    "test:integration": "python3 -m pytest -c tests/pytest.ini tests/integration -m integration -v",
+    "test:e2e": "npm --prefix frontend run test:e2e"
   },
   "devDependencies": {
     "concurrently": "^8.2.0"

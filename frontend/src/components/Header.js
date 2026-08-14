@@ -8,7 +8,7 @@ import './Header.css';
 export default function Header() {
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
-  const { user, token, logout } = useAuthStore();
+  const { token, logout } = useAuthStore();
 
   const handleLanguageChange = (lang) => {
     i18n.changeLanguage(lang);
@@ -44,12 +44,14 @@ export default function Header() {
           <div className="language-selector">
             <FiGlobe />
             <button 
+              data-testid="language-pt"
               className={i18n.language === 'pt-BR' ? 'active' : ''}
               onClick={() => handleLanguageChange('pt-BR')}
             >
               PT
             </button>
             <button 
+              data-testid="language-en"
               className={i18n.language === 'en-US' ? 'active' : ''}
               onClick={() => handleLanguageChange('en-US')}
             >
@@ -58,6 +60,7 @@ export default function Header() {
           </div>
 
           <button 
+            data-testid="cart-link"
             className="icon-button"
             onClick={() => navigate('/cart')}
             title={t('common.cart')}
@@ -75,6 +78,7 @@ export default function Header() {
                 <FiUser />
               </button>
               <button 
+                data-testid="logout-button"
                 className="icon-button logout"
                 onClick={handleLogout}
                 title={t('common.logout')}
@@ -85,12 +89,14 @@ export default function Header() {
           ) : (
             <>
               <button 
+                data-testid="login-link"
                 className="btn btn-outline"
                 onClick={() => navigate('/login')}
               >
                 {t('common.login')}
               </button>
               <button 
+                data-testid="register-link"
                 className="btn btn-primary"
                 onClick={() => navigate('/register')}
               >

@@ -29,7 +29,7 @@ export default function Cart() {
     };
 
     loadCart();
-  }, [token]);
+  }, [token, navigate, fetchCart]);
 
   const handleRemove = async (itemId) => {
     try {
@@ -72,7 +72,7 @@ export default function Cart() {
         <div className="cart-content">
           <div className="cart-items">
             {items.map(item => (
-              <div key={item.id} className="cart-item">
+              <div key={item.id} className="cart-item" data-testid="cart-item">
                 <img src={item.imagem} alt={item.nome} />
                 
                 <div className="item-details">
@@ -87,6 +87,7 @@ export default function Cart() {
                     −
                   </button>
                   <input 
+                    data-testid="cart-quantity"
                     type="number" 
                     value={item.quantidade}
                     onChange={(e) => handleQuantityChange(item.id, parseInt(e.target.value))}
@@ -102,6 +103,7 @@ export default function Cart() {
                 </div>
 
                 <button 
+                  data-testid="remove-cart-item"
                   className="remove-button"
                   onClick={() => handleRemove(item.id)}
                 >
@@ -130,6 +132,7 @@ export default function Cart() {
             </div>
 
             <button 
+              data-testid="checkout-link"
               className="btn btn-primary checkout-btn"
               onClick={() => navigate('/checkout')}
             >

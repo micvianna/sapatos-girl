@@ -1,5 +1,6 @@
 const express = require('express');
-const { pool } = require('../server');
+const { validate: validateUuid } = require('uuid');
+const { pool } = require('../config/database');
 
 const router = express.Router();
 
@@ -44,6 +45,10 @@ router.get('/', async (req, res) => {
 // Buscar um produto
 router.get('/:id', async (req, res) => {
   try {
+    if (!validateUuid(req.params.id)) {
+      return res.status(400).json({ error: 'ID de produto inválido' });
+    }
+
     const result = await pool.query(
       'SELECT * FROM produtos WHERE id = $1 AND ativo = true',
       [req.params.id]

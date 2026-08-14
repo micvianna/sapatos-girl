@@ -75,13 +75,16 @@ export default function Login() {
             <label htmlFor="remember">{t('auth.rememberMe')}</label>
           </div>
 
-          <button type="submit" className="btn btn-primary" disabled={loading}>
+          <button data-testid="login-submit" type="submit" className="btn btn-primary" disabled={loading}>
             {loading ? 'Entrando...' : t('auth.signIn')}
           </button>
         </form>
 
         <p className="auth-link">
-          {t('auth.dontHaveAccount')} <a onClick={() => navigate('/register')}>{t('common.register')}</a>
+          {t('auth.dontHaveAccount')}{' '}
+          <button type="button" onClick={() => navigate('/register')}>
+            {t('common.register')}
+          </button>
         </p>
       </div>
     </div>

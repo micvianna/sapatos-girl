@@ -1,11 +1,8 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { FiCreditCard, FiDollarSign, FiSmartphone } from 'react-icons/fi';
 import './Footer.css';
 
 export default function Footer() {
-  const { t } = useTranslation();
-
   return (
     <footer className="footer">
       <div className="footer-content">

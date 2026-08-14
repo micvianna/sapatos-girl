@@ -95,13 +95,14 @@ export default function Register() {
             />
           </div>
 
-          <button type="submit" className="btn btn-primary" disabled={loading}>
+          <button data-testid="register-submit" type="submit" className="btn btn-primary" disabled={loading}>
             {loading ? 'Cadastrando...' : t('auth.signUp')}
           </button>
         </form>
 
         <p className="auth-link">
-          {t('auth.alreadyHaveAccount')} <a onClick={() => navigate('/login')}>Login</a>
+          {t('auth.alreadyHaveAccount')}{' '}
+          <button type="button" onClick={() => navigate('/login')}>Login</button>
         </p>
       </div>
     </div>

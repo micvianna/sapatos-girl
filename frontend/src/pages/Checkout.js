@@ -37,7 +37,7 @@ export default function Checkout() {
 
     setLoading(true);
     try {
-      const response = await axios.post(
+      await axios.post(
         `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/orders/criar`,
         formData,
         { headers: { Authorization: `Bearer ${token}` } }
@@ -178,7 +178,7 @@ export default function Checkout() {
             </div>
           </div>
 
-          <button type="submit" className="btn btn-primary btn-large" disabled={loading}>
+          <button data-testid="place-order" type="submit" className="btn btn-primary btn-large" disabled={loading}>
             {loading ? 'Processando...' : t('checkout.placeOrder')}
           </button>
         </form>

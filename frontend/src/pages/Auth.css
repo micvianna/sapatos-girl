@@ -76,7 +76,10 @@
   color: #666;
 }
 
-.auth-link a {
+.auth-link button {
+  background: none;
+  border: 0;
+  padding: 0;
   color: #ff1493;
   text-decoration: none;
   cursor: pointer;
@@ -84,7 +87,7 @@
   transition: color 0.2s;
 }
 
-.auth-link a:hover {
+.auth-link button:hover {
   color: #ff1493;
   text-decoration: underline;
 }

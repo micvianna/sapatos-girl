@@ -5,3 +5,10 @@ node_modules/
 *.log
 dist/
 build/
+reports/
+cypress/screenshots/
+cypress/videos/
+.pytest_cache/
+__pycache__/
+*.pyc
+.venv-qa/
