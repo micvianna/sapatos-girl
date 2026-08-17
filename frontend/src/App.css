@@ -1,3 +1,13 @@
+:root {
+  --color-black: #000000;
+  --color-ink: #222222;
+  --color-gray-dark: #444444;
+  --color-gray: #777777;
+  --color-gray-light: #dddddd;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f5f5f5;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -7,7 +17,8 @@ body {
   font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f9f9f9;
+  background-color: var(--color-surface-muted);
+  color: var(--color-ink);
 }
 
 .app {
@@ -18,7 +29,7 @@ body {
 
 .main-content {
   flex: 1;
-  background-color: #f9f9f9;
+  background-color: var(--color-surface-muted);
   animation: fadeIn 0.3s ease-in;
 }
 
@@ -44,13 +55,13 @@ body {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
-  color: white;
+  background: var(--color-black);
+  color: var(--color-surface);
 }
 
 .btn-primary:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(255, 20, 147, 0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
 }
 
 .btn-primary:disabled {
@@ -60,13 +71,13 @@ body {
 
 .btn-outline {
   background: transparent;
-  color: #ff1493;
-  border: 2px solid #ff1493;
+  color: var(--color-black);
+  border: 2px solid var(--color-black);
 }
 
 .btn-outline:hover {
-  background: #ff1493;
-  color: white;
+  background: var(--color-black);
+  color: var(--color-surface);
 }
 
 /* Scrollbar */
@@ -79,12 +90,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ff1493;
+  background: var(--color-black);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #ff69b4;
+  background: var(--color-gray-dark);
 }
 
 /* Responsive */

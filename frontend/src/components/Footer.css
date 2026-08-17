@@ -15,7 +15,7 @@
 }
 
 .footer-section h4 {
-  color: #ff1493;
+  color: #ffffff;
   margin-bottom: 1rem;
   font-size: 1.1rem;
 }
@@ -42,7 +42,7 @@
 }
 
 .footer-section a:hover {
-  color: #ff1493;
+  color: #ffffff;
 }
 
 .social-links {
@@ -65,12 +65,12 @@
   padding: 0.8rem;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 8px;
-  border: 1px solid rgba(255, 20, 147, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .payment-method svg {
   font-size: 1.5rem;
-  color: #ff1493;
+  color: #ffffff;
 }
 
 .footer-bottom {
