@@ -340,3 +340,4 @@ Para adicionar features:
 **Projeto criado para ser escalável, seguro e moderno!** 💪
 
 Bom desenvolvimento! 🚀
+Att: Michel
