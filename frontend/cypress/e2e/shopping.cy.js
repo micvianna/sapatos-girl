@@ -3,12 +3,17 @@ describe('Fluxo principal de compra', () => {
     const alerts = [];
     cy.on('window:alert', (message) => alerts.push(message));
     cy.intercept('POST', '**/api/cart/adicionar').as('addToCart');
+    cy.intercept({ method: 'GET', pathname: '/api/products' }).as('getProducts');
     cy.intercept('PUT', '**/api/cart/*').as('updateCartItem');
     cy.intercept('DELETE', '**/api/cart/*').as('removeCartItem');
 
     cy.uniqueUser().then((user) => {
       cy.registerByApi(user).then(({ body }) => {
         cy.visitAuthenticated('/products', body.token);
+        cy.wait('@getProducts').then(({ response }) => {
+          expect(response.statusCode).to.be.oneOf([200, 304]);
+        });
+        cy.contains('10 produtos encontrados').should('be.visible');
         cy.get('[data-testid="product-card"]').should('have.length.greaterThan', 0);
         cy.get('[data-testid="add-to-cart"]').first().click();
         cy.wait('@addToCart').its('response.statusCode').should('eq', 200);
@@ -33,10 +38,15 @@ describe('Fluxo principal de compra', () => {
     cy.on('window:alert', (message) => alerts.push(message));
     cy.intercept('POST', '**/api/cart/adicionar').as('addToCart');
     cy.intercept('POST', '**/api/orders/criar').as('createOrder');
+    cy.intercept({ method: 'GET', pathname: '/api/products' }).as('getProducts');
 
     cy.uniqueUser().then((user) => {
       cy.registerByApi(user).then(({ body }) => {
         cy.visitAuthenticated('/products', body.token);
+        cy.wait('@getProducts').then(({ response }) => {
+          expect(response.statusCode).to.be.oneOf([200, 304]);
+        });
+        cy.contains('10 produtos encontrados').should('be.visible');
         cy.get('[data-testid="add-to-cart"]').first().click();
         cy.wait('@addToCart').its('response.statusCode').should('eq', 200);
         cy.wrap(null).should(() => {

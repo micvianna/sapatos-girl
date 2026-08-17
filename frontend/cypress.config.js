@@ -11,6 +11,8 @@ module.exports = defineConfig({
     mochaFile: '../reports/e2e-[hash].xml',
     toConsole: true
   },
+  viewportWidth: 1280,
+  viewportHeight: 720,
   video: false,
   screenshotOnRunFailure: true
 });

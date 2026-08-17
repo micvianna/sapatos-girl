@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import ProductCard from '../components/ProductCard';
+import { API_URL } from '../config/api';
 import './Products.css';
 
 export default function Products() {
@@ -22,9 +23,7 @@ export default function Products() {
         if (filters.preco_min) params.append('preco_min', filters.preco_min);
         if (filters.preco_max) params.append('preco_max', filters.preco_max);
 
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/products?${params.toString()}`
-        );
+        const response = await axios.get(`${API_URL}/products?${params.toString()}`);
         setProducts(response.data);
       } catch (error) {
         console.error('Erro ao buscar produtos:', error);

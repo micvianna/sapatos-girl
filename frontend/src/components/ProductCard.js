@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { FiShoppingCart, FiHeart, FiStar } from 'react-icons/fi';
 import { useCartStore } from '../store';
+import { API_URL } from '../config/api';
 import axios from 'axios';
 import './ProductCard.css';
 
@@ -17,9 +18,7 @@ export default function ProductCard({ productId }) {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/products/${productId}`
-        );
+        const response = await axios.get(`${API_URL}/products/${productId}`);
         setProduct(response.data);
         if (response.data.tamanhos) {
           setSelectedSize(response.data.tamanhos.split(',')[0]);

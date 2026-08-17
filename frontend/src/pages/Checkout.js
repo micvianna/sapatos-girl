@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useCartStore, useAuthStore } from '../store';
+import { API_URL } from '../config/api';
 import axios from 'axios';
 import './Checkout.css';
 
@@ -38,7 +39,7 @@ export default function Checkout() {
     setLoading(true);
     try {
       await axios.post(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/orders/criar`,
+        `${API_URL}/orders/criar`,
         formData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
