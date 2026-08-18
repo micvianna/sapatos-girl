@@ -19,6 +19,8 @@
     "cypress-multi-reporters": "^2.0.5",
     "mocha-junit-reporter": "^2.2.1",
     "mochawesome": "^8.0.1",
+    "mochawesome-merge": "^5.1.1",
+    "mochawesome-report-generator": "^6.3.2",
     "react-scripts": "5.0.1"
   },
   "scripts": {
@@ -26,6 +28,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "test:e2e": "cypress run",
+    "report:merge": "mochawesome-merge ../reports/mochawesome/*.json > ../reports/mochawesome/merged.json",
+    "report:generate": "marge ../reports/mochawesome/merged.json -f cypress-report -o ../reports/mochawesome",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
