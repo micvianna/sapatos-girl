@@ -6,10 +6,9 @@ module.exports = defineConfig({
     supportFile: 'cypress/support/e2e.js',
     specPattern: 'cypress/e2e/**/*.cy.js'
   },
-  reporter: 'junit',
+  reporter: 'cypress-multi-reporters',
   reporterOptions: {
-    mochaFile: '../reports/e2e-[hash].xml',
-    toConsole: true
+    configFile: 'reporter-config.json'
   },
   viewportWidth: 1280,
   viewportHeight: 720,
