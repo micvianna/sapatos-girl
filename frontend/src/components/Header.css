@@ -1,5 +1,5 @@
 .header {
-  background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+  background: linear-gradient(135deg, #000000 0%, #2b2b2b 100%);
   color: white;
   padding: 1rem 0;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -97,7 +97,7 @@
 }
 
 .icon-button.logout:hover {
-  color: #ffccdd;
+  color: #dddddd;
 }
 
 .btn {
@@ -113,7 +113,7 @@
 
 .btn-primary {
   background: white;
-  color: #ff1493;
+  color: #000000;
 }
 
 .btn-primary:hover {
@@ -129,7 +129,7 @@
 
 .btn-outline:hover {
   background: white;
-  color: #ff1493;
+  color: #000000;
 }
 
 @media (max-width: 1024px) {

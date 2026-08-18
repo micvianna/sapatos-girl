@@ -51,7 +51,7 @@
 
 .filter-group select:focus {
   outline: none;
-  border-color: #ff1493;
+  border-color: #000000;
 }
 
 .price-inputs {
@@ -71,7 +71,7 @@
 
 .price-inputs input:focus {
   outline: none;
-  border-color: #ff1493;
+  border-color: #000000;
 }
 
 .price-inputs span {

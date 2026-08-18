@@ -17,7 +17,7 @@
 
 .auth-card h2 {
   text-align: center;
-  color: #ff1493;
+  color: #000000;
   margin-bottom: 2rem;
 }
 
@@ -44,8 +44,8 @@
 
 .form-group input:focus {
   outline: none;
-  border-color: #ff1493;
-  box-shadow: 0 0 0 3px rgba(255, 20, 147, 0.1);
+  border-color: #000000;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
 }
 
 .remember-me {
@@ -61,9 +61,9 @@
 }
 
 .error-message {
-  background: #fff3cd;
-  border: 1px solid #ffc107;
-  color: #856404;
+  background: #f0f0f0;
+  border: 1px solid #666666;
+  color: #222222;
   padding: 0.75rem;
   border-radius: 8px;
   margin-bottom: 1rem;
@@ -80,7 +80,7 @@
   background: none;
   border: 0;
   padding: 0;
-  color: #ff1493;
+  color: #000000;
   text-decoration: none;
   cursor: pointer;
   font-weight: 600;
@@ -88,7 +88,7 @@
 }
 
 .auth-link button:hover {
-  color: #ff1493;
+  color: #000000;
   text-decoration: underline;
 }
 

@@ -134,10 +134,10 @@ Acesse o seletor de idioma no header para trocar entre idiomas.
 
 ## 🎨 Cores do Tema
 
-- Primária: `#ff1493` (Deep Pink)
-- Secundária: `#ff69b4` (Hot Pink)
-- Texto: `#333333`
-- Fundo: `#f9f9f9`
+- Primária: `#000000` (Preto)
+- Secundária: `#444444` (Cinza escuro)
+- Texto: `#222222`
+- Fundo: `#f5f5f5`
 
 ## 📱 Design Responsivo
 

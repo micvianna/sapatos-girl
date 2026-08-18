@@ -11,7 +11,7 @@
 
 .product-card:hover {
   transform: translateY(-8px);
-  box-shadow: 0 8px 20px rgba(255, 20, 147, 0.2);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
 }
 
 .product-image {
@@ -50,7 +50,7 @@
 }
 
 .wishlist-btn:hover {
-  background: #ff69b4;
+  background: #000000;
   color: white;
 }
 
@@ -81,7 +81,7 @@
 }
 
 .rating svg.filled {
-  color: #ffc107;
+  color: #111111;
 }
 
 .description {
@@ -98,7 +98,7 @@
 .price {
   font-size: 1.25rem;
   font-weight: bold;
-  color: #ff1493;
+  color: #000000;
   margin: 0.5rem 0;
 }
 
@@ -138,13 +138,13 @@
 }
 
 .size-btn:hover {
-  border-color: #ff1493;
+  border-color: #000000;
 }
 
 .size-btn.active {
-  background: #ff1493;
+  background: #000000;
   color: white;
-  border-color: #ff1493;
+  border-color: #000000;
 }
 
 .option-group select,
@@ -163,13 +163,13 @@
 .option-group select:focus,
 .option-group input:focus {
   outline: none;
-  border-color: #ff1493;
+  border-color: #000000;
 }
 
 .add-to-cart-btn {
   width: 100%;
   padding: 0.75rem;
-  background: linear-gradient(135deg, #ff69b4 0%, #ff1493 100%);
+  background: linear-gradient(135deg, #333333 0%, #000000 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -185,7 +185,7 @@
 
 .add-to-cart-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(255, 20, 147, 0.3);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
 }
 
 .add-to-cart-btn:disabled {
