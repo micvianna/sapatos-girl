@@ -1,6 +1,0 @@
-
-DevTools listening on ws://127.0.0.1:35729/devtools/browser/f101ea25-b5e2-414a-bb05-687c408aaf97
-Couldn't find tsconfig.json. tsconfig-paths will be skipped
-Browserslist: browsers data (caniuse-lite) is 18 months old. Please run:
-  npx update-browserslist-db@latest
-  Why you should do it regularly: https://github.com/browserslist/update-db#readme
