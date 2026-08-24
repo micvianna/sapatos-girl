@@ -7,5 +7,7 @@ dist/
 build/
 
 .venv/
+.claude/
+.pytest_cache/
 __pycache__/
 *.pyc
