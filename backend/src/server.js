@@ -1,18 +1,28 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const { Pool } = require('pg');
 const swaggerUi = require('swagger-ui-express');
 const openapiSpec = require('./config/openapi.json');
 
 dotenv.config();
 
-// Validar variáveis de ambiente obrigatórias ANTES de qualquer inicialização
-const validateEnv = require('./config/validateEnv');
-validateEnv();
+const { validateDatabaseConnection } = require('./config/database');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const REQUIRED_ENVIRONMENT_VARIABLES = ['DB_PASSWORD', 'JWT_SECRET'];
+
+function validateEnvironmentVariables() {
+  const missingVariables = REQUIRED_ENVIRONMENT_VARIABLES.filter(
+    (variableName) => !process.env[variableName]
+  );
+
+  if (missingVariables.length > 0) {
+    throw new Error(
+      `Variáveis de ambiente obrigatórias ausentes: ${missingVariables.join(', ')}`
+    );
+  }
+}
 
 // Middleware — CORS restrito por ambiente
 const allowedOrigins = (process.env.CORS_ORIGIN || 'http://localhost:3000')
@@ -33,21 +43,6 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Database connection
-const pool = new Pool({
-  host: process.env.DB_HOST || 'localhost',
-  port: process.env.DB_PORT || 5432,
-  database: process.env.DB_NAME || 'sapatos_ecommerce',
-  user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || 'postgres'
-});
-
-// Test database connection
-pool.on('error', (err) => console.error('Pool error:', err.message));
-
-// Export early to avoid circular dependencies in routes
-module.exports = { app, pool };
-
 // Routes
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpec));
 app.get('/api/openapi.json', (req, res) => {
@@ -58,29 +53,23 @@ app.get('/api/health', (req, res) => {
   res.json({ message: 'Server is running', status: 'ok' });
 });
 
-// Import routes - com try/catch para evitar erros de require circular
-let authRoutes, productRoutes, cartRoutes, orderRoutes, userRoutes, wishlistRoutes, couponsRoutes, adminRoutes;
-try {
-  authRoutes = require('./routes/auth');
-  productRoutes = require('./routes/products');
-  cartRoutes = require('./routes/cart');
-  orderRoutes = require('./routes/orders');
-  userRoutes = require('./routes/users');
-  wishlistRoutes = require('./routes/wishlist');
-  couponsRoutes = require('./routes/coupons');
-  adminRoutes = require('./routes/admin');
+const authRoutes = require('./routes/auth');
+const productRoutes = require('./routes/products');
+const cartRoutes = require('./routes/cart');
+const orderRoutes = require('./routes/orders');
+const userRoutes = require('./routes/users');
+const wishlistRoutes = require('./routes/wishlist');
+const couponsRoutes = require('./routes/coupons');
+const adminRoutes = require('./routes/admin');
 
-  app.use('/api/auth', authRoutes);
-  app.use('/api/products', productRoutes);
-  app.use('/api/cart', cartRoutes);
-  app.use('/api/orders', orderRoutes);
-  app.use('/api/users', userRoutes);
-  app.use('/api/wishlist', wishlistRoutes);
-  app.use('/api/coupons', couponsRoutes);
-  app.use('/api/admin', adminRoutes);
-} catch (err) {
-  console.warn('Algumas rotas não puderam ser carregadas:', err.message);
-}
+app.use('/api/auth', authRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/wishlist', wishlistRoutes);
+app.use('/api/coupons', couponsRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Error handling
 app.use((err, req, res, next) => {
@@ -93,6 +82,27 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Rota não encontrada' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-});
+async function startServer() {
+  validateEnvironmentVariables();
+  await validateDatabaseConnection();
+
+  return new Promise((resolve, reject) => {
+    const server = app.listen(PORT, () => {
+      console.log(`Servidor rodando na porta ${PORT}`);
+      resolve(server);
+    });
+
+    server.on('error', (error) => {
+      console.error(`Falha ao iniciar o servidor na porta ${PORT}: ${error.message}`);
+      reject(error);
+    });
+  });
+}
+
+if (require.main === module) {
+  startServer().catch(() => {
+    process.exitCode = 1;
+  });
+}
+
+module.exports = { app, startServer };

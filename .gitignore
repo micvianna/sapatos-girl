@@ -5,9 +5,12 @@ node_modules/
 *.log
 dist/
 build/
-
 .venv/
 .claude/
 .pytest_cache/
 __pycache__/
 *.pyc
+reports/
+cypress/screenshots/
+cypress/videos/
+.venv-qa/

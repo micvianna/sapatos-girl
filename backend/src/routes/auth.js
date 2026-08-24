@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
-const { pool } = require('../server');
+const { pool } = require('../config/database');
 
 const router = express.Router();
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -12,20 +12,22 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 router.post('/register', async (req, res) => {
   try {
     const { nome, email, senha, telefone } = req.body;
+    const normalizedName = typeof nome === 'string' ? nome.trim() : '';
+    const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
 
     // Validação
-    if (!nome || !email || !senha) {
+    if (!normalizedName || !normalizedEmail || !senha) {
       return res.status(400).json({ error: 'Nome, email e senha são obrigatórios' });
     }
 
-    if (!EMAIL_PATTERN.test(email)) {
+    if (!EMAIL_PATTERN.test(normalizedEmail)) {
       return res.status(400).json({ error: 'Email inválido' });
     }
 
     // Verificar se usuário já existe
     const userExists = await pool.query(
       'SELECT * FROM usuarios WHERE email = $1 AND deleted_at IS NULL',
-      [email]
+      [normalizedEmail]
     );
 
     if (userExists.rows.length > 0) {
@@ -40,12 +42,12 @@ router.post('/register', async (req, res) => {
     const userId = uuidv4();
     await pool.query(
       'INSERT INTO usuarios (id, nome, email, senha, telefone, data_criacao) VALUES ($1, $2, $3, $4, $5, NOW())',
-      [userId, nome, email, senhaHash, telefone || null]
+      [userId, normalizedName, normalizedEmail, senhaHash, telefone || null]
     );
 
     // Gerar token
     const token = jwt.sign(
-      { userId, email, is_admin: false },
+      { userId, email: normalizedEmail, is_admin: false },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRE || '7d' }
     );
@@ -53,7 +55,7 @@ router.post('/register', async (req, res) => {
     res.status(201).json({
       message: 'Usuário criado com sucesso',
       token,
-      user: { id: userId, nome, email, is_admin: false }
+      user: { id: userId, nome: normalizedName, email: normalizedEmail, is_admin: false }
     });
   } catch (err) {
     console.error('[auth/register]', err.message);
@@ -65,15 +67,16 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { email, senha } = req.body;
+    const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
 
-    if (!email || !senha) {
+    if (!normalizedEmail || !senha) {
       return res.status(400).json({ error: 'Email e senha são obrigatórios' });
     }
 
     // Buscar usuário (apenas não-deletados)
     const result = await pool.query(
       'SELECT * FROM usuarios WHERE email = $1 AND deleted_at IS NULL',
-      [email]
+      [normalizedEmail]
     );
 
     if (result.rows.length === 0) {

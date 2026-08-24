@@ -1,0 +1,15 @@
+{
+  "reporterEnabled": "spec, mocha-junit-reporter, mochawesome",
+
+  "mochaJunitReporterReporterOptions": {
+    "mochaFile": "../reports/e2e-[hash].xml"
+  },
+
+  "mochawesomeReporterOptions": {
+    "reportDir": "../reports/mochawesome",
+    "reportFilename": "e2e-[name]",
+    "overwrite": false,
+    "html": true,
+    "json": true
+  }
+}

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { pool } = require('../server');
+const { pool } = require('../config/database');
 
 // Validar um cupom
 router.post('/validate', async (req, res) => {

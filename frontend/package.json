@@ -16,12 +16,21 @@
   "devDependencies": {
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
+    "cypress": "^14.5.4",
+    "cypress-multi-reporters": "^2.0.5",
+    "mocha-junit-reporter": "^2.2.1",
+    "mochawesome": "^8.0.1",
+    "mochawesome-merge": "^5.1.1",
+    "mochawesome-report-generator": "^6.3.2",
     "react-scripts": "5.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "test:e2e": "cypress run",
+    "report:merge": "mochawesome-merge ../reports/mochawesome/*.json > ../reports/mochawesome/merged.json",
+    "report:generate": "marge ../reports/mochawesome/merged.json -f cypress-report -o ../reports/mochawesome",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
