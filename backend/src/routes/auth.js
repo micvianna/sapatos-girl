@@ -6,6 +6,7 @@ const { v4: uuidv4 } = require('uuid');
 const { pool } = require('../server');
 
 const router = express.Router();
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Registro
 router.post('/register', async (req, res) => {
@@ -15,6 +16,10 @@ router.post('/register', async (req, res) => {
     // Validação
     if (!nome || !email || !senha) {
       return res.status(400).json({ error: 'Nome, email e senha são obrigatórios' });
+    }
+
+    if (!EMAIL_PATTERN.test(email)) {
+      return res.status(400).json({ error: 'Email inválido' });
     }
 
     // Verificar se usuário já existe

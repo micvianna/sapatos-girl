@@ -5,3 +5,7 @@ node_modules/
 *.log
 dist/
 build/
+
+.venv/
+__pycache__/
+*.pyc

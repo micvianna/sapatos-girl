@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git config *)",
+      "Bash(grep -rn '#[0-9a-fA-F]\\\\{3,6\\\\}\\\\b' --include=\"*.css\")",
+      "Bash(awk -F: '{print $1}')",
+      "Bash(npx react-scripts *)",
+      "Bash(grep -n '#[0-9a-fA-F]\\\\{3,8\\\\}\\\\|rgba\\\\?\\(' pages/ProductDetail.css pages/Auth.css pages/Cart.css pages/Products.css components/ProductCard.css components/MiniCart.css pages/Institutional.css)",
+      "Bash(sed -n '190,205p' pages/Cart.css)",
+      "Bash(sed -n '60,80p' components/ProductCard.css)",
+      "Bash(sed -n '180,195p' pages/ProductDetail.css)",
+      "Bash(sed -n '88,100p' pages/Products.css)",
+      "Bash(git add *)",
+      "Bash(npm test *)",
+      "Bash(git -c 'user.name=Michel  Viana' -c user.email=michelrviana@gmail.com commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(gh auth *)",
+      "Read(//root/**)",
+      "Bash(ssh -T git@github.com -o ConnectTimeout=5 -o BatchMode=yes)",
+      "Bash(ssh -T git@github.com -o ConnectTimeout=5 -o StrictHostKeyChecking=accept-new)",
+      "Bash(git fetch *)",
+      "Bash(git ls-remote *)"
+    ]
+  }
+}
