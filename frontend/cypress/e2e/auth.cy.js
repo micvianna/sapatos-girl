@@ -9,6 +9,8 @@ describe('Autenticação', () => {
       cy.get('[data-testid="register-submit"]').click();
 
       cy.location('pathname').should('eq', '/');
+      cy.get('[data-testid="account-link"]').should('be.visible').click();
+      cy.location('pathname').should('eq', '/account');
       cy.get('[data-testid="logout-button"]').should('be.visible').click();
       cy.get('[data-testid="login-link"]').should('be.visible');
     });
@@ -23,6 +25,8 @@ describe('Autenticação', () => {
       cy.get('[data-testid="login-submit"]').click();
 
       cy.location('pathname').should('eq', '/');
+      cy.get('[data-testid="account-link"]').should('be.visible').click();
+      cy.location('pathname').should('eq', '/account');
       cy.get('[data-testid="logout-button"]').should('be.visible');
     });
   });

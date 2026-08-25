@@ -22,6 +22,7 @@ export default function Account() {
 
                 <button
                     onClick={handleLogout}
+                    data-testid="logout-button"
                     style={{
                         marginTop: '30px',
                         padding: '12px 30px',

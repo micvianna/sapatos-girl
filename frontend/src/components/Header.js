@@ -45,7 +45,7 @@ export default function Header() {
   return (
     <>
       <div className="announcement-bar">
-        <span className="announcement-txt">{t('header.announcement')}</span>
+        <span className="announcement-txt" data-testid="announcement-text">{t('header.announcement')}</span>
         <span className="announcement-sep">/</span>
         <span className="rec-indicator">
           <span className="red-dot"></span>REC
@@ -83,13 +83,14 @@ export default function Header() {
 
           <div className="header-right">
             {/* Language Switcher */}
-            <div className="lang-switcher" onClick={() => setLangOpen(!langOpen)}>
+            <div className="lang-switcher" data-testid="language-menu" onClick={() => setLangOpen(!langOpen)}>
               <span className="lang-current">{langLabels[currentLang] || 'PT'}</span>
               {langOpen && (
                 <div className="lang-dropdown">
                   {supportedLangs.map(lng => (
                     <button
                       key={lng}
+                      data-testid={`language-${lng.split('-')[0]}`}
                       className={`lang-option ${currentLang === lng ? 'active' : ''}`}
                       onClick={() => changeLanguage(lng)}
                     >
@@ -102,6 +103,7 @@ export default function Header() {
 
             <button
               className="icon-button"
+              data-testid={token ? 'account-link' : 'login-link'}
               onClick={() => navigate(token ? '/account' : '/login')}
               title={token ? "Minha Conta" : "Entrar / Registrar"}
             >
@@ -127,6 +129,7 @@ export default function Header() {
             )}
             <button
               className="icon-button cart-badge-container"
+              data-testid="cart-toggle"
               onClick={openCart}
               title="Carrinho"
             >

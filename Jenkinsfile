@@ -4,13 +4,14 @@ pipeline {
     environment {
         API_BASE_URL = 'http://localhost:5000'
         FRONTEND_BASE_URL = 'http://localhost:3000'
+        FRONTEND_ORIGIN = 'http://sapatos-frontend-test:3000'
         CYPRESS_API_BASE_URL = 'http://localhost:5000'
         DB_HOST = 'localhost'
         DB_PORT = '5432'
         DB_NAME = 'sapatos_ecommerce'
         DB_USER = 'postgres'
         JWT_EXPIRE = '1h'
-        CORS_ORIGIN = 'http://localhost:3000'
+        CORS_ORIGIN = 'http://localhost:3000,http://sapatos-frontend-test:3000'
         REACT_APP_API_URL = 'http://localhost:5000'
     }
 
@@ -69,7 +70,7 @@ pipeline {
         stage('API Tests') {
             steps {
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                    sh '.venv-qa/bin/python -m pytest -c tests/pytest.ini tests/api -v --junitxml=reports/api-tests.xml'
+                    sh '.venv-qa/bin/python -m pytest -c tests/pytest.ini tests/api -v --junitxml=reports/api-tests.xml --html=reports/api-tests.html --self-contained-html'
                 }
             }
         }
@@ -77,7 +78,7 @@ pipeline {
         stage('Integration Tests') {
             steps {
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                    sh '.venv-qa/bin/python -m pytest -c tests/pytest.ini tests/integration -m integration -v --junitxml=reports/integration-tests.xml'
+                    sh '.venv-qa/bin/python -m pytest -c tests/pytest.ini tests/integration -m integration -v --junitxml=reports/integration-tests.xml --html=reports/integration-tests.html --self-contained-html'
                 }
             }
         }
@@ -94,7 +95,7 @@ pipeline {
     post {
         always {
             junit allowEmptyResults: true, testResults: 'reports/*.xml'
-            archiveArtifacts allowEmptyArchive: true, artifacts: 'reports/*.log, frontend/cypress/screenshots/**/*'
+            archiveArtifacts allowEmptyArchive: true, artifacts: 'reports/**/*.html, reports/**/*.json, reports/*.log, reports/*.xml, frontend/cypress/screenshots/**/*'
             sh '''
                 if [ -f reports/backend.pid ]; then kill "$(cat reports/backend.pid)" || true; fi
                 if [ -f reports/frontend.pid ]; then kill "$(cat reports/frontend.pid)" || true; fi

@@ -141,7 +141,7 @@ export default function Login() {
               <label htmlFor="remember">{t('auth.rememberMe')}</label>
             </div>
 
-            <button type="submit" className="btn btn-primary" disabled={loading}>
+            <button type="submit" className="btn btn-primary" data-testid="login-submit" disabled={loading}>
               {loading ? t('auth.signingIn') : t('auth.signIn')}
             </button>
           </form>

@@ -6,10 +6,11 @@ describe('Internacionalização', () => {
       }
     });
 
-    cy.contains("ShoeStyle - Sapatos Femininos").should('be.visible');
-    cy.get('[data-testid="login-link"]').should('contain', 'Entrar');
+    cy.get('[data-testid="announcement-text"]')
+      .should('contain', 'FRETE GRÁTIS EM PEDIDOS ACIMA DE R$ 500');
+    cy.get('[data-testid="language-menu"]').click();
     cy.get('[data-testid="language-en"]').click();
-    cy.contains("ShoeStyle - Women's Shoes").should('be.visible');
-    cy.get('[data-testid="login-link"]').should('contain', 'Sign In');
+    cy.get('[data-testid="announcement-text"]')
+      .should('contain', 'COMPLIMENTARY SHIPPING ON ORDERS OVER R$ 500');
   });
 });

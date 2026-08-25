@@ -51,12 +51,12 @@ def test_rejects_invalid_token_for_profile(api_client, base_url, authorization):
     assert response.status_code == 401
 
 
-def test_json_and_cors_headers_are_present(api_client, base_url):
+def test_json_and_cors_headers_are_present(api_client, base_url, frontend_origin):
     response = api_client.get(
         f"{base_url}/api/health",
-        headers={"Origin": "http://localhost:3000"},
+        headers={"Origin": frontend_origin},
         timeout=REQUEST_TIMEOUT,
     )
 
     assert response.headers["Content-Type"].startswith("application/json")
-    assert response.headers["Access-Control-Allow-Origin"]
+    assert response.headers["Access-Control-Allow-Origin"] == frontend_origin

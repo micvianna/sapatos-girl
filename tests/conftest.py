@@ -16,6 +16,11 @@ def base_url():
 
 
 @pytest.fixture(scope="session")
+def frontend_origin():
+    return os.getenv("FRONTEND_ORIGIN", "http://localhost:3000").rstrip("/")
+
+
+@pytest.fixture(scope="session")
 def api_client(base_url):
     client = requests.Session()
     client.headers.update({"Accept": "application/json"})

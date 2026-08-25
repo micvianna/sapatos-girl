@@ -28,6 +28,7 @@ export default function MiniCart() {
                 <div className="minicart-backdrop" onClick={handleBackdropClick}>
                     <motion.div
                         className="minicart-drawer"
+                        data-testid="mini-cart"
                         initial={{ x: '100%' }}
                         animate={{ x: 0 }}
                         exit={{ x: '100%' }}
@@ -52,7 +53,7 @@ export default function MiniCart() {
                             ) : (
                                 <div className="minicart-items">
                                     {items.map(item => (
-                                        <div className="minicart-card" key={item.id}>
+                                        <div className="minicart-card" data-testid="cart-item" key={item.id}>
                                             <div className="minicart-image">
                                                 <img src={item.imagem} alt={item.nome} />
                                             </div>
@@ -60,7 +61,7 @@ export default function MiniCart() {
                                             <div className="minicart-info">
                                                 <div className="minicart-info-top">
                                                     <h3>{item.nome}</h3>
-                                                    <button className="minicart-remove" onClick={() => removeFromCart(item.id)}>
+                                                    <button className="minicart-remove" data-testid="remove-cart-item" onClick={() => removeFromCart(item.id)}>
                                                         <FiTrash2 />
                                                     </button>
                                                 </div>
@@ -73,8 +74,8 @@ export default function MiniCart() {
                                                 <div className="minicart-controls">
                                                     <div className="minicart-qty">
                                                         <button onClick={() => item.quantidade > 1 && updateQuantity(item.id, item.quantidade - 1)}><FiMinus /></button>
-                                                        <span>{item.quantidade}</span>
-                                                        <button onClick={() => updateQuantity(item.id, item.quantidade + 1)}><FiPlus /></button>
+                                                        <span data-testid="cart-quantity">{item.quantidade}</span>
+                                                        <button data-testid="increment-cart-item" onClick={() => updateQuantity(item.id, item.quantidade + 1)}><FiPlus /></button>
                                                     </div>
                                                     <p className="minicart-price">R$ {(item.preco * item.quantidade).toFixed(2)}</p>
                                                 </div>
@@ -93,7 +94,7 @@ export default function MiniCart() {
                                 </div>
                                 <p className="minicart-shipping-note">Shipping and taxes calculated at checkout.</p>
 
-                                <button className="btn btn-primary minicart-checkout-btn" onClick={handleCheckout}>
+                                <button className="btn btn-primary minicart-checkout-btn" data-testid="checkout-link" onClick={handleCheckout}>
                                     {t('checkout.placeOrder')} <FiArrowRight />
                                 </button>
                             </div>

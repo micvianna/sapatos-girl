@@ -95,7 +95,7 @@ export default function Register() {
             />
           </div>
 
-          <button type="submit" className="btn btn-primary" disabled={loading}>
+          <button type="submit" className="btn btn-primary" data-testid="register-submit" disabled={loading}>
             {loading ? t('auth.registering') : t('auth.signUp')}
           </button>
         </form>

@@ -237,7 +237,7 @@ export default function Checkout() {
               </div>
             </section>
 
-            <button type="submit" className="btn btn-primary checkout-submit-btn" disabled={loading}>
+            <button type="submit" className="btn btn-primary checkout-submit-btn" data-testid="place-order" disabled={loading}>
               {loading ? t('checkout.processing') : t('checkout.completePurchase')}
             </button>
           </form>

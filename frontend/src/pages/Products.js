@@ -93,7 +93,7 @@ export default function Products() {
       {/* Luxury Editorial Header */}
       <div className="products-hero">
         <h1 className="products-title">{filters.categoria || t('products.title')}</h1>
-        <p className="products-count">{products.length} {t('products.pieces')}</p>
+        <p className="products-count" data-testid="products-count">{products.length} {t('products.pieces')}</p>
       </div>
       {/* Double Column Layout (Sidebar + Grid) */}
       <div className="products-layout-container">

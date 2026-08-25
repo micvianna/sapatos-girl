@@ -98,7 +98,8 @@
   z-index: 10;
 }
 
-.product-card:hover .product-hover-overlay {
+.product-card:hover .product-hover-overlay,
+.product-card:focus-within .product-hover-overlay {
   opacity: 1;
   transform: translateY(0);
 }

@@ -111,7 +111,7 @@ export default function ProductCard({ productId }) {
   if (!product) return null;
 
   return (
-    <div className="product-card" onClick={() => navigate(`/product/${product.id}`)}>
+    <div className="product-card" data-testid="product-card" onClick={() => navigate(`/product/${product.id}`)}>
       <div className="product-image-container">
         <img src={product.imagem} alt={product.nome} className="product-image" />
         <button
@@ -128,6 +128,7 @@ export default function ProductCard({ productId }) {
         <div className="product-hover-overlay">
           <button
             className={`btn-quick-add ${product.estoque === 0 ? 'disabled' : ''}`}
+            data-testid="add-to-cart"
             onClick={handleAddToCart}
             disabled={product.estoque === 0 || addingToCart}
           >
