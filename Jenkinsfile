@@ -444,7 +444,7 @@ pipeline {
                                 </p>
                             </body>
                             </html>
-                            EOL
+                            EOF
                         """
 
                     }
