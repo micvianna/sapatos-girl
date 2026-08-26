@@ -117,7 +117,7 @@ pipeline {
                           --network sapatos-test-net \
                           -e POSTGRES_DB=sapatos_ecommerce \
                           -e POSTGRES_USER=postgres \
-                          -e POSTGRES_PASSWORD="¨$DB_PASSWORD" \
+                          -e POSTGRES_PASSWORD="$DB_PASSWORD" \
                           postgres:16-alpine
                     '''
                 }
