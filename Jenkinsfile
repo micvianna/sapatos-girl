@@ -413,39 +413,40 @@ pipeline {
             stage('Generate Qa Dashboard') {
                 steps {
                     script {
-                        sh """
-                            cat > reports/qa-dashboard.html <<EOF
-                            <!DOCTYPE html>
-                            <html>
-                            <head>
-                                <meta charset="UTF-8">
-                                <title>QA Dashboard</title>
-                            </head>
-                            <body>
-                                <h1>QA Dashboard</h1>
+                        def qualityGateStatus =
+                            apiTestsStatus == 'PASSED' &&
+                            integrationTestsStatus == 'PASSED' &&
+                            e2eTestsStatus == 'PASSED'
+                            ? 'PASSED'
+                            : 'FAILED'
 
-                                <p>Job: ${env.JOB_NAME}</p>
-                                <p>Build: ${env.BUILD_NUMBER}</p>
+                        writeFile file: 'reports/qa-dashboard.html', text: """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>QA Dashboard</title>
+</head>
+<body>
 
-                                <h2>Test Results</h2>
+    <h1>QA Dashboard</h1>
 
-                                <p>API Tests: ${apiTestsStatus}</p>
-                                <p>Integration Tests: ${integrationTestsStatus}</p>
-                                <p>E2E Tests: ${e2eTestsStatus}</p>
+    <p>Job: ${env.JOB_NAME}</p>
+    <p>Build: ${env.BUILD_NUMBER}</p>
 
-                                <h2>Quality Gate</h2>
-                                <p>
-                                    ${
-                                        apiTestsStatus == 'PASSED' && 
-                                        integrationTestsStatus == 'PASSED' && 
-                                        e2eTestsStatus == 'PASSED' 
-                                        ? 'PASSED' : 'FAILED'
-                                    }
-                                </p>
-                            </body>
-                            </html>
-                            EOF
-                        """
+    <h2>Test Results</h2>
+
+    <p>API Tests: ${apiTestsStatus}</p>
+    <p>Integration Tests: ${integrationTestsStatus}</p>
+    <p>E2E Tests: ${e2eTestsStatus}</p>
+
+    <h2>Quality Gate</h2>
+
+    <p>${qualityGateStatus}</p>
+
+</body>
+</html>
+"""
 
                     }
                 }
