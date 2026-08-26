@@ -387,21 +387,30 @@ pipeline {
                     }
                 }
             }
+            stage('Build JMeter Image') {
+                steps {
+                    sh '''
+                        docker build
+                            -t sapatos-jmeter \
+                            -f performance/Dockerfile.jmeter .
+                    '''
+                }
+            }
             stage('JMeter Performance Test') {
                 steps {
                     sh '''
                         mkdir -p "$WORKSPACE/reports/jmeter"
 
                         docker run --rm \
-                        --network sapatos-test-net \
-                        -v "$WORKSPACE:/workspace" \
-                        -w /workspace \
-                        justb4/jmeter:latest \
-                        -n \
-                        -t performance/smoke-performance.jmx \
-                        -l reports/jmeter/results.jtl \
-                        -e \
-                        -o reports/jmeter/html
+                            --network sapatos-test-net \
+                            -v "$WORKSPACE:/workspace" \
+                            -w /workspace \
+                            sapatos-jmeter \
+                            -n \
+                            -t performance/smoke-performance.jmx \
+                            -l reports/jmeter/results.jtl \
+                            -e \
+                            -o reports/jmeter/html
                     '''
                 }
             }
