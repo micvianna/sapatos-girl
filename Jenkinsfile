@@ -192,10 +192,23 @@ pipeline {
             stage('Verify Backend') {
                 steps {
                     sh '''
-                        sleep 5
+                        echo "Wainting for backend..."
+
+                        for i in $(seq 1 30); do
+                            if docker exec sapatos-backend-test \
+                                wget -qO- http://localhost:5000/api/health > /dev/null 2>&1; then
+                                
+                                echo "Backend is ready"
+                                exit 0
+                            fi
+                            
+                            echo "Attempt $i/30 - backend not ready yet"
+                            sleep 2
+                        done
                         
-                        docker exec sapatos-backend-test \
-                            wget -qO- http://localhost:5000/api/health
+                        echo "Backend did not start in time"
+                        docker logs sapatos-backend-test
+                        exit 1
                     '''
                 }
             }
