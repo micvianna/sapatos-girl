@@ -412,7 +412,6 @@ pipeline {
             stage('JMeter Performance Test') {
                 steps {
                     sh '''
-
                         echo "Preparing JMeter reports..."
 
                         rm -rf "$WORKSPACE/reports/jmeter/html"
@@ -425,7 +424,7 @@ pipeline {
                             --network sapatos-test-net \
                             -e HOME=/tmp \
                             -v jenkins_home:/var/jenkins_home \
-                            -w /workspace \
+                            -w "$WORKSPACE" \
                             sapatos-jmeter \
                             -n \
                             -t performance/smoke-performance.jmx \
