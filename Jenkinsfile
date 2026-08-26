@@ -390,7 +390,7 @@ pipeline {
             stage('Build JMeter Image') {
                 steps {
                     sh '''
-                        docker build
+                        docker build \
                             -t sapatos-jmeter \
                             -f performance/Dockerfile.jmeter \
                              .
