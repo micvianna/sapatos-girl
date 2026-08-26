@@ -1,0 +1,94 @@
+:root {
+  --bg: #ffffff;
+  --text: #111111;
+  --muted: #444444;
+  --border: #d0d0d0;
+  --table-bg: #ffffff;
+  --header-bg: #f3f3f3;
+  --pass: #0a7a2f;
+  --fail: #c62828;
+}
+
+[data-theme="dark"] {
+  --bg: #121212;
+  --text: #f5f5f5;
+  --muted: #cccccc;
+  --border: #444444;
+  --table-bg: #1e1e1e;
+  --header-bg: #2a2a2a;
+  --pass: #66bb6a;
+  --fail: #ef5350;
+}
+
+html,
+body {
+  background: var(--bg) !important;
+  color: var(--text) !important;
+}
+
+body,
+p,
+span,
+div,
+td,
+th,
+label,
+li,
+a {
+  color: var(--text) !important;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  color: var(--text) !important;
+}
+
+table {
+  background: var(--table-bg) !important;
+  color: var(--text) !important;
+}
+
+th {
+  background: var(--header-bg) !important;
+  color: var(--text) !important;
+}
+
+td,
+th {
+  border-color: var(--border) !important;
+}
+
+.passed,
+.result.passed {
+  color: var(--pass) !important;
+}
+
+.failed,
+.result.failed {
+  color: var(--fail) !important;
+}
+
+.environment,
+.summary {
+  color: var(--text) !important;
+}
+
+.log {
+  background: var(--header-bg) !important;
+  color: var(--text) !important;
+}
+
+.theme-toggle {
+  position: fixed;
+  top: 12px;
+  right: 70px;
+  z-index: 9999;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  background: var(--header-bg);
+  color: var(--text);
+  cursor: pointer;
+  border-radius: 6px;
+}

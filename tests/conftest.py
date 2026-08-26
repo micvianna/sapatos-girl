@@ -139,3 +139,28 @@ def db_connection():
 
     yield connection
     connection.close()
+    
+def pytest_html_results_summary(prefix, summary, postfix):
+    prefix.extend([
+        """
+        <button class="theme-toggle" onclick="toggleTheme()">
+            Alternar tema
+        </button>
+
+        <script>
+          function toggleTheme() {
+            const html = document.documentElement;
+            const current = html.getAttribute('data-theme') || 'light';
+            const next = current === 'light' ? 'dark' : 'light';
+
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('pytest-theme', next);
+          }
+
+          (function () {
+            const saved = localStorage.getItem('pytest-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', saved);
+          })();
+        </script>
+        """
+    ])
