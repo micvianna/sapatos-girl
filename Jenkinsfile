@@ -387,6 +387,24 @@ pipeline {
                     }
                 }
             }
+            stage('JMeter Performance Test') {
+                steps { 
+                    sh '''
+                        mkdir -p "$WORKSPACE/reports/jmeter"
+
+                        docker run -rm \
+                            --network sapatos-test-net \
+                            -v "$WORKSPACE:/workspace" \
+                            -w /workspace \
+                            justb4/jmeter:lastest \
+                            -n \
+                            -t perfomance/smoke-performance.jmx \
+                            -l reports/jmeter/results.jtl \
+                            -e \
+                            -o reports/jmeter/html
+                    '''
+                }
+            }
             stage('Quality Gate') {
                 steps {
                     script {
@@ -497,6 +515,15 @@ pipeline {
                     reportDir: 'reports',
                     reportFiles: 'qa-dashboard.html',
                     reportName: 'QA Dashboard',
+                    keepAll: true,
+                    alwaysLinkToLastBuild: true,
+                    allowMissing: true
+                ])
+
+                publishHTML(target: [
+                    reportDir: 'reports/jmeter/html',
+                    reportFiles: 'index.html',
+                    reportName: 'Relatório JMeter',
                     keepAll: true,
                     alwaysLinkToLastBuild: true,
                     allowMissing: true
