@@ -6,6 +6,10 @@ def e2eTestsStatus = 'NOT_RUN'
 
 pipeline {
     agent any
+
+    options {
+        skipDefaultCheckout(true)
+    }
         stages { 
             stage('Begin') {
                 steps {
