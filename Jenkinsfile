@@ -388,20 +388,20 @@ pipeline {
                 }
             }
             stage('JMeter Performance Test') {
-                steps { 
+                steps {
                     sh '''
                         mkdir -p "$WORKSPACE/reports/jmeter"
 
-                        docker run -rm \
-                            --network sapatos-test-net \
-                            -v "$WORKSPACE:/workspace" \
-                            -w /workspace \
-                            justb4/jmeter:lastest \
-                            -n \
-                            -t perfomance/smoke-performance.jmx \
-                            -l reports/jmeter/results.jtl \
-                            -e \
-                            -o reports/jmeter/html
+                        docker run --rm \
+                        --network sapatos-test-net \
+                        -v "$WORKSPACE:/workspace" \
+                        -w /workspace \
+                        justb4/jmeter:latest \
+                        -n \
+                        -t performance/smoke-performance.jmx \
+                        -l reports/jmeter/results.jtl \
+                        -e \
+                        -o reports/jmeter/html
                     '''
                 }
             }
