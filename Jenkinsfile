@@ -412,11 +412,19 @@ pipeline {
             stage('JMeter Performance Test') {
                 steps {
                     sh '''
+
+                        echo "Preparing JMeter reports..."
+
+                        rm -rf "$WORKSPACE/reports/jmeter/html"
+                        rm -f "$WORKSPACE/reports/jmeter/results.jtl"
+
                         mkdir -p "$WORKSPACE/reports/jmeter"
 
                         docker run --rm \
+                            --user 1000:1000 \
                             --network sapatos-test-net \
-                            -v "$WORKSPACE:/workspace" \
+                            -e HOME=/tmp \
+                            -v jenkins_home:/var/jenkins_home \
                             -w /workspace \
                             sapatos-jmeter \
                             -n \
