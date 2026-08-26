@@ -414,7 +414,7 @@ pipeline {
                 steps {
                     script {
                         sh """
-                            cat > reports/qa-dashboard.html <<EOL
+                            cat > reports/qa-dashboard.html <<EOF
                             <!DOCTYPE html>
                             <html>
                             <head>
