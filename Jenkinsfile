@@ -392,7 +392,8 @@ pipeline {
                     sh '''
                         docker build
                             -t sapatos-jmeter \
-                            -f performance/Dockerfile.jmeter .
+                            -f performance/Dockerfile.jmeter \
+                             .
                     '''
                 }
             }
