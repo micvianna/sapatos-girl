@@ -390,6 +390,18 @@ pipeline {
             stage('Build JMeter Image') {
                 steps {
                     sh '''
+                        echo "Workspace atual:"
+                        pwd
+
+                        echo "Conteúdo da raiz:"
+                        ls -la
+
+                        echo "Conteúdo da pasta performance:"
+                        ls -la performance || true
+
+                        echo "Verificando Dockerfile:"
+                        cat performance/Dockerfile.jmeter || true
+
                         docker build \
                             -t sapatos-jmeter \
                             -f performance/Dockerfile.jmeter \
