@@ -10,6 +10,11 @@ pipeline {
     options {
         skipDefaultCheckout(true)
     }
+
+    environment {
+        DB_PASSWORD = credentials('sapatos-db-password')
+        JWT_SECRET = credentials('sapatos-jwt-secret')  
+    }
         stages { 
             stage('Begin') {
                 steps {
@@ -112,7 +117,7 @@ pipeline {
                           --network sapatos-test-net \
                           -e POSTGRES_DB=sapatos_ecommerce \
                           -e POSTGRES_USER=postgres \
-                          -e POSTGRES_PASSWORD=postgres123 \
+                          -e POSTGRES_PASSWORD="¨$DB_PASSWORD" \
                           postgres:16-alpine
                     '''
                 }
@@ -173,8 +178,8 @@ pipeline {
                           -e DB_PORT=5432 \
                           -e DB_NAME=sapatos_ecommerce \
                           -e DB_USER=postgres \
-                          -e DB_PASSWORD=postgres123 \
-                          -e JWT_SECRET=jenkins-test-secret \
+                          -e DB_PASSWORD="$DB_PASSWORD" \
+                          -e JWT_SECRET="$JWT_SECRET" \
                           -e JWT_EXPIRE=7d \
                           -e CORS_ORIGIN=http://localhost:3000,http://sapatos-frontend-test:3000 \
                           -v jenkins_home:/var/jenkins_home \
@@ -248,7 +253,7 @@ pipeline {
                                   --network sapatos-test-net \
                                   -e API_BASE_URL=http://sapatos-backend-test:5000 \
                                   -e FRONTEND_ORIGIN=http://sapatos-frontend-test:3000 \
-                                  -e JWT_SECRET=jenkins-test-secret \
+                                  -e JWT_SECRET="$JWT_SECRET" \
                                   -v jenkins_home:/var/jenkins_home \
                                   -w "$WORKSPACE" \
                                   python:3.12-slim \
@@ -290,12 +295,12 @@ pipeline {
                                   --user 1000:1000 \
                                   --network sapatos-test-net \
                                   -e API_BASE_URL=http://sapatos-backend-test:5000 \
-                                  -e JWT_SECRET=jenkins-test-secret \
+                                  -e JWT_SECRET="$JWT_SECRET" \
                                   -e DB_HOST=sapatos-postgres-test \
                                   -e DB_PORT=5432 \
                                   -e DB_NAME=sapatos_ecommerce \
                                   -e DB_USER=postgres \
-                                  -e DB_PASSWORD=postgres123 \
+                                  -e DB_PASSWORD="$DB_PASSWORD" \
                                   -v jenkins_home:/var/jenkins_home \
                                   -w "$WORKSPACE" \
                                   python:3.12-slim \
