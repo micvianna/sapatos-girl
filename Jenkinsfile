@@ -456,11 +456,12 @@ pipeline {
                         echo "API Tests:         ${apiTestsStatus}"
                         echo "Integration Tests: ${integrationTestsStatus}"
                         echo "E2E Tests:         ${e2eTestsStatus}"
-            
+                        echo "Performance Tests: ${perfomanceTestsStatus}"
                         if (
                             apiTestsStatus != 'PASSED' ||
                             integrationTestsStatus != 'PASSED' ||
-                            e2eTestsStatus != 'PASSED'
+                            e2eTestsStatus != 'PASSED' ||
+                            perfomanceTestsStatus != 'PASSED'
                         ) {
                             error('QUALITY GATE FAILED')
                         }
