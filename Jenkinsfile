@@ -438,10 +438,10 @@ pipeline {
                         )
 
                         if (status == 0) {
-                            perfomanceTestsStatus = 'PASSED'
+                            performanceTestsStatus = 'PASSED'
                             echo 'JMeter Performance Tests: PASSED'
                         } else {
-                            perfomanceTestsStatus = 'FAILED'
+                            performanceTestsStatus = 'FAILED'
                             echo 'JMeter Performance Tests: FAILED'
                         }
                     }
@@ -525,10 +525,10 @@ pipeline {
                             returnStatus: true
                         )
                         if (status == 0) {
-                            perfomanceTestsStatus = 'PASSED'
+                            performanceTestsStatus = 'PASSED'
                             echo 'JMeter Performance Tests: PASSED'
                         } else {
-                            perfomanceTestsStatus = 'FAILED'
+                            performanceTestsStatus = 'FAILED'
                             echo 'JMeter Performance Tests: FAILED'
                         }
                     }
@@ -543,12 +543,12 @@ pipeline {
                         echo "API Tests:         ${apiTestsStatus}"
                         echo "Integration Tests: ${integrationTestsStatus}"
                         echo "E2E Tests:         ${e2eTestsStatus}"
-                        echo "Performance Tests: ${perfomanceTestsStatus}"
+                        echo "Performance Tests: ${performanceTestsStatus}"
                         if (
                             apiTestsStatus != 'PASSED' ||
                             integrationTestsStatus != 'PASSED' ||
                             e2eTestsStatus != 'PASSED' ||
-                            perfomanceTestsStatus != 'PASSED'
+                            performanceTestsStatus != 'PASSED'
                         ) {
                             error('QUALITY GATE FAILED')
                         }
@@ -587,7 +587,7 @@ pipeline {
     <p>API Tests: ${apiTestsStatus}</p>
     <p>Integration Tests: ${integrationTestsStatus}</p>
     <p>E2E Tests: ${e2eTestsStatus}</p>
-    <p>Performance Tests: ${perfomanceTestsStatus}</p>
+    <p>Performance Tests: ${performanceTestsStatus}</p>
 
     <h2>Quality Gate</h2>
 
