@@ -447,6 +447,88 @@ pipeline {
                     }
                 }
             }
+            stage('Analize JMeter Results'){
+                steps {
+                    script {
+                        def status = sh(
+                            script: '''
+                                python3 - <<'PY'
+            import csv
+            import sys
+
+            file_path = 'reports/jmeter/results.jtl'
+
+            times = []
+            errors = 0
+            total = 0
+
+            with open(file_path, newline="", encoding="utf-8") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    total += 1
+
+                    elapsed = int(row["elapsed"])
+                    sucess = row["success"].lower() == "true"
+
+                    times.append(elapsed)
+                    if not sucess:
+                        errors += 1
+            if total == 0:
+                print("No JMeter samples found.")
+                sys.exit(1)
+            
+            times.sort()
+
+            avg = sum(times) / len(times)
+
+            index_p95 = int(len(times) * 0.95) - 1
+            index_p95 = max(index_p95, 0)
+            
+            p95 = times[index_p95]
+
+            error_rate = (errors / total) * 100
+
+            print(f"Total samples: {total}")
+            print(f"Errors: {errors}")
+            print(f"Error rate: {error_rate:.2f}%")
+            print(f"Average response time: {avg:.2f} ms")
+            print(f"P95 response time: {p95} ms")
+
+            MAX_ERROR_RATE = 0
+            MAX_AVG = 500
+            MAX_P95 = 1000
+
+            failed = False
+            if error_rate > MAX_ERROR_RATE:
+                print(f"FAIL: error rate > {MAX_ERROR_RATE}%")
+                failed = True
+            
+            if avg > MAX_AVG:
+                print(f"FAIL: average > {MAX_AVG} ms")
+                failed = True
+
+            if p95 > MAX_P95:
+                print(f"FAIL: p95 > {MAX_P95} ms")
+                failed = True
+            
+            if failed:
+                sys.exit(1)
+            
+            print("JMeter Performance thresholds passed.")
+            PY
+                            ''',
+                            returnStatus: true
+                        )
+                        if (status == 0) {
+                            perfomanceTestsStatus = 'PASSED'
+                            echo 'JMeter Performance Tests: PASSED'
+                        } else {
+                            perfomanceTestsStatus = 'FAILED'
+                            echo 'JMeter Performance Tests: FAILED'
+                        }
+                    }
+                }
+            }
             stage('Quality Gate') {
                 steps {
                     script {
@@ -500,6 +582,7 @@ pipeline {
     <p>API Tests: ${apiTestsStatus}</p>
     <p>Integration Tests: ${integrationTestsStatus}</p>
     <p>E2E Tests: ${e2eTestsStatus}</p>
+    <p>Performance Tests: ${perfomanceTestsStatus}</p>
 
     <h2>Quality Gate</h2>
 
