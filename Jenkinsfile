@@ -452,7 +452,12 @@ pipeline {
                     script {
                         def status = sh(
                             script: '''
-                                python3 - <<'PY'
+                                docker run --rm \
+                                    --user 1000:1000 \
+                                    -v jenkins_home:/var/jenkins_home \
+                                    -w "$WORKSPACE" \
+                                    python:3.12-slim \
+                                    python - <<'PY'
             import csv
             import sys
 
