@@ -411,27 +411,40 @@ pipeline {
             }
             stage('JMeter Performance Test') {
                 steps {
-                    sh '''
-                        echo "Preparing JMeter reports..."
+                    script {
+                        def status = sh(
+                            script: '''
+                                echo "JMETER PERFORMANCE TESTS"
 
-                        rm -rf "$WORKSPACE/reports/jmeter/html"
-                        rm -f "$WORKSPACE/reports/jmeter/results.jtl"
+                                rm -rf "$WORKSPACE/reports/jmeter/html"
+                                rm -f "$WORKSPACE/reports/jmeter/results.jtl"
 
-                        mkdir -p "$WORKSPACE/reports/jmeter"
+                                mkdir -p "$WORKSPACE/reports/jmeter"
 
-                        docker run --rm \
-                            --user 1000:1000 \
-                            --network sapatos-test-net \
-                            -e HOME=/tmp \
-                            -v jenkins_home:/var/jenkins_home \
-                            -w "$WORKSPACE" \
-                            sapatos-jmeter \
-                            -n \
-                            -t performance/smoke-performance.jmx \
-                            -l reports/jmeter/results.jtl \
-                            -e \
-                            -o reports/jmeter/html
-                    '''
+                                docker run --rm \
+                                    --user 1000:1000 \
+                                    --network sapatos-test-net \
+                                    -e HOME=/tmp \
+                                    -v jenkins_home:/var/jenkins_home \
+                                    -w "$WORKSPACE" \
+                                    sapatos-jmeter \
+                                    -n \
+                                    -t performance/smoke-performance.jmx \
+                                    -l reports/jmeter/results.jtl \
+                                    -e \
+                                    -o reports/jmeter/html
+                            ''',
+                            returnStatus: true
+                        )
+
+                        if (status == 0) {
+                            perfomanceTestsStatus = 'PASSED'
+                            echo 'JMeter Performance Tests: PASSED'
+                        } else {
+                            perfomanceTestsStatus = 'FAILED'
+                            echo 'JMeter Performance Tests: FAILED'
+                        }
+                    }
                 }
             }
             stage('Quality Gate') {
