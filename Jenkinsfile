@@ -658,8 +658,7 @@ pipeline {
                 archiveArtifacts(
                     artifacts: 'reports/security/*.json',
                     allowEmptyArchive: true
-                ),
-
+                )
                 publishHTML(target: [
                     reportDir: 'reports/mochawesome',
                     reportFiles: 'cypress-report.html',
