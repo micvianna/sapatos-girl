@@ -588,6 +588,7 @@ pipeline {
     <p>Integration Tests: ${integrationTestsStatus}</p>
     <p>E2E Tests: ${e2eTestsStatus}</p>
     <p>Performance Tests: ${performanceTestsStatus}</p>
+    <p>Dependency Scan: ${dependencyScanStatus}</p>
 
     <h2>Quality Gate</h2>
 
@@ -601,7 +602,7 @@ pipeline {
                 }
             }
             stage('Dependecy Securrity Scan') {
-                stpes {
+                steps {
                     script {
 
                         sh '''
@@ -653,6 +654,11 @@ pipeline {
 
                 archiveArtifacts artifacts: 'reports/*.html',
                                  allowEmptyArchive: true
+                
+                archiveArtifacts(
+                    artifacts: 'reports/security/*.json',
+                    allowEmptyArchive: true
+                ),
 
                 publishHTML(target: [
                     reportDir: 'reports/mochawesome',
