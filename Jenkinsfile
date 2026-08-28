@@ -600,6 +600,45 @@ pipeline {
                     }
                 }
             }
+            stage('Dependecy Securrity Scan') {
+                stpes {
+                    script {
+
+                        sh '''
+                            echo "DEPENDENCY SECURITY SCAN"
+
+                            mkdir - p"$WORKSPACE/reports/security"
+
+                            rm -f "$WORKSPACE/reports/security/backend-npm-audit.json"
+                            rm -f "$WORKSPACE/reports/security/frontend-npm-audit.json"
+
+                            echo "Scanning backend dependencies..."
+                            
+                            docker run --rm \
+                                --user 1000:1000 \
+                                -v jenkins_home:/var/jenkins_home \
+                                -w "$WORKSPACE/backend" \
+                                node:22-alpine \
+                                sh -c 'npm audit --json > ../reports/security/backend-npm-audit.json || true'
+                            
+                            echo "Scanning frontend dependencies..."
+
+                            docker run --rm \
+                                --user 1000:1000 \
+                                -v jenkins_home:/var/jenkins_home \
+                                -w "$WORKSPACE/frontend" \
+                                node:22-alpine \
+                                sh -c 'npm audit --json > ../reports/security/frontend-npm-audit.json || true'
+                        '''
+
+                        dependencyScanStatus = 'COMPLETED'
+
+                        echo "Dependency Security Scan: COMPLETED"
+
+                    }
+                }
+            }
+
         }
         post {
             always {
