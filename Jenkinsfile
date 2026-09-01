@@ -4,6 +4,7 @@ def integrationTestsStatus = 'NOT_RUN'
 def e2eTestsStatus = 'NOT_RUN'
 def performanceTestsStatus = 'NOT_RUN'
 def dependencyScanStatus = 'NOT_RUN'
+def dependencySecurityStatus = 'NOT_RUN'
 
 
 pipeline {
@@ -26,6 +27,7 @@ pipeline {
                         e2eTestsStatus = 'NOT_RUN'
                         performanceTestsStatus = 'NOT_RUN'
                         dependencyScanStatus = 'NOT_RUN'
+                        dependencySecurityStatus = 'NOT_RUN'
                     }
                     echo 'Jenkis funcionando corretamente!'
                 }
