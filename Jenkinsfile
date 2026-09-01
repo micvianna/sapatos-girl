@@ -572,7 +572,7 @@ pipeline {
                                 sh -c 'npm audit --json > ../reports/security/frontend-npm-audit.json || true'
                         '''
 
-                        dependencySecurityStatus = 'COMPLETED'
+                        dependencyScanStatus = 'COMPLETED'
 
                         echo "Dependency Security Scan: COMPLETED"
 
@@ -585,7 +585,7 @@ pipeline {
                     script {
                         def status = sh(
                             script: '''
-                                docker run --rm \
+                                docker run --rm -i \
                                     --user 1000:1000 \
                                     -v jenkins_home:/var/jenkins_home \
                                     -w "$WORKSPACE" \
@@ -594,8 +594,8 @@ pipeline {
             const fs = require('fs');
 
             const files = {
-                backend: '$WORKSPACE/reports/security/backend-npm-audit.json',
-                frontend: '$WORKSPACE/reports/security/frontend-npm-audit.json'
+                backend: 'reports/security/backend-npm-audit.json',
+                frontend: 'reports/security/frontend-npm-audit.json'
             };
 
             let totalCritical = 0;
@@ -675,7 +675,7 @@ pipeline {
                             integrationTestsStatus == 'PASSED' &&
                             e2eTestsStatus == 'PASSED' &&
                             performanceTestsStatus == 'PASSED' &&
-                            dependencyScanStatus == 'PASSED' &&
+                            dependencyScanStatus == 'COMPLETED' &&
                             dependencySecurityStatus == 'PASSED'
                             ? 'PASSED'
                             : 'FAILED'
