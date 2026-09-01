@@ -639,7 +639,7 @@ pipeline {
 
                         dependencyScanStatus = 'COMPLETED'
 
-                        echo "Dependency Security Scan: ${dependencyScanStatus}"
+                        echo "Dependency Security Scan: COMPLETED"
 
                     }
                 }
