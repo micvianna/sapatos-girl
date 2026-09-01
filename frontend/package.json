@@ -28,7 +28,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "test:e2e": "cypress run",
+    "test:e2e": "env -u ELECTRON_RUN_AS_NODE cypress run --browser firefox",
     "report:merge": "mochawesome-merge ../reports/mochawesome/*.json > ../reports/mochawesome/merged.json",
     "report:generate": "marge ../reports/mochawesome/merged.json -f cypress-report -o ../reports/mochawesome",
     "eject": "react-scripts eject"

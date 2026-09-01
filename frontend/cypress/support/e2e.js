@@ -1,4 +1,4 @@
-const apiBaseUrl = cy.env('API_BASE_URL') || 'http://localhost:5000';
+const apiBaseUrl = Cypress.expose('API_BASE_URL');
 
 Cypress.Commands.add('uniqueUser', () => {
   const uniqueId = `${Date.now()}-${Cypress._.random(100000, 999999)}`;
