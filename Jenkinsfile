@@ -369,7 +369,7 @@ pipeline {
                                       -v jenkins_home:/var/jenkins_home \
                                       -w "$PWD" \
                                       --entrypoint sh \
-                                      cypress/included:14.5.4 \
+                                      cypress/included:16.0.0 \
                                       -c '
                                         npm run test:e2e
                                         TEST_EXIT_CODE=$?
