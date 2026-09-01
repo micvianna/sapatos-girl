@@ -593,6 +593,7 @@ pipeline {
     <p>E2E Tests: ${e2eTestsStatus}</p>
     <p>Performance Tests: ${performanceTestsStatus}</p>
     <p>Dependency Scan: ${dependencyScanStatus}</p>
+    <p>Dependency Security: ${dependencyScanStatus}</p>
 
     <h2>Quality Gate</h2>
 
@@ -640,6 +641,94 @@ pipeline {
 
                         echo "Dependency Security Scan: ${dependencyScanStatus}"
 
+                    }
+                }
+            }
+
+            stage('Analyse Dependecy Scan') {
+                steps { 
+                    script {
+                        def status = sh(
+                            script: '''
+                                docker run --rm \
+                                    --user 1000:1000 \
+                                    -v jenkins_home:/var/jenkins_home \
+                                    -w "$WORKSPACE" \
+                                    node:22-alpine \
+                                    node - <<'NODE'
+            const fs = require('fs');
+
+            const files = {
+                backend: '$WORKSPACE/reports/security/backend-npm-audit.json',
+                frontend: '$WORKSPACE/reports/security/frontend-npm-audit.json'
+            };
+
+            let totalCritical = 0;
+            let totalHigh = 0;
+            let totalModerate = 0;
+            let totalLow = 0;
+
+            for (const [name, file] of Object.entries(files)) {
+                if (!fs.existsSync(file)) {
+                    console.error(`File not found: ${file}`);
+                    process.exit(1);
+                }
+            
+            const audit = JSON.parse(fs.readFileSync(file, 'utf-8'));
+
+            const vulnerabilities = audit.metadata.vulnerabilities || {};
+            const critical = vulnerabilities.critical || 0;
+            const high = vulnerabilities.high || 0;
+            const moderate = vulnerabilities.moderate || 0;
+            const low = vulnerabilities.low || 0;
+            const total = vulnerabilities.total || 0;
+
+            totalCritical += critical;
+            totalHigh += high;
+            totalModerate += moderate;
+            totalLow += low;
+
+            console.log('');
+            console.log(`======= ${name.toUpperCase()} =======`);
+            console.log(`Critical     : ${critical}`);
+            console.log(`High         : ${high}`);
+            console.log(`Moderate     : ${moderate}`);
+            console.log(`Low          : ${low}`);
+            console.log(`Total        : ${total}`);
+            }
+
+            console.log('');
+            console.log('======= GLOBAL DEPENDENCY SECURITY =======');
+            console.log( `Critical     : ${totalCritical}`);
+            console.log( `High         : ${totalHigh}`);
+            console.log( `Moderate     : ${totalModerate}`);
+            console.log( `Low          : ${totalLow}`);
+
+            if (totalCritical > 0) {
+                console.log('');
+                console.log('SECURITY RESULT: CRITICAL VULNERABILITIES FOUND');
+                process.exit(2);
+            }
+
+            console.log('');
+            console.log('SECURITY RESULT: NO CRITICAL VULNERABILITIES FOUND');
+            
+            process.exit(0);
+            NODE
+                            ''',
+                            returnStatus: true
+                        )
+                        
+                        if (status == 0) {
+                            dependencyScanStatus = 'PASSED'
+                            echo 'Dependency Security Scan: PASSED'
+                        } else if (status == 2) {
+                            dependencyScanStatus = 'FAILED'
+                            echo 'Dependency Security Gate: FAILED - critical vulnerabilities detected'
+                        } else {
+                            dependencyScanStatus = 'ERROR'
+                            echo 'Dependency Scan: ERROR'
+                        }
                     }
                 }
             }
