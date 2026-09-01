@@ -570,7 +570,10 @@ pipeline {
                         def qualityGateStatus =
                             apiTestsStatus == 'PASSED' &&
                             integrationTestsStatus == 'PASSED' &&
-                            e2eTestsStatus == 'PASSED'
+                            e2eTestsStatus == 'PASSED' &&
+                            performanceTestsStatus == 'PASSED' &&
+                            dependencyScanStatus == 'PASSED' &&
+                            dependencySecurityStatus == 'PASSED'
                             ? 'PASSED'
                             : 'FAILED'
                 echo "===== DASHBOARD STATUS ====="
@@ -602,7 +605,7 @@ pipeline {
     <p>E2E Tests: ${e2eTestsStatus}</p>
     <p>Performance Tests: ${performanceTestsStatus}</p>
     <p>Dependency Scan: ${dependencyScanStatus}</p>
-    <p>Dependency Security: ${dependencyScanStatus}</p>
+    <p>Dependency Security: ${dependencySecurityStatus}</p>
 
     <h2>Quality Gate</h2>
 
@@ -646,7 +649,7 @@ pipeline {
                                 sh -c 'npm audit --json > ../reports/security/frontend-npm-audit.json || true'
                         '''
 
-                        dependencyScanStatus = 'COMPLETED'
+                        dependencySecurityStatus = 'COMPLETED'
 
                         echo "Dependency Security Scan: COMPLETED"
 
@@ -729,13 +732,13 @@ pipeline {
                         )
                         
                         if (status == 0) {
-                            dependencyScanStatus = 'PASSED'
+                            dependencySecurityStatus = 'PASSED'
                             echo 'Dependency Security Scan: PASSED'
                         } else if (status == 2) {
-                            dependencyScanStatus = 'FAILED'
+                            dependencySecurityStatus = 'FAILED'
                             echo 'Dependency Security Gate: FAILED - critical vulnerabilities detected'
                         } else {
-                            dependencyScanStatus = 'ERROR'
+                            dependencySecurityStatus = 'ERROR'
                             echo 'Dependency Scan: ERROR'
                         }
                     }
