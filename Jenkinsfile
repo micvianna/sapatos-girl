@@ -564,61 +564,7 @@ pipeline {
                     }
                 }
             }
-            stage('Generate Qa Dashboard') {
-                steps {
-                    script {
-                        def qualityGateStatus =
-                            apiTestsStatus == 'PASSED' &&
-                            integrationTestsStatus == 'PASSED' &&
-                            e2eTestsStatus == 'PASSED' &&
-                            performanceTestsStatus == 'PASSED' &&
-                            dependencyScanStatus == 'PASSED' &&
-                            dependencySecurityStatus == 'PASSED'
-                            ? 'PASSED'
-                            : 'FAILED'
-                echo "===== DASHBOARD STATUS ====="
-                echo "API: ${apiTestsStatus}"
-                echo "Integration: ${integrationTestsStatus}"
-                echo "E2E: ${e2eTestsStatus}"
-                echo "Performance: ${performanceTestsStatus}"
-                echo "Dependency Scan: ${dependencyScanStatus}"
-                echo "Dependency Security: ${dependencySecurityStatus}"
-
-                        writeFile file: 'reports/qa-dashboard.html', text: """
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>QA Dashboard</title>
-</head>
-<body>
-
-    <h1>QA Dashboard</h1>
-
-    <p>Job: ${env.JOB_NAME}</p>
-    <p>Build: ${env.BUILD_NUMBER}</p>
-
-    <h2>Test Results</h2>
-
-    <p>API Tests: ${apiTestsStatus}</p>
-    <p>Integration Tests: ${integrationTestsStatus}</p>
-    <p>E2E Tests: ${e2eTestsStatus}</p>
-    <p>Performance Tests: ${performanceTestsStatus}</p>
-    <p>Dependency Scan: ${dependencyScanStatus}</p>
-    <p>Dependency Security: ${dependencySecurityStatus}</p>
-
-    <h2>Quality Gate</h2>
-
-    <p>${qualityGateStatus}</p>
-
-</body>
-</html>
-"""
-
-                    }
-                }
-            }
-            stage('Dependecy Securrity Scan') {
+             stage('Dependecy Securrity Scan') {
                 steps {
                     script {
 
@@ -744,6 +690,61 @@ pipeline {
                     }
                 }
             }
+            stage('Generate Qa Dashboard') {
+                steps {
+                    script {
+                        def qualityGateStatus =
+                            apiTestsStatus == 'PASSED' &&
+                            integrationTestsStatus == 'PASSED' &&
+                            e2eTestsStatus == 'PASSED' &&
+                            performanceTestsStatus == 'PASSED' &&
+                            dependencyScanStatus == 'PASSED' &&
+                            dependencySecurityStatus == 'PASSED'
+                            ? 'PASSED'
+                            : 'FAILED'
+                echo "===== DASHBOARD STATUS ====="
+                echo "API: ${apiTestsStatus}"
+                echo "Integration: ${integrationTestsStatus}"
+                echo "E2E: ${e2eTestsStatus}"
+                echo "Performance: ${performanceTestsStatus}"
+                echo "Dependency Scan: ${dependencyScanStatus}"
+                echo "Dependency Security: ${dependencySecurityStatus}"
+
+                        writeFile file: 'reports/qa-dashboard.html', text: """
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>QA Dashboard</title>
+</head>
+<body>
+
+    <h1>QA Dashboard</h1>
+
+    <p>Job: ${env.JOB_NAME}</p>
+    <p>Build: ${env.BUILD_NUMBER}</p>
+
+    <h2>Test Results</h2>
+
+    <p>API Tests: ${apiTestsStatus}</p>
+    <p>Integration Tests: ${integrationTestsStatus}</p>
+    <p>E2E Tests: ${e2eTestsStatus}</p>
+    <p>Performance Tests: ${performanceTestsStatus}</p>
+    <p>Dependency Scan: ${dependencyScanStatus}</p>
+    <p>Dependency Security: ${dependencySecurityStatus}</p>
+
+    <h2>Quality Gate</h2>
+
+    <p>${qualityGateStatus}</p>
+
+</body>
+</html>
+"""
+
+                    }
+                }
+            }
+           
 
         }
         post {
