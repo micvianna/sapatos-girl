@@ -2,6 +2,8 @@
 def apiTestsStatus = 'NOT_RUN'
 def integrationTestsStatus = 'NOT_RUN'
 def e2eTestsStatus = 'NOT_RUN'
+def performanceTestsStatus = 'NOT_RUN'
+def dependencyScanStatus = 'NOT_RUN'
 
 
 pipeline {
@@ -22,6 +24,8 @@ pipeline {
                         apiTestsStatus = 'NOT_RUN'
                         integrationTestsStatus = 'NOT_RUN'
                         e2eTestsStatus = 'NOT_RUN'
+                        performanceTestsStatus = 'NOT_RUN'
+                        dependencyScanStatus = 'NOT_RUN'
                     }
                     echo 'Jenkis funcionando corretamente!'
                 }
@@ -634,7 +638,7 @@ pipeline {
 
                         dependencyScanStatus = 'COMPLETED'
 
-                        echo "Dependency Security Scan: COMPLETED"
+                        echo "Dependency Security Scan: ${dependencyScanStatus}"
 
                     }
                 }
@@ -716,7 +720,7 @@ pipeline {
                 mail to: 'michelrviana@gmail.com',
                      subject: "Falha: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                      body: """
-                     A pipeline falhou.
+                     Michel, olhe a pipeline, pois falhou.
 
                      Job: ${env.JOB_NAME}
                      Build: ${env.BUILD_NUMBER}
