@@ -571,6 +571,13 @@ pipeline {
                             e2eTestsStatus == 'PASSED'
                             ? 'PASSED'
                             : 'FAILED'
+                echo "===== DASHBOARD STATUS ====="
+                echo "API: ${apiTestsStatus}"
+                echo "Integration: ${integrationTestsStatus}"
+                echo "E2E: ${e2eTestsStatus}"
+                echo "Performance: ${performanceTestsStatus}"
+                echo "Dependency Scan: ${dependencyScanStatus}"
+                echo "Dependency Security: ${dependencySecurityStatus}"
 
                         writeFile file: 'reports/qa-dashboard.html', text: """
 <!DOCTYPE html>
