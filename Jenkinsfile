@@ -612,7 +612,7 @@ pipeline {
                         sh '''
                             echo "DEPENDENCY SECURITY SCAN"
 
-                            mkdir - p"$WORKSPACE/reports/security"
+                            mkdir -p "$WORKSPACE/reports/security"
 
                             rm -f "$WORKSPACE/reports/security/backend-npm-audit.json"
                             rm -f "$WORKSPACE/reports/security/frontend-npm-audit.json"
