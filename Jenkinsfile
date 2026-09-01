@@ -540,31 +540,8 @@ pipeline {
                     }
                 }
             }
-            stage('Quality Gate') {
-                steps {
-                    script {
-                       
-                        echo "QUALITY GATE"
-                     
-                        echo "API Tests:         ${apiTestsStatus}"
-                        echo "Integration Tests: ${integrationTestsStatus}"
-                        echo "E2E Tests:         ${e2eTestsStatus}"
-                        echo "Performance Tests: ${performanceTestsStatus}"
-                        if (
-                            apiTestsStatus != 'PASSED' ||
-                            integrationTestsStatus != 'PASSED' ||
-                            e2eTestsStatus != 'PASSED' ||
-                            performanceTestsStatus != 'PASSED'
-                        ) {
-                            error('QUALITY GATE FAILED')
-                        }
-            
-                        echo "QUALITY GATE PASSED"
-            
-                    }
-                }
-            }
-             stage('Dependecy Securrity Scan') {
+
+             stage('Dependency Security Scan') {
                 steps {
                     script {
 
@@ -603,7 +580,7 @@ pipeline {
                 }
             }
 
-            stage('Analyse Dependecy Scan') {
+            stage('Analyse Dependency Scan') {
                 steps { 
                     script {
                         def status = sh(
@@ -740,12 +717,33 @@ pipeline {
 </body>
 </html>
 """
-
                     }
                 }
             }
-           
-
+            stage('Quality Gate') {
+                steps {
+                    script {
+                       
+                        echo "QUALITY GATE"
+                     
+                        echo "API Tests:         ${apiTestsStatus}"
+                        echo "Integration Tests: ${integrationTestsStatus}"
+                        echo "E2E Tests:         ${e2eTestsStatus}"
+                        echo "Performance Tests: ${performanceTestsStatus}"
+                        if (
+                            apiTestsStatus != 'PASSED' ||
+                            integrationTestsStatus != 'PASSED' ||
+                            e2eTestsStatus != 'PASSED' ||
+                            performanceTestsStatus != 'PASSED'
+                        ) {
+                            error('QUALITY GATE FAILED')
+                        }
+            
+                        echo "QUALITY GATE PASSED"
+            
+                    }
+                }
+            }
         }
         post {
             always {
