@@ -809,7 +809,8 @@ pipeline {
                             e2eTestsStatus == 'PASSED' &&
                             performanceTestsStatus == 'PASSED' &&
                             trivyFilesystemScanStatus == 'COMPLETED' &&
-                            dependencySecurityStatus == 'PASSED'
+                            dependencySecurityStatus == 'PASSED' &&
+                            trivyFilesystemSecurityStatus == 'PASSED'
                             ? 'PASSED'
                             : 'FAILED'
                 echo "===== DASHBOARD STATUS ====="
@@ -819,6 +820,7 @@ pipeline {
                 echo "Performance: ${performanceTestsStatus}"
                 echo "Dependency Security: ${dependencySecurityStatus}"
                 echo "Trivy Filesystem Scan: ${trivyFilesystemScanStatus}"
+                echo "Trivy Filesystem Security: ${trivyFilesystemSecurityStatus}"
 
                         writeFile file: 'reports/qa-dashboard.html', text: """
 <!DOCTYPE html>
@@ -843,6 +845,7 @@ pipeline {
     <p>Dependency Scan: ${dependencyScanStatus}</p>
     <p>Dependency Security: ${dependencySecurityStatus}</p>
     <p>Trivy Filesystem: ${trivyFilesystemScanStatus}</p>
+    <p>Trivy Filesystem Security: ${trivyFilesystemSecurityStatus}</p>
     <h2>Quality Gate</h2>
 
     <p>${qualityGateStatus}</p>
@@ -863,11 +866,13 @@ pipeline {
                         echo "Integration Tests: ${integrationTestsStatus}"
                         echo "E2E Tests:         ${e2eTestsStatus}"
                         echo "Performance Tests: ${performanceTestsStatus}"
+                        echo "Trivy Filesystem Security: ${trivyFilesystemSecurityStatus}"
                         if (
                             apiTestsStatus != 'PASSED' ||
                             integrationTestsStatus != 'PASSED' ||
                             e2eTestsStatus != 'PASSED' ||
-                            performanceTestsStatus != 'PASSED'
+                            performanceTestsStatus != 'PASSED' ||
+                            trivyFilesystemSecurityStatus != 'PASSED'
                         ) {
                             error('QUALITY GATE FAILED')
                         }
