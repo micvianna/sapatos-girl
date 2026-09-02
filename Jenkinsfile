@@ -798,6 +798,9 @@ pipeline {
                 archiveArtifacts artifacts: 'reports/*.html',
                                  allowEmptyArchive: true
                 
+                archiveArtifacts artifacts: 'reports/security/trivy-filesystem.json',
+                 allowEmptyArchive: true
+                
                 archiveArtifacts(
                     artifacts: 'reports/security/*.json',
                     allowEmptyArchive: true
