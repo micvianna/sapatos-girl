@@ -684,8 +684,10 @@ pipeline {
                                     --user 1000:1000 \
                                     -v jenkins_home:/var/jenkins_home \
                                     -w "$WORKSPACE" \
+                                    -e TRIVY_CACHE_DIR="$WORKSPACE/.trivy-cache" \
                                     aquasec/trivy:latest \
                                     fs \
+                                    --cache-dir "$WORKSPACE/.trivy-cache" \
                                     --format json \
                                     --output reports/security/trivy-filesystem.json \
                                     --severity LOW,MEDIUM,HIGH,CRITICAL \
