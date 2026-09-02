@@ -6,6 +6,7 @@ def performanceTestsStatus = 'NOT_RUN'
 def dependencyScanStatus = 'NOT_RUN'
 def dependencySecurityStatus = 'NOT_RUN'
 def trivyFilesystemScanStatus = 'NOT_RUN'
+def trivyFilesystemSecurityStatus = 'NOT_RUN'
 
 
 pipeline {
@@ -30,6 +31,7 @@ pipeline {
                         dependencyScanStatus = 'NOT_RUN'
                         dependencySecurityStatus = 'NOT_RUN'
                         trivyFilesystemScanStatus = 'NOT_RUN'
+                        trivyFilesystemSecurityStatus = 'NOT_RUN'
                     }
                     echo 'Jenkis funcionando corretamente!'
                 }
@@ -704,6 +706,96 @@ pipeline {
                         } else {
                             trivyFilesystemScanStatus = 'ERROR'
                             echo 'Trivy Filesystem Scan: ERROR'
+                        }
+                    }
+                }
+            }
+            stage('Analyze Trivy Filesystem') {
+                steps {
+                    script {
+                        def status = sh(
+                            script: '''
+                                docker run --rm -i \
+                                    --user 1000:1000 \
+                                    -v jenkins_home:/var/jenkins_home \
+                                    -w "$WORKSPACE" \
+                                    node:22-alpine \
+                                    node - <<'NODE'
+
+                                    const fs = require('fs');
+
+                                    const file = 'reports/security/trivy-filesystem.json';
+
+                                    if (!fs.existsSync(file)) {
+                                        console.error(`File not found: ${file}`);
+                                        process.exit(1);
+                                    }
+
+                                    const report = JSON.parse(fs.readFileSync(file, 'utf-8'));
+
+                                    let critical = 0;
+                                    let high = 0;
+                                    let medium = 0;
+                                    let low = 0;
+
+                                    for (const result of report.Results || []) {
+                                        for (const vulnerability of result.Vulnerabilities || []) {
+
+                                            switch ((vulnerability.Severity || '').toUpperCase()) {
+                                                case 'CRITICAL':
+                                                    critical++;
+                                                    break;
+
+                                                case 'HIGH':
+                                                    high++;
+                                                    break;
+
+                                                case 'MEDIUM':
+                                                    medium++;
+                                                    break;
+
+                                                case 'LOW':
+                                                    low++;
+                                                    break;
+                                            }
+                                        }
+                                    }
+
+                                    const total = critical + high + medium + low;
+
+                                    console.log('');
+                                    console.log('======= TRIVY FILESYSTEM SECURITY =======');
+                                    console.log(`Critical : ${critical}`);
+                                    console.log(`High     : ${high}`);
+                                    console.log(`Medium   : ${medium}`);
+                                    console.log(`Low      : ${low}`);
+                                    console.log(`Total    : ${total}`);
+
+                                    if (critical > 0) {
+                                        console.log('');
+                                        console.log('TRIVY SECURITY RESULT: CRITICAL VULNERABILITIES FOUND');
+                                        process.exit(2);
+                                    }
+
+                                    console.log('');
+                                    console.log('TRIVY SECURITY RESULT: NO CRITICAL VULNERABILITIES FOUND');
+
+                                    process.exit(0);
+
+                                    NODE
+                            ''',
+                            returnStatus: true
+                        )
+
+                        if (status == 0) {
+                            trivyFilesystemSecurityStatus = 'PASSED'
+                            echo 'Trivy Filesystem Security: PASSED'
+                        } else if (status == 2) {
+                            trivyFilesystemSecurityStatus = 'FAILED'
+                            echo 'Trivy Filesystem Security: FAILED - critical vulnerabilities detected'
+                        } else {
+                            trivyFilesystemSecurityStatus = 'ERROR'
+                            echo 'Trivy Filesystem Security: ERROR'
                         }
                     }
                 }
