@@ -5,6 +5,7 @@ def e2eTestsStatus = 'NOT_RUN'
 def performanceTestsStatus = 'NOT_RUN'
 def dependencyScanStatus = 'NOT_RUN'
 def dependencySecurityStatus = 'NOT_RUN'
+def trivyFilesystemScanStatus = 'NOT_RUN'
 
 
 pipeline {
@@ -28,6 +29,7 @@ pipeline {
                         performanceTestsStatus = 'NOT_RUN'
                         dependencyScanStatus = 'NOT_RUN'
                         dependencySecurityStatus = 'NOT_RUN'
+                        trivyFilesystemScanStatus = 'NOT_RUN'
                     }
                     echo 'Jenkis funcionando corretamente!'
                 }
@@ -667,6 +669,43 @@ pipeline {
                     }
                 }
             }
+            stage('Trivy Filesystem Scan') {
+                steps {
+                    script {
+                        def status = sh(
+                            script: '''
+                                echo "TRIVY FILESYSTEM SCAN"
+
+                                mkdir -p "$WORKSPACE/reports/security"
+
+                                rm -f "$WORKSPACE/reports/security/trivy-filesystem-scan.json"
+
+                                docker run --rm \
+                                    --user 1000:1000 \
+                                    -v jenkins_home:/var/jenkins_home \
+                                    -w "$WORKSPACE" \
+                                    aquasec/trivy:latest \
+                                    fs \
+                                    --format json \
+                                    --output reports/security/trivy-filesystem.json \
+                                    --severity LOW,MEDIUM,HIGH,CRITICAL \
+                                    --scanner vuln \
+                                    --exit-code 0 \
+                                    .
+                            ''',
+                            returnStatus: true
+                        )
+
+                        if (status == 0) {
+                            trivyFilesystemScanStatus = 'COMPLETED'
+                            echo 'Trivy Filesystem Scan: COMPLETED'
+                        } else {
+                            trivyFilesystemScanStatus = 'ERROR'
+                            echo 'Trivy Filesystem Scan: ERROR'
+                        }
+                    }
+                }
+            }
             stage('Generate Qa Dashboard') {
                 steps {
                     script {
@@ -675,7 +714,7 @@ pipeline {
                             integrationTestsStatus == 'PASSED' &&
                             e2eTestsStatus == 'PASSED' &&
                             performanceTestsStatus == 'PASSED' &&
-                            dependencyScanStatus == 'COMPLETED' &&
+                            trivyFilesystemScanStatus == 'COMPLETED' &&
                             dependencySecurityStatus == 'PASSED'
                             ? 'PASSED'
                             : 'FAILED'
@@ -684,8 +723,8 @@ pipeline {
                 echo "Integration: ${integrationTestsStatus}"
                 echo "E2E: ${e2eTestsStatus}"
                 echo "Performance: ${performanceTestsStatus}"
-                echo "Dependency Scan: ${dependencyScanStatus}"
                 echo "Dependency Security: ${dependencySecurityStatus}"
+                echo "Trivy Filesystem Scan: ${trivyFilesystemScanStatus}"
 
                         writeFile file: 'reports/qa-dashboard.html', text: """
 <!DOCTYPE html>
@@ -709,7 +748,7 @@ pipeline {
     <p>Performance Tests: ${performanceTestsStatus}</p>
     <p>Dependency Scan: ${dependencyScanStatus}</p>
     <p>Dependency Security: ${dependencySecurityStatus}</p>
-
+    <p>Trivy Filesystem: ${trivyFilesystemScanStatus}</p>
     <h2>Quality Gate</h2>
 
     <p>${qualityGateStatus}</p>
