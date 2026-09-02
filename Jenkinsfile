@@ -689,7 +689,7 @@ pipeline {
                                     --format json \
                                     --output reports/security/trivy-filesystem.json \
                                     --severity LOW,MEDIUM,HIGH,CRITICAL \
-                                    --scanner vuln \
+                                    --scanners vuln \
                                     --exit-code 0 \
                                     .
                             ''',
