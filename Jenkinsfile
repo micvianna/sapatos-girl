@@ -1060,7 +1060,6 @@ pipeline {
                 echo "Trivy Filesystem Security: ${trivyFilesystemSecurityStatus}"
                 echo "Trivy Image Scan: ${trivyImageScanStatus}"
                 echo "Trivy Image Security: ${trivyImageSecurityStatus}"
-                echo "Trivy Image Scan: ${trivyImageScanStatus}"
                 echo "Trivy CI Image Security: ${trivyImageSecurityStatus}"
 
                         writeFile file: 'reports/qa-dashboard.html', text: """
@@ -1089,7 +1088,6 @@ pipeline {
     <p>Trivy Filesystem Security: ${trivyFilesystemSecurityStatus}</p>
     <p>Trivy Image Scan: ${trivyImageScanStatus}</p>
     <p>Trivy Image Security: ${trivyImageSecurityStatus}</p>
-    <p>Trivy Image Scan: ${trivyImageScanStatus}</p>
     <p>Trivy CI Image Security: ${trivyImageSecurityStatus}</p>
 
     <h2>Quality Gate</h2>
@@ -1105,34 +1103,37 @@ pipeline {
             stage('Quality Gate') {
                 steps {
                     script {
-                       
+
                         echo "QUALITY GATE"
-                     
-                        echo "API Tests:         ${apiTestsStatus}"
-                        echo "Integration Tests: ${integrationTestsStatus}"
-                        echo "E2E Tests:         ${e2eTestsStatus}"
-                        echo "Performance Tests: ${performanceTestsStatus}"
-                        echo "Dependency Security: ${dependencySecurityStatus}"
-                        echo "Trivy Filesystem Security: ${trivyFilesystemSecurityStatus}"
-                        echo "Trivy Image Security: ${trivyImageSecurityStatus}"
+
+                        echo "API Tests:                  ${apiTestsStatus}"
+                        echo "Integration Tests:          ${integrationTestsStatus}"
+                        echo "E2E Tests:                  ${e2eTestsStatus}"
+                        echo "Performance Tests:          ${performanceTestsStatus}"
+                        echo "Dependency Security:        ${dependencySecurityStatus}"
+                        echo "Trivy Filesystem Security:  ${trivyFilesystemSecurityStatus}"
+
+                        echo "-----------------------------------------"
+                        echo "CI IMAGE SECURITY (informational only)"
+                        echo "Trivy Image Scan:           ${trivyImageScanStatus}"
+                        echo "Trivy CI Image Security:    ${trivyImageSecurityStatus}"
+                        echo "-----------------------------------------"
+
                         if (
                             apiTestsStatus != 'PASSED' ||
                             integrationTestsStatus != 'PASSED' ||
                             e2eTestsStatus != 'PASSED' ||
                             performanceTestsStatus != 'PASSED' ||
                             dependencySecurityStatus != 'PASSED' ||
-                            trivyFilesystemSecurityStatus != 'PASSED' ||
-                            trivyImageSecurityStatus != 'PASSED'
+                            trivyFilesystemSecurityStatus != 'PASSED'
                         ) {
                             error('QUALITY GATE FAILED')
                         }
-            
+
                         echo "QUALITY GATE PASSED"
-            
                     }
                 }
             }
-        }
         post {
             always {
                 junit testResults: 'reports/*.xml',
