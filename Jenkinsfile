@@ -825,17 +825,17 @@ pipeline {
                                     OUTPUT="$2"
                                     
                                     echo "Scanning image: $IMAGE"
+                                    echo "Output file: $OUTPUT"
                                     
                                     docker run --rm \
-                                        --user 1000:1000 \
-                                        -v "$WORKSPACE/.trivy-cache:/tmp/trivy-cache" \
-                                        -v "$WORKSPACE/reports/security:/reports" \
+                                        -v jenkins_home:/var/jenkins_home \
                                         -v /var/run/docker.sock:/var/run/docker.sock \
+                                        -w "$WORKSPACE" \
                                         aquasec/trivy:latest \
                                         image \
-                                        --cache-dir /tmp/trivy-cache \
+                                        --cache-dir "$WORKSPACE/.trivy-image-cache" \
                                         --format json \
-                                        --output "/reports/security/$OUTPUT" \
+                                        --output "reports/security/$OUTPUT" \
                                         --severity LOW,MEDIUM,HIGH,CRITICAL \
                                         --scanners vuln \
                                         --exit-code 0 \
@@ -857,7 +857,7 @@ pipeline {
                             echo 'Trivy Image Scan: COMPLETED'
                         } else {
                             trivyImageScanStatus = 'ERROR'
-                            echo 'Trivy Image Scan: ERROR'
+                            echo "Trivy Image Scan: ERROR - exit code ${status}"
                         }
                     }
                 }
