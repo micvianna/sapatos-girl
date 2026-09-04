@@ -809,14 +809,20 @@ pipeline {
                     sh '''
                         echo "Building application images..."
 
-                        docker build 
-                        -t sapatos-backend:${BUILD_NUMBER} \
-                         ./backend
-                        
+                        echo "Building backend image..."
                         docker build \
-                        --build-arg REACT_APP_API_URL=/api \
-                        -t sapatos-frontend:${BUILD_NUMBER} \
-                        ./frontend
+                            -t sapatos-backend:${BUILD_NUMBER} \
+                            ./backend
+
+                        echo "Building frontend image..."
+                        docker build \
+                            --build-arg REACT_APP_API_URL=/api \
+                            -t sapatos-frontend:${BUILD_NUMBER} \
+                            ./frontend
+
+                        echo "Application images built successfully."
+
+                        docker image | grep sapatos
                     '''
                 }
             }
