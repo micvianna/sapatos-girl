@@ -804,6 +804,22 @@ pipeline {
                     }
                 }
             }
+            stage('Build Application Images') {
+                steps {
+                    sh '''
+                        echo "Building application images..."
+
+                        docker build 
+                        -t sapatos-backend:${BUILD_NUMBER} \
+                         ./backend
+                        
+                        docker build \
+                        --build-arg REACT_APP_API_URL=/api \
+                        -t sapatos-frontend:${BUILD_NUMBER} \
+                        ./frontend
+                    '''
+                }
+            }
             stage('Trivy Image Scan') {
                 steps {
                     script {

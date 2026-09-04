@@ -1,0 +1,11 @@
+node_modules
+build
+coverage
+cypress
+reports
+.git
+.gitignore
+npm-debug.log
+.env
+.env.*
+Dockerfile*
