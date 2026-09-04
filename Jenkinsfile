@@ -893,6 +893,7 @@ pipeline {
                                 script: '''
                                     docker run --rm -i \
                                         --user 1000:1000 \
+                                        -e BUILD_NUMBER="${BUILD_NUMBER}" \
                                         -v jenkins_home:/var/jenkins_home \
                                         -w "$WORKSPACE" \
                                         node:22-alpine \
