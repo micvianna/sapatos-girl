@@ -1134,6 +1134,7 @@ pipeline {
                     }
                 }
             }
+        }
         post {
             always {
                 junit testResults: 'reports/*.xml',
@@ -1222,4 +1223,3 @@ pipeline {
             }
         }
     }
-}
