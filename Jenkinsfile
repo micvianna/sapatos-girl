@@ -822,7 +822,7 @@ pipeline {
 
                                 scan_image() {
                                     IMAGE="$1"
-                                    OUTPUT_FILE="$2"
+                                    OUTPUT="$2"
                                     
                                     echo "Scanning image: $IMAGE"
                                     
@@ -835,7 +835,7 @@ pipeline {
                                         image \
                                         --cache-dir /tmp/trivy-cache \
                                         --format json \
-                                        --output "/reports/$OUTPUT" \
+                                        --output "/reports/security/$OUTPUT" \
                                         --severity LOW,MEDIUM,HIGH,CRITICAL \
                                         --scanners vuln \
                                         --exit-code 0 \
