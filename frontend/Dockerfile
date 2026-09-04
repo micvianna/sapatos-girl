@@ -6,6 +6,8 @@ COPY package*.json ./
 
 RUN npm ci
 
+COPY . .
+
 ARG REACT_APP_API_URL=/api
 ENV REACT_APP_API_URL=${REACT_APP_API_URL}
 
