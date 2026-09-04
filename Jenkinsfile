@@ -9,6 +9,8 @@ def trivyFilesystemScanStatus = 'NOT_RUN'
 def trivyFilesystemSecurityStatus = 'NOT_RUN'
 def trivyImageScanStatus = 'NOT_RUN'
 def trivyImageSecurityStatus = 'NOT_RUN'
+def trivyApplicationImageScanStatus = 'NOT_RUN'
+def trivyApplicationImageSecurityStatus = 'NOT_RUN'
 
 
 pipeline {
@@ -36,6 +38,8 @@ pipeline {
                         trivyFilesystemSecurityStatus = 'NOT_RUN'
                         trivyImageScanStatus = 'NOT_RUN'
                         trivyImageSecurityStatus = 'NOT_RUN'
+                        trivyApplicationImageScanStatus = 'NOT_RUN'
+                        trivyApplicationImageSecurityStatus = 'NOT_RUN'
                     }
                     echo 'Jenkis funcionando corretamente!'
                 }
@@ -826,6 +830,213 @@ pipeline {
                     '''
                 }
             }
+                stage('Trivy Application Image Scan') {
+                    steps {
+                        script {
+                            def status = sh(
+                                script: '''
+                                    echo "TRIVY APPLICATION IMAGE SCAN"
+
+                                    mkdir -p "$WORKSPACE/reports/security"
+
+                                    rm -f "$WORKSPACE/reports/security/trivy-app-backend.json"
+                                    rm -f "$WORKSPACE/reports/security/trivy-app-frontend.json"
+
+                                    scan_app_image() {
+                                        IMAGE="$1"
+                                        OUTPUT="$2"
+
+                                        echo "Scanning application image: $IMAGE"
+                                        echo "Output file: $OUTPUT"
+
+                                        docker run --rm \
+                                            -v jenkins_home:/var/jenkins_home \
+                                            -v /var/run/docker.sock:/var/run/docker.sock \
+                                            -w "$WORKSPACE" \
+                                            aquasec/trivy:latest \
+                                            image \
+                                            --cache-dir "$WORKSPACE/.trivy-app-image-cache" \
+                                            --format json \
+                                            --output "reports/security/$OUTPUT" \
+                                            --severity LOW,MEDIUM,HIGH,CRITICAL \
+                                            --scanners vuln \
+                                            --exit-code 0 \
+                                            "$IMAGE"
+                                    }
+
+                                    scan_app_image \
+                                        "sapatos-backend:${BUILD_NUMBER}" \
+                                        "trivy-app-backend.json"
+
+                                    scan_app_image \
+                                        "sapatos-frontend:${BUILD_NUMBER}" \
+                                        "trivy-app-frontend.json"
+                                ''',
+                                returnStatus: true
+                            )
+
+                            if (status == 0) {
+                                trivyApplicationImageScanStatus = 'COMPLETED'
+                                echo 'Trivy Application Image Scan: COMPLETED'
+                            } else {
+                                trivyApplicationImageScanStatus = 'ERROR'
+                                echo "Trivy Application Image Scan: ERROR - exit code ${status}"
+                            }
+                        }
+                    }
+                }
+
+                stage('Analyze Trivy Application Images') {
+                    steps {
+                        script {
+                            def status = sh(
+                                script: '''
+                                    docker run --rm -i \
+                                        --user 1000:1000 \
+                                        -v jenkins_home:/var/jenkins_home \
+                                        -w "$WORKSPACE" \
+                                        node:22-alpine \
+                                        node - <<'NODE'
+
+                const fs = require('fs');
+
+                const images = [
+                    {
+                        name: 'BACKEND',
+                        image: `sapatos-backend:${process.env.BUILD_NUMBER}`,
+                        file: 'reports/security/trivy-app-backend.json'
+                    },
+                    {
+                        name: 'FRONTEND',
+                        image: `sapatos-frontend:${process.env.BUILD_NUMBER}`,
+                        file: 'reports/security/trivy-app-frontend.json'
+                    }
+                ];
+
+                let globalCritical = 0;
+                let globalHigh = 0;
+                let globalMedium = 0;
+                let globalLow = 0;
+
+                for (const item of images) {
+
+                    if (!fs.existsSync(item.file)) {
+                        console.error(`File not found: ${item.file}`);
+                        process.exit(1);
+                    }
+
+                    const report = JSON.parse(
+                        fs.readFileSync(item.file, 'utf-8')
+                    );
+
+                    let critical = 0;
+                    let high = 0;
+                    let medium = 0;
+                    let low = 0;
+
+                    for (const result of report.Results || []) {
+
+                        for (const vulnerability of result.Vulnerabilities || []) {
+
+                            switch ((vulnerability.Severity || '').toUpperCase()) {
+
+                                case 'CRITICAL':
+                                    critical++;
+                                    break;
+
+                                case 'HIGH':
+                                    high++;
+                                    break;
+
+                                case 'MEDIUM':
+                                    medium++;
+                                    break;
+
+                                case 'LOW':
+                                    low++;
+                                    break;
+                            }
+                        }
+                    }
+
+                    const total = critical + high + medium + low;
+
+                    globalCritical += critical;
+                    globalHigh += high;
+                    globalMedium += medium;
+                    globalLow += low;
+
+                    console.log('');
+                    console.log(`======= APPLICATION ${item.name} =======`);
+                    console.log(`Image    : ${item.image}`);
+                    console.log(`Critical : ${critical}`);
+                    console.log(`High     : ${high}`);
+                    console.log(`Medium   : ${medium}`);
+                    console.log(`Low      : ${low}`);
+                    console.log(`Total    : ${total}`);
+
+                    if (critical > 0) {
+                        console.log(
+                            `Status   : FAILED - ${critical} critical vulnerabilities`
+                        );
+                    } else {
+                        console.log('Status   : PASSED');
+                    }
+                }
+
+                const globalTotal =
+                    globalCritical +
+                    globalHigh +
+                    globalMedium +
+                    globalLow;
+
+                console.log('');
+                console.log('======= TRIVY APPLICATION IMAGE SUMMARY =======');
+                console.log(`Critical : ${globalCritical}`);
+                console.log(`High     : ${globalHigh}`);
+                console.log(`Medium   : ${globalMedium}`);
+                console.log(`Low      : ${globalLow}`);
+                console.log(`Total    : ${globalTotal}`);
+
+                console.log('');
+                console.log(
+                    'Policy: application images block the Quality Gate when CRITICAL vulnerabilities are detected.'
+                );
+
+                if (globalCritical > 0) {
+                    console.log('');
+                    console.log(
+                        'TRIVY APPLICATION IMAGE RESULT: FAILED - CRITICAL VULNERABILITIES DETECTED'
+                    );
+
+                    process.exit(2);
+                }
+
+                console.log('');
+                console.log(
+                    'TRIVY APPLICATION IMAGE RESULT: PASSED - NO CRITICAL VULNERABILITIES FOUND'
+                );
+
+                process.exit(0);
+
+                NODE
+                                ''',
+                                returnStatus: true
+                            )
+
+                            if (status == 0) {
+                                trivyApplicationImageSecurityStatus = 'PASSED'
+                                echo 'Trivy Application Image Security: PASSED'
+                            } else if (status == 2) {
+                                trivyApplicationImageSecurityStatus = 'FAILED'
+                                echo 'Trivy Application Image Security: FAILED - critical vulnerabilities detected'
+                            } else {
+                                trivyApplicationImageSecurityStatus = 'ERROR'
+                                echo 'Trivy Application Image Security: ERROR'
+                            }
+                        }
+                    }
+                }
             stage('Trivy Image Scan') {
                 steps {
                     script {
@@ -1069,7 +1280,9 @@ pipeline {
                             performanceTestsStatus == 'PASSED' &&
                             trivyFilesystemScanStatus == 'COMPLETED' &&
                             dependencySecurityStatus == 'PASSED' &&
-                            trivyFilesystemSecurityStatus == 'PASSED'
+                            trivyFilesystemSecurityStatus == 'PASSED' &&
+                            trivyApplicationImageScanStatus == 'COMPLETED' &&
+                            trivyApplicationImageSecurityStatus == 'PASSED'
                             ? 'PASSED'
                             : 'FAILED'
                 echo "===== DASHBOARD STATUS ====="
@@ -1140,14 +1353,15 @@ pipeline {
                         echo "Trivy Image Scan:           ${trivyImageScanStatus}"
                         echo "Trivy CI Image Security:    ${trivyImageSecurityStatus}"
                         echo "-----------------------------------------"
-
+                        echo "Trivy Application Images:   ${trivyApplicationImageSecurityStatus}"
                         if (
                             apiTestsStatus != 'PASSED' ||
                             integrationTestsStatus != 'PASSED' ||
                             e2eTestsStatus != 'PASSED' ||
                             performanceTestsStatus != 'PASSED' ||
                             dependencySecurityStatus != 'PASSED' ||
-                            trivyFilesystemSecurityStatus != 'PASSED'
+                            trivyFilesystemSecurityStatus != 'PASSED' ||
+                            trivyApplicationImageSecurityStatus != 'PASSED'
                         ) {
                             error('QUALITY GATE FAILED')
                         }
