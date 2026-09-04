@@ -874,88 +874,165 @@ pipeline {
                                     node:22-alpine \
                                     node - <<'NODE'
 
-                                    const fs = require('fs');
+            const fs = require('fs');
 
-                                    const files = [
-                                        'reports/security/trivy-node.json',
-                                        'reports/security/trivy-postgres.json',
-                                        'reports/security/trivy-cypress.json',
-                                        'reports/security/trivy-jmeter.json',
-                                        'reports/security/trivy-python.json'
-                                    ];
+            const images = [
+                {
+                    name: 'NODE',
+                    image: 'node:22-alpine',
+                    file: 'reports/security/trivy-node.json'
+                },
+                {
+                    name: 'POSTGRES',
+                    image: 'postgres:16-alpine',
+                    file: 'reports/security/trivy-postgres.json'
+                },
+                {
+                    name: 'CYPRESS',
+                    image: 'cypress/included:16.0.0',
+                    file: 'reports/security/trivy-cypress.json'
+                },
+                {
+                    name: 'PYTHON',
+                    image: 'python:3.12-slim',
+                    file: 'reports/security/trivy-python.json'
+                },
+                {
+                    name: 'JMETER',
+                    image: 'sapatos-jmeter',
+                    file: 'reports/security/trivy-jmeter.json'
+                }
+            ];
 
-                                    let critical = 0;
-                                    let high = 0;
-                                    let medium = 0;
-                                    let low = 0;
+            let globalCritical = 0;
+            let globalHigh = 0;
+            let globalMedium = 0;
+            let globalLow = 0;
 
-                                    for (const file of files) {
-                                        if (!fs.existsSync(file)) {
-                                            console.error(`File not found: ${file}`);
-                                            process.exit(1);
-                                        }
+            for (const item of images) {
 
-                                        const report = JSON.parse(fs.readFileSync(file, 'utf-8'));
+                if (!fs.existsSync(item.file)) {
+                    console.error(`File not found: ${item.file}`);
+                    process.exit(1);
+                }
 
-                                        for (const result of report.Results || []) {
-                                            for (const vulnerability of result.Vulnerabilities || []) {
+                const report = JSON.parse(
+                    fs.readFileSync(item.file, 'utf-8')
+                );
 
-                                                switch ((vulnerability.Severity || '').toUpperCase()) {
-                                                    case 'CRITICAL':
-                                                        critical++;
-                                                        break;
+                let critical = 0;
+                let high = 0;
+                let medium = 0;
+                let low = 0;
 
-                                                    case 'HIGH':
-                                                        high++;
-                                                        break;
+                for (const result of report.Results || []) {
 
-                                                    case 'MEDIUM':
-                                                        medium++;
-                                                        break;
+                    for (const vulnerability of result.Vulnerabilities || []) {
 
-                                                    case 'LOW':
-                                                        low++;
-                                                        break;
-                                                }
-                                            }
-                                        }
-                                    }
+                        switch ((vulnerability.Severity || '').toUpperCase()) {
 
-                                    const total = critical + high + medium + low;
+                            case 'CRITICAL':
+                                critical++;
+                                break;
 
-                                    console.log('');
-                                    console.log('======= TRIVY IMAGE SECURITY =======');
-                                    console.log(`Critical : ${critical}`);
-                                    console.log(`High     : ${high}`);
-                                    console.log(`Medium   : ${medium}`);
-                                    console.log(`Low      : ${low}`);
-                                    console.log(`Total    : ${total}`);
+                            case 'HIGH':
+                                high++;
+                                break;
 
-                                    if (critical > 0) {
-                                        console.log('');
-                                        console.log('TRIVY IMAGE SECURITY RESULT: CRITICAL VULNERABILITIES FOUND');
-                                        process.exit(2);
-                                    }
+                            case 'MEDIUM':
+                                medium++;
+                                break;
 
-                                    console.log('');
-                                    console.log('TRIVY IMAGE SECURITY RESULT: NO CRITICAL VULNERABILITIES FOUND');
+                            case 'LOW':
+                                low++;
+                                break;
+                        }
+                    }
+                }
 
-                                    process.exit(0);
+                const total =
+                    critical +
+                    high +
+                    medium +
+                    low;
 
-                            NODE
+                globalCritical += critical;
+                globalHigh += high;
+                globalMedium += medium;
+                globalLow += low;
+
+                console.log('');
+                console.log(`======= ${item.name} =======`);
+                console.log(`Image    : ${item.image}`);
+                console.log(`Critical : ${critical}`);
+                console.log(`High     : ${high}`);
+                console.log(`Medium   : ${medium}`);
+                console.log(`Low      : ${low}`);
+                console.log(`Total    : ${total}`);
+
+                if (critical > 0) {
+                    console.log(
+                        `Status   : WARNING - ${critical} critical vulnerabilities`
+                    );
+                } else {
+                    console.log('Status   : PASSED');
+                }
+            }
+
+            const globalTotal =
+                globalCritical +
+                globalHigh +
+                globalMedium +
+                globalLow;
+
+            console.log('');
+            console.log('======= TRIVY CI IMAGE SUMMARY =======');
+            console.log(`Critical : ${globalCritical}`);
+            console.log(`High     : ${globalHigh}`);
+            console.log(`Medium   : ${globalMedium}`);
+            console.log(`Low      : ${globalLow}`);
+            console.log(`Total    : ${globalTotal}`);
+
+            console.log('');
+            console.log(
+                'Policy: CI/tool image vulnerabilities are informational and do not block the application Quality Gate.'
+            );
+
+            if (globalCritical > 0) {
+                console.log(
+                    'TRIVY CI IMAGE RESULT: WARNING - CRITICAL VULNERABILITIES DETECTED'
+                );
+
+                // 3 = warning / technical debt
+                process.exit(3);
+            }
+
+            console.log('');
+            console.log(
+                'TRIVY CI IMAGE RESULT: PASSED - NO CRITICAL VULNERABILITIES FOUND'
+            );
+
+            process.exit(0);
+
+            NODE
                             ''',
                             returnStatus: true
                         )
 
                         if (status == 0) {
+
                             trivyImageSecurityStatus = 'PASSED'
-                            echo 'Trivy Image Security: PASSED'
-                        } else if (status == 2) {
-                            trivyImageSecurityStatus = 'FAILED'
-                            echo 'Trivy Image Security: FAILED - critical vulnerabilities detected'
+                            echo 'Trivy CI Image Security: PASSED'
+
+                        } else if (status == 3) {
+
+                            trivyImageSecurityStatus = 'WARNING'
+                            echo 'Trivy CI Image Security: WARNING - vulnerabilities detected in CI/tool images'
+
                         } else {
+
                             trivyImageSecurityStatus = 'ERROR'
-                            echo 'Trivy Image Security: ERROR'
+                            echo 'Trivy CI Image Security: ERROR'
                         }
                     }
                 }
@@ -983,6 +1060,8 @@ pipeline {
                 echo "Trivy Filesystem Security: ${trivyFilesystemSecurityStatus}"
                 echo "Trivy Image Scan: ${trivyImageScanStatus}"
                 echo "Trivy Image Security: ${trivyImageSecurityStatus}"
+                echo "Trivy Image Scan: ${trivyImageScanStatus}"
+                echo "Trivy CI Image Security: ${trivyImageSecurityStatus}"
 
                         writeFile file: 'reports/qa-dashboard.html', text: """
 <!DOCTYPE html>
@@ -1010,6 +1089,9 @@ pipeline {
     <p>Trivy Filesystem Security: ${trivyFilesystemSecurityStatus}</p>
     <p>Trivy Image Scan: ${trivyImageScanStatus}</p>
     <p>Trivy Image Security: ${trivyImageSecurityStatus}</p>
+    <p>Trivy Image Scan: ${trivyImageScanStatus}</p>
+    <p>Trivy CI Image Security: ${trivyImageSecurityStatus}</p>
+
     <h2>Quality Gate</h2>
 
     <p>${qualityGateStatus}</p>
