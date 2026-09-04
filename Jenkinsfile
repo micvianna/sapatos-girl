@@ -1112,12 +1112,15 @@ pipeline {
                         echo "Integration Tests: ${integrationTestsStatus}"
                         echo "E2E Tests:         ${e2eTestsStatus}"
                         echo "Performance Tests: ${performanceTestsStatus}"
+                        echo "Dependency Security: ${dependencySecurityStatus}"
                         echo "Trivy Filesystem Security: ${trivyFilesystemSecurityStatus}"
+                        echo "Trivy Image Security: ${trivyImageSecurityStatus}"
                         if (
                             apiTestsStatus != 'PASSED' ||
                             integrationTestsStatus != 'PASSED' ||
                             e2eTestsStatus != 'PASSED' ||
                             performanceTestsStatus != 'PASSED' ||
+                            dependencySecurityStatus != 'PASSED' ||
                             trivyFilesystemSecurityStatus != 'PASSED' ||
                             trivyImageSecurityStatus != 'PASSED'
                         ) {
