@@ -822,7 +822,7 @@ pipeline {
 
                         echo "Application images built successfully."
 
-                        docker image | grep sapatos
+                        docker images | grep sapatos
                     '''
                 }
             }
