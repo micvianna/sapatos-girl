@@ -864,9 +864,11 @@ pipeline {
 
             if (!fs.existsSync(file)) {
                 console.error(`Semgrep report not found: ${file}`);
-            };
                 process.exit(1);
             }
+            const report = JSON.parse(
+                fs.readFileSync(file, 'utf-8')
+            );
 
             const findings = report.results || [];
 
@@ -877,7 +879,8 @@ pipeline {
 
             for (const finding of findings) {
 
-                const severity = (finding.extra?.severity || '').toUpperCase();
+                const severity = 
+                    (finding.extra?.severity || '').toUpperCase();
 
                 switch (severity) {
                     
@@ -899,7 +902,11 @@ pipeline {
                 }
             }
 
-            const total = error + warning + info + unknown;
+            const total = 
+                error + 
+                warning + 
+                info + 
+                unknown;
 
             console.log('');
             console.log('======= SEMGREP SAST SECURITY =======');
@@ -913,35 +920,30 @@ pipeline {
 
             if (findings.length > 0) {
 
+                console.log('');
                 console.log('======= SEMGREP SAST FINDINGS =======');
 
                 for (const finding of findings) {
 
                     const severity = 
-                        finding.extra?.severity || 
-                        'UNKNOWN';
+                        finding.extra?.severity || 'UNKNOWN';
 
                     const rule =
-                        finding.check_id ||
-                        'unknown-rule';
+                        finding.check_id || 'unknown-rule';
                     
                     const path =
-                        finding.path ||
-                        'unknown-file';
+                        finding.path || 'unknown-file';
 
                     const line =
-                        finding.start?.line ||
-                        '?';
+                        finding.start?.line || '?';
+
                     const message =
-                        finding.extra?.message ||
-                        'No description';
+                        finding.extra?.message || 'No description';
                     
                     console.log('');
-                    console.log(
-                    `[${Severity} ${rule}`
-                    );
-                    console.log(`Message : ${message}`
-                    );
+                    console.log(`[${Severity}] ${rule}`);
+                    console.log(`File : ${path}:${line}`);
+                    console.log(`Message : ${message}`);
                 }
             }
             /*
