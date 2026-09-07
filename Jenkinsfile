@@ -808,6 +808,188 @@ pipeline {
                     }
                 }
             }
+            stage('Semgrep SAST Scan'){
+                steps {
+                    script {
+                        def status: sh(
+                            script: '''
+                                echo "SEMGREP SAST SCAN"
+
+                                mkdir -p "$WORKSPACE/reports/security"
+
+                                rm -f "$WORKSPACE/reports/security/semgrep-sast.json"
+
+                                docker run --rm \
+                                    --user 1000:1000 \
+                                    -v jenkins_home:/var/jenkins_home \
+                                    -w "$WORKSPACE" \
+                                    semgrep/semgrep \
+                                    semgrep scan \
+                                    --config p/owasp-top-ten \
+                                    --config p/nodejs \
+                                    --config p/react \
+                                    --json \
+                                    --output reports/security/semgrep-sast.json \
+                                    backend/src \
+                                    frontend/src \
+
+                                echo "Semgrep Scan finished."
+                            ''',
+                            returnStatus: true
+                        )
+                        if (status == 0) {
+                            sastScanStatus = 'COMPLETED'
+                            echo 'Semgrep SAST Scan: COMPLETED'
+                        } else {
+                            sastScanStatus = 'ERROR'
+                            echo "Semgrep SAST Scan: ERROR - exit code ${status}"
+                        }
+                    }
+                }
+            }
+            stage('Analyze Semgrep SAST') {
+                steps {
+                    script {
+                        def status = sh(
+                            script: '''
+                                docker run --rm -i \
+                                    --user 1000:1000 \
+                                    -v jenkins_home:/var/jenkins_home \
+                                    -w "$WORKSPACE" \
+                                    node:22-alpine \
+                                    node - <<'NODE'
+            const fs = require('fs');
+
+            const file = 'reports/security/semgrep-sast.json';
+
+            if (!fs.existsSync(file)) {
+                console.error(`Semgrep report not found: ${file}`);
+            };
+                process.exit(1);
+            }
+
+            const findings = report.results || [];
+
+            let error = 0;
+            let warning = 0;
+            let info = 0;
+            let unknown = 0;
+
+            for (const finding of findings) {
+
+                const severity = (finding.extra?.severity || '').toUpperCase();
+
+                switch (severity) {
+                    
+                    case 'ERROR':
+                        error++;
+                        break;
+                    
+                    case 'WARNING':
+                        warning++;
+                        break;
+                    
+                    case 'INFO':
+                        info++;
+                        break;
+                    
+                    default:
+                        unknown++;
+                        break;
+                }
+            }
+
+            const total = error + warning + info + unknown;
+
+            console.log('');
+            console.log('======= SEMGREP SAST SECURITY =======');
+            console.log(`Error   : ${error}`);
+            console.log(`Warning : ${warning}`);
+            console.log(`Info    : ${info}`);
+            console.log(`Unknown : ${unknown}`);
+            console.log(`Total   : ${total}`);
+
+            console.log('');
+
+            if (findings.length > 0) {
+
+                console.log('======= SEMGREP SAST FINDINGS =======');
+
+                for (const finding of findings) {
+
+                    const severity = 
+                        finding.extra?.severity || 
+                        'UNKNOWN';
+
+                    const rule =
+                        finding.check_id ||
+                        'unknown-rule';
+                    
+                    const path =
+                        finding.path ||
+                        'unknown-file';
+
+                    const line =
+                        finding.start?.line ||
+                        '?';
+                    const message =
+                        finding.extra?.message ||
+                        'No description';
+                    
+                    console.log('');
+                    console.log(
+                    `[${Severity} ${rule}`
+                    );
+                    console.log(`Message : ${message}`
+                    );
+                }
+            }
+            /*
+            * First SAST baseline:
+            *
+            * ERROR -> FAILED
+            * WARNING -> techical debt
+            * INFO -> informational
+            */
+
+            if (error > 0) {
+                console.log('');
+                console.log(
+                    'SEMGREP SAST RESULT: FAILED - ERROR SEVERITY FINDINGS DETECTED'
+                );
+                process.exit(2);
+            }
+            console.log('');
+
+            if (warning > 0) {
+                console.log(
+                    'SEMGREP SAST RESULT: WARNING - WARNING SEVERITY FINDINGS DETECTED'
+                );
+            } else {
+                console.log(
+                    'SEMGREP SAST RESULT: PASSED'
+                );
+            }
+            process.exit(0);
+
+            NODE
+                            ''',
+                            returnStatus: true
+                        )
+
+                        if (status == 0) {
+                            sastSecurityStatus = 'PASSED'
+                            echo 'Semgrep SAST Security: PASSED'
+                        } else if (status == 2) {
+                            sastSecurityStatus = 'FAILED'
+                            echo 'Semgrep SAST Security: FAILED'
+                        } else {
+                            sastSecurityStatus = 'ERROR'
+                            echo 'Semgrep SAST Security: ERROR'
+                        }
+                    }
+                }
+            }
             stage('Build Application Images') {
                 steps {
                     sh '''
@@ -1297,6 +1479,8 @@ pipeline {
                 echo "Trivy Image Scan: ${trivyImageScanStatus}"
                 echo "Trivy Image Security: ${trivyImageSecurityStatus}"
                 echo "Trivy CI Image Security: ${trivyImageSecurityStatus}"
+                echo "SAST Scan: ${sastScanStatus}"
+                echo "SAST Security: ${sastSecurityStatus}"
 
                         writeFile file: 'reports/qa-dashboard.html', text: """
 <!DOCTYPE html>
@@ -1325,6 +1509,8 @@ pipeline {
     <p>Trivy Image Scan: ${trivyImageScanStatus}</p>
     <p>Trivy Image Security: ${trivyImageSecurityStatus}</p>
     <p>Trivy CI Image Security: ${trivyImageSecurityStatus}</p>
+    <p>SAST Scan: ${sastScanStatus}</p>
+    <p>SAST Security: ${sastSecurityStatus}</p>
 
     <h2>Quality Gate</h2>
 
@@ -1362,7 +1548,9 @@ pipeline {
                             performanceTestsStatus != 'PASSED' ||
                             dependencySecurityStatus != 'PASSED' ||
                             trivyFilesystemSecurityStatus != 'PASSED' ||
-                            trivyApplicationImageSecurityStatus != 'PASSED'
+                            trivyApplicationImageSecurityStatus != 'PASSED' ||
+                            sastScanStatus == 'COMPLETED' &&
+                            sastSecurityStatus != 'PASSED'
                         ) {
                             error('QUALITY GATE FAILED')
                         }
