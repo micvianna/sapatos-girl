@@ -811,7 +811,7 @@ pipeline {
             stage('Semgrep SAST Scan'){
                 steps {
                     script {
-                        def status: sh(
+                        def status = sh(
                             script: '''
                                 echo "SEMGREP SAST SCAN"
 
