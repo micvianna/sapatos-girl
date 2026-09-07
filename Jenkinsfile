@@ -11,6 +11,8 @@ def trivyImageScanStatus = 'NOT_RUN'
 def trivyImageSecurityStatus = 'NOT_RUN'
 def trivyApplicationImageScanStatus = 'NOT_RUN'
 def trivyApplicationImageSecurityStatus = 'NOT_RUN'
+def sastScanStatus = 'NOT_RUN'
+def sastSecurityStatus = 'NOT_RUN'
 
 
 pipeline {
@@ -40,6 +42,8 @@ pipeline {
                         trivyImageSecurityStatus = 'NOT_RUN'
                         trivyApplicationImageScanStatus = 'NOT_RUN'
                         trivyApplicationImageSecurityStatus = 'NOT_RUN'
+                        sastScanStatus = 'NOT_RUN'
+                        sastSecurityStatus = 'NOT_RUN'
                     }
                     echo 'Jenkis funcionando corretamente!'
                 }
@@ -1551,7 +1555,7 @@ pipeline {
                             dependencySecurityStatus != 'PASSED' ||
                             trivyFilesystemSecurityStatus != 'PASSED' ||
                             trivyApplicationImageSecurityStatus != 'PASSED' ||
-                            sastScanStatus == 'COMPLETED' &&
+                            sastScanStatus != 'COMPLETED' &&
                             sastSecurityStatus != 'PASSED'
                         ) {
                             error('QUALITY GATE FAILED')
