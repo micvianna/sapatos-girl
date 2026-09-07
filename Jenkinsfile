@@ -931,7 +931,7 @@ pipeline {
 
                     const severity = 
                         finding.extra?.severity || 'UNKNOWN';
-
+                        
                     const rule =
                         finding.check_id || 'unknown-rule';
                     
@@ -945,7 +945,7 @@ pipeline {
                         finding.extra?.message || 'No description';
                     
                     console.log('');
-                    console.log(`[${Severity}] ${rule}`);
+                    console.log(`[${severity}] ${rule}`);
                     console.log(`File : ${path}:${line}`);
                     console.log(`Message : ${message}`);
                 }
@@ -1471,7 +1471,9 @@ pipeline {
                             dependencySecurityStatus == 'PASSED' &&
                             trivyFilesystemSecurityStatus == 'PASSED' &&
                             trivyApplicationImageScanStatus == 'COMPLETED' &&
-                            trivyApplicationImageSecurityStatus == 'PASSED'
+                            trivyApplicationImageSecurityStatus == 'PASSED' &&
+                            sastScanStatus == 'COMPLETED' &&
+                            sastSecurityStatus == 'PASSED'
                             ? 'PASSED'
                             : 'FAILED'
                 echo "===== DASHBOARD STATUS ====="
@@ -1555,7 +1557,7 @@ pipeline {
                             dependencySecurityStatus != 'PASSED' ||
                             trivyFilesystemSecurityStatus != 'PASSED' ||
                             trivyApplicationImageSecurityStatus != 'PASSED' ||
-                            sastScanStatus != 'COMPLETED' &&
+                            sastScanStatus != 'COMPLETED' ||
                             sastSecurityStatus != 'PASSED'
                         ) {
                             error('QUALITY GATE FAILED')
