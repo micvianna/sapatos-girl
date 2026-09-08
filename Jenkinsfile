@@ -1494,7 +1494,7 @@ pipeline {
                                 docker run --rm \
                                     --name sapatos-zap-test \
                                     --user 1000:1000 \
-                                    --network sapatos-teste-net \
+                                    --network sapatos-test-net \
                                     -v jenkins_home:/zap/wrk:rw \
                                     -w /zap/wrk \
                                     ghcr.io/zaproxy/zaproxy:stable \
