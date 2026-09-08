@@ -15,6 +15,8 @@ def sastScanStatus = 'NOT_RUN'
 def sastSecurityStatus = 'NOT_RUN'
 def zapScanStatus = 'NOT_RUN'
 def zapSecurityStatus = 'NOT_RUN'
+def zapPackagedScanStatus = 'NOT_RUN'
+def zapPackagedSecurityStatus = 'NOT_RUN'
 
 
 pipeline {
@@ -49,6 +51,8 @@ pipeline {
                         sastSecurityStatus = 'NOT_RUN'
                         zapScanStatus = 'NOT_RUN'
                         zapSecurityStatus = 'NOT_RUN'
+                        zapPackagedScanStatus = 'NOT_RUN'
+                        zapPackagedSecurityStatus = 'NOT_RUN'
                     }
                     echo 'Jenkis funcionando corretamente!'
                 }
@@ -1634,6 +1638,207 @@ ZAP_NODE
                     }
                 }
             }
+            stage('ZAP Packaged Baseline Scan'){
+                options {
+                    timeout(time: 15, unit: 'MINUTES')
+                }
+                steps {
+                    script {
+                        zapScanStatus = 'ERROR'
+
+                        def status = sh(
+                            script: '''
+                                set -eu
+
+                                mkdir -p "$WORKSPACE/reports/security"
+
+                                rm -f "$WORKSPACE/reports/security/zap-packaged.json"
+                                rm -f "$WORKSPACE/reports/security/zap-packaged.html"
+
+                                case "$WORKSPACE" in
+                                    /var/jenkins_home/*)
+                                        relative_workspace="${WORKSPACE#/var/jenkins_home/}"
+                                        ;;
+                                    *)
+                                        echo "Unexpected Jenkins workspace"
+                                        exit 3
+                                        ;;
+                                esac
+
+                                docker run --rm \
+                                    --name sapatos-zap-packaged \
+                                    --user 1000:1000 \
+                                    --network sapatos-test-net \
+                                    -v jenkins_home:/zap/wrk:rw \
+                                    -w /zap/wrk \
+                                    ghcr.io/zaproxy/zaproxy:stable \
+                                    zap-baseline.py \
+                                    --autooff \
+                                    -t http://sapatos-frontend-packaged:80 \
+                                    -m 1 \
+                                    -T 5 \
+                                    -J "$relative_workspace/reports/security/zap-packaged.json" \
+                                    -r "$relative_workspace/reports/security/zap-packaged.html" 
+                            ''',
+                            returnStatus: true
+                        )
+
+                        if (status in [0, 1, 2]) {
+                            zapPackagedScanStatus = 'COMPLETED'
+                        } else {
+                            zapPackagedScanStatus = 'ERROR'
+                        }
+
+                        echo "ZAP Scan: ${zapPackagedScanStatus}"
+                        echo "ZAP exit code: ${status}"
+                    }
+                }
+            }
+            stage('Analyze ZAP Packaged Report') {
+                steps {
+                    script {
+                        if (zapPackagedScanStatus != 'COMPLETED') {
+                            zapPackagedSecurityStatus = 'ERROR'
+                        } else {
+                            def status = sh(
+                                script: '''
+                                    docker run --rm -i \
+                                        --user 1000:1000 \
+                                        -v jenkins_home:/var/jenkins_home \
+                                        -w "$WORKSPACE" \
+                                        node:22-alpine \
+                                        node - <<'ZAP_NODE'
+
+                const fs = require('fs');
+
+                try {
+                    const html = fs.readFileSync(
+                        'reports/security/zap-packaged.html',
+                        'utf8'
+                    );
+
+                    if (!html.trim()) {
+                        throw new Error('Empty HTML report');
+                    }
+
+                    const report = JSON.parse(
+                        fs.readFileSync(
+                            'reports/security/zap-packaged.json',
+                            'utf8'
+                        )
+                    );
+
+                    if (
+                        !Array.isArray(report.site) ||
+                        report.site.length === 0
+                    ) {
+                        throw new Error('Missing scanned sites');
+                    }
+
+                    const target = report.site.filter(site =>
+                        site['@host'] === 'sapatos-frontend-packaged' &&
+                        String(site['@port']) === '80'
+                    );
+
+                    if (target.length === 0) {
+                        throw new Error('Expected frontend absent from report');
+                    }
+
+                    const counts = [0, 0, 0, 0];
+
+                    for (const site of report.site) {
+                        if (!Array.isArray(site.alerts)) {
+                            throw new Error('Invalid alerts field');
+                    }
+                    
+                        for (const alert of site.alerts) {
+                            const risk = String(alert.riskcode);
+                            
+                            if (!/^[0-3]$/.test(risk)) {
+                                throw new Error('Unkown risk code: ' + risk);
+                            }
+                            
+                            counts[Number(risk)]++;
+                        }
+                    }
+
+                console.log('');
+                console.log('======= ZAP SECURITY SUMMARY =======');
+                console.log(`Info   : ${counts[0]}`);
+                console.log(`Low    : ${counts[1]}`);
+                console.log(`Medium : ${counts[2]}`);
+                console.log(`High   : ${counts[3]}`);
+
+                if (counts[3] > 0) {
+                    console.log('ZAP SECURITY: FAILED');
+                    process.exit(2);    
+                }
+                
+                if (counts[2] > 0) {
+                    console.log('ZAP SECURITY: WARNING');
+                    process.exit(3);    
+                }
+
+                console.log('ZAP SECURITY: PASSED');
+                process.exit(0);      
+                            
+                } catch (error) {
+                    console.erro('ZAP report error: ' + error.message);
+                    process.exit(1);
+                }
+            
+ZAP_NODE
+                                ''',
+                                returnStatus: true
+                            )
+
+                            if (status == 0) {
+                                zapPackagedSecurityStatus = 'PASSED'
+                            } else if (status == 2) {
+                                zapPackagedSecurityStatus = 'FAILED'
+                            } else if (status == 3) {
+                                zapPackagedSecurityStatus = 'WARNING'
+                            } else {
+                                zapPackagedSecurityStatus = 'ERROR'
+                                zapPackagedScanStatus = 'ERROR'
+                            }
+                        }
+
+                        echo "ZAP Security: ${zapPackagedSecurityStatus}"
+                    }
+                }
+            }
+            stage('Start Packaged Frontend') {
+                steps {
+                    sh '''
+                        set -eu
+
+                        docker rm -f sapatos-frontend-packaged 2>/dev/null || true
+
+                        docker run -d \
+                            --name sapatos-frontend-packaged \
+                            --network sapatos-test-net \
+                            sapatos-frontend:${BUILD_NUMBER}
+
+                        echo "Waiting for packaged frontend..."
+
+                        for i in $(seq 1 30); do
+                            if docker exec sapatos-frontend-packaged \
+                                wget -qO- http://127.0.0.1:80/health; then
+
+                                echo "Packaged frontend is ready"
+                                exit 0
+                            fi
+
+                            sleep 2
+                        done
+
+                        echo "Packaged frontend did not become ready"
+                        docker logs sapatos-frontend-packaged
+                        exit 1
+                    '''
+                }
+            }
             stage('Generate Qa Dashboard') {
                 steps {
                     script {
@@ -1650,7 +1855,9 @@ ZAP_NODE
                             sastScanStatus == 'COMPLETED' &&
                             sastSecurityStatus == 'PASSED' &&
                             zapScanStatus == 'COMPLETED' &&
-                            (zapSecurityStatus in ['PASSED', 'WARNING'])
+                            (zapSecurityStatus in ['PASSED', 'WARNING']) &&
+                            zapPackagedScanStatus == 'COMPLETED' &&
+                            (zapPackagedSecurityStatus in ['PASSED', 'WARNING'])
                             ? 'PASSED'
                             : 'FAILED'
                 echo "===== DASHBOARD STATUS ====="
@@ -1700,6 +1907,8 @@ ZAP_NODE
     <p>Application Image Security: ${trivyApplicationImageSecurityStatus}</p>
     <p>ZAP Scan: ${zapScanStatus}</p>
     <p>ZAP Security: ${zapSecurityStatus}</p>
+    <p>ZAP Packaged Scan: ${zapPackagedScanStatus}</p>
+    <p>ZAP Packaged Security: ${zapPackagedSecurityStatus}</p>
 
     <h2>Quality Gate</h2>
 
@@ -1741,7 +1950,9 @@ ZAP_NODE
                             sastScanStatus != 'COMPLETED' ||
                             sastSecurityStatus != 'PASSED' ||
                             zapScanStatus != 'COMPLETED' ||
-                            !(zapSecurityStatus in ['PASSED', 'WARNING'])
+                            !(zapSecurityStatus in ['PASSED', 'WARNING']) ||
+                            zapPackagedScanStatus != 'COMPLETED' ||
+                            !(zapPackagedSecurityStatus in ['PASSED', 'WARNING'])
                         ) {
                             error('QUALITY GATE FAILED')
                         }
@@ -1766,7 +1977,7 @@ ZAP_NODE
                                  allowEmptyArchive: true
                 
                 archiveArtifacts artifacts: 'reports/security/trivy-filesystem.json',
-                 allowEmptyArchive: true
+                                 allowEmptyArchive: true
                 
                 archiveArtifacts(
                     artifacts: 'reports/security/*.json',
@@ -1775,6 +1986,11 @@ ZAP_NODE
 
                 archiveArtifacts(
                     artifacts: 'reports/security/zap-frontend.html',
+                    allowEmptyArchive: true
+                )
+
+                archiveArtifacts(
+                    artifacts: 'reports/security/zap-packaged.html',
                     allowEmptyArchive: true
                 )
                 
@@ -1832,6 +2048,15 @@ ZAP_NODE
                     allowMissing: true
                 ])
 
+                publishHTML(target: [
+                    reportDir: 'reports/security',
+                    reportFiles: 'zap-packaged.html',
+                    reportName: 'ZAP Frontend Empacotado',
+                    keepAll: true,
+                    alwaysLinkToLastBuild: true,
+                    allowMissing: true
+                ])
+
                 sh '''
                     echo "Cleaning test environment..."
 
@@ -1839,6 +2064,8 @@ ZAP_NODE
                     docker rm -f sapatos-backend-test 2>/dev/null || true
                     docker rm -f sapatos-postgres-test 2>/dev/null || true
                     docker rm -f sapatos-zap-test 2>/dev/null || true
+                    docker rm -f sapatos-frontend-packaged 2>/dev/null || true
+                    docker rm -f sapatos-zap-packaged 2>/dev/null || true
                 '''
             }
             failure {
