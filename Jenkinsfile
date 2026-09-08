@@ -22,6 +22,7 @@ pipeline {
 
     options {
         skipDefaultCheckout(true)
+        disableConcurrentBuilds()
     }
 
     environment {
@@ -1463,7 +1464,7 @@ pipeline {
                     }
                 }
             }
-            stage(''){
+            stage('ZAP Baseline Scan'){
                 options {
                     timeout(time: 15, unit: 'MINUTES')
                 }
@@ -1477,8 +1478,8 @@ pipeline {
 
                                 mkdir -p "$WORKSPACE/reports/security"
 
-                                rm -f "$WORKSPACE/reports/security/zap-scan.json"
-                                rm -f "$WORKSPACE/reports/security/zap-scan.html"
+                                rm -f "$WORKSPACE/reports/security/zap-frontend.json"
+                                rm -f "$WORKSPACE/reports/security/zap-frontend.html"
 
                                 case "$WORKSPACE" in
                                     /var/jenkins_home/*)
@@ -1490,10 +1491,10 @@ pipeline {
                                         ;;
                                 esac
 
-                                docker run -rm \
+                                docker run --rm \
                                     --name sapatos-zap-test \
                                     --user 1000:1000 \
-                                    --network sapatos-zap-net \
+                                    --network sapatos-teste-net \
                                     -v jenkins_home:/zap/wrk:rw \
                                     -w /zap/wrk \
                                     ghcr.io/zaproxy/zaproxy:stable \
@@ -1542,13 +1543,13 @@ pipeline {
                         'utf8'
                     );
 
-                    if (!html.trim() {
+                    if (!html.trim()) {
                         throw new Error('Empty HTML report');
                     }
 
                     const report = JSON.parse(
                         fs.readFileSync(
-                            'report/security/zap-frontend.json',
+                            'reports/security/zap-frontend.json',
                             'utf8'
                         )
                     );
@@ -1561,8 +1562,8 @@ pipeline {
                     }
 
                     const target = report.site.filter(site =>
-                        site['@host'] === 'sapatos-fronend-test' &&
-                        String(site[@'port']) === '3000'
+                        site['@host'] === 'sapatos-frontend-test' &&
+                        String(site['@port']) === '3000'
                     );
 
                     if (target.length === 0) {
@@ -1571,19 +1572,19 @@ pipeline {
 
                     const counts = [0, 0, 0, 0];
 
-                    for (const site of report.size) {
+                    for (const site of report.site) {
                         if (!Array.isArray(site.alerts)) {
-                            throw new Error('Invalid alerts field);
+                            throw new Error('Invalid alerts field');
                     }
                     
-                        for (const alert of sites.alerts) {
+                        for (const alert of site.alerts) {
                             const risk = String(alert.riskcode);
                             
                             if (!/^[0-3]$/.test(risk)) {
                                 throw new Error('Unkown risk code: ' + risk);
                             }
                             
-                            counst[Number(risk)]++;
+                            counts[Number(risk)]++;
                         }
                     }
 
@@ -1606,13 +1607,13 @@ pipeline {
 
                 console.log('ZAP SECURITY: PASSED');
                 process.exit(0);      
-                            )
+                            
                 } catch (error) {
                     console.erro('ZAP report error: ' + error.message);
                     process.exit(1);
                 }
-
-                ZAP_NODE
+            
+ZAP_NODE
                                 ''',
                                 returnStatus: true
                             )
@@ -1647,7 +1648,9 @@ pipeline {
                             trivyApplicationImageScanStatus == 'COMPLETED' &&
                             trivyApplicationImageSecurityStatus == 'PASSED' &&
                             sastScanStatus == 'COMPLETED' &&
-                            sastSecurityStatus == 'PASSED'
+                            sastSecurityStatus == 'PASSED' &&
+                            zapScanStatus == 'COMPLETED' &&
+                            (zapSecurityStatus in ['PASSED', 'WARNING'])
                             ? 'PASSED'
                             : 'FAILED'
                 echo "===== DASHBOARD STATUS ====="
@@ -1693,6 +1696,10 @@ pipeline {
     <p>Trivy CI Image Security: ${trivyImageSecurityStatus}</p>
     <p>SAST Scan: ${sastScanStatus}</p>
     <p>SAST Security: ${sastSecurityStatus}</p>
+    <p>Application Image Scan: ${trivyApplicationImageScanStatus}</p>
+    <p>Application Image Security: ${trivyApplicationImageSecurityStatus}</p>
+    <p>ZAP Scan: ${zapScanStatus}</p>
+    <p>ZAP Security: ${zapSecurityStatus}</p>
 
     <h2>Quality Gate</h2>
 
@@ -1732,7 +1739,9 @@ pipeline {
                             trivyFilesystemSecurityStatus != 'PASSED' ||
                             trivyApplicationImageSecurityStatus != 'PASSED' ||
                             sastScanStatus != 'COMPLETED' ||
-                            sastSecurityStatus != 'PASSED'
+                            sastSecurityStatus != 'PASSED' ||
+                            zapScanStatus != 'COMPLETED' ||
+                            !(zapSecurityStatus in ['PASSED', 'WARNING'])
                         ) {
                             error('QUALITY GATE FAILED')
                         }
@@ -1763,6 +1772,12 @@ pipeline {
                     artifacts: 'reports/security/*.json',
                     allowEmptyArchive: true
                 )
+
+                archiveArtifacts(
+                    artifacts: 'reports/security/zap-frontend.html',
+                    allowEmptyArchive: true
+                )
+                
                 publishHTML(target: [
                     reportDir: 'reports/mochawesome',
                     reportFiles: 'cypress-report.html',
@@ -1808,12 +1823,22 @@ pipeline {
                     allowMissing: true
                 ])
 
+                publishHTML(target: [
+                    reportDir: 'reports/security',
+                    reportFiles: 'zap-frontend.html',
+                    reportName: 'Relatório ZAP',
+                    keepAll: true,
+                    alwaysLinkToLastBuild: true,
+                    allowMissing: true
+                ])
+
                 sh '''
                     echo "Cleaning test environment..."
 
                     docker rm -f sapatos-frontend-test 2>/dev/null || true
                     docker rm -f sapatos-backend-test 2>/dev/null || true
                     docker rm -f sapatos-postgres-test 2>/dev/null || true
+                    docker rm -f sapatos-zap-test 2>/dev/null || true
                 '''
             }
             failure {
