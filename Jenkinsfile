@@ -18,6 +18,11 @@ def zapSecurityStatus = 'NOT_RUN'
 def zapPackagedScanStatus = 'NOT_RUN'
 def zapPackagedSecurityStatus = 'NOT_RUN'
 
+boolean zapGatePassed(String scanStatus, String securityStatus) {
+    return scanStatus == 'COMPLETED' &&
+        securityStatus in ['PASSED', 'WARNING']
+}
+
 
 pipeline {
     agent any
@@ -82,6 +87,74 @@ pipeline {
                 steps {
                     git branch: 'main',
                         url: 'https://github.com/micvianna/sapatos-girl.git'
+                }
+            }
+            stage('Validate ZAP Gate Policy') {
+                steps {
+                    script {
+                        def scenarios = [
+                            [
+                                name: 'Scan completed and security passed',
+                                scan: 'COMPLETED',
+                                security: 'PASSED',
+                                expected: true
+                            ],
+                            [
+                                name: 'Medium warning is allowed',
+                                scan: 'COMPLETED',
+                                security: 'WARNING',
+                                expected: true
+                            ],
+                            [
+                                name: 'High finding blocks approval',
+                                scan: 'COMPLETED',
+                                security: 'FAILED',
+                                expected: false
+                            ],
+                            [
+                                name: 'Scanner error blocks approval',
+                                scan: 'ERROR',
+                                security: 'ERROR',
+                                expected: false
+                            ],
+                            [
+                                name: 'Analyzer error blocks approval',
+                                scan: 'COMPLETED',
+                                security: 'ERROR',
+                                expected: false
+                            ],
+                            [
+                                name: 'Unexecuted scan blocks approval',
+                                scan: 'NOT_RUN',
+                                security: 'NOT_RUN',
+                                expected: false
+                            ],
+                            [
+                                name: 'Scanner error overrides security passed',
+                                scan: 'ERROR',
+                                security: 'PASSED',
+                                expected: false
+                            ]
+                        ]
+
+                        for (scenario in scenarios) {
+                            def actual = zapGatePassed(
+                                scenario.scan,
+                                scenario.security
+                            )
+
+                            if (actual != scenario.expected) {
+                                error(
+                                    "ZAP POLICY TEST FAILED: ${scenario.name}. " +
+                                    "Expected=${scenario.expected}, actual=${actual}"
+                                )
+                            }
+
+                            echo "PASS: ${scenario.name}"
+                        }
+
+                        echo 'ZAP GATE POLICY: 7/7 PASSED'
+                    }
                 }
             }
             stage('Cleanup Previous Environment') {
@@ -1856,8 +1929,8 @@ ZAP_NODE
                             sastSecurityStatus == 'PASSED' &&
                             zapScanStatus == 'COMPLETED' &&
                             (zapSecurityStatus in ['PASSED', 'WARNING']) &&
-                            zapPackagedScanStatus == 'COMPLETED' &&
-                            (zapPackagedSecurityStatus in ['PASSED', 'WARNING'])
+                            zapGatePassed(zapScanStatus, zapSecurityStatus) &&
+                            zapGatePassed(zapPackagedScanStatus, zapPackagedSecurityStatus)
                             ? 'PASSED'
                             : 'FAILED'
                 echo "===== DASHBOARD STATUS ====="
@@ -1950,9 +2023,8 @@ ZAP_NODE
                             sastScanStatus != 'COMPLETED' ||
                             sastSecurityStatus != 'PASSED' ||
                             zapScanStatus != 'COMPLETED' ||
-                            !(zapSecurityStatus in ['PASSED', 'WARNING']) ||
-                            zapPackagedScanStatus != 'COMPLETED' ||
-                            !(zapPackagedSecurityStatus in ['PASSED', 'WARNING'])
+                            !zapGatePassed(zapScanStatus, zapSecurityStatus) ||
+                            !zapGatePassed(zapPackagedScanStatus, zapPackagedSecurityStatus)
                         ) {
                             error('QUALITY GATE FAILED')
                         }
