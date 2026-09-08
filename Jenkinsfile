@@ -1613,7 +1613,7 @@ pipeline {
                 process.exit(0);      
                             
                 } catch (error) {
-                    console.erro('ZAP report error: ' + error.message);
+                    console.error('ZAP report error: ' + error.message);
                     process.exit(1);
                 }
             
@@ -1637,6 +1637,37 @@ ZAP_NODE
                         echo "ZAP Security: ${zapSecurityStatus}"
                     }
                 }
+            }  
+            stage('Start Packaged Frontend') {
+                steps {
+                    sh '''
+                        set -eu
+
+                        docker rm -f sapatos-frontend-packaged 2>/dev/null || true
+
+                        docker run -d \
+                            --name sapatos-frontend-packaged \
+                            --network sapatos-test-net \
+                            sapatos-frontend:${BUILD_NUMBER}
+
+                        echo "Waiting for packaged frontend..."
+
+                        for i in $(seq 1 30); do
+                            if docker exec sapatos-frontend-packaged \
+                                wget -qO- http://127.0.0.1:80/health; then
+
+                                echo "Packaged frontend is ready"
+                                exit 0
+                            fi
+
+                            sleep 2
+                        done
+
+                        echo "Packaged frontend did not become ready"
+                        docker logs sapatos-frontend-packaged
+                        exit 1
+                    '''
+                }
             }
             stage('ZAP Packaged Baseline Scan'){
                 options {
@@ -1644,7 +1675,7 @@ ZAP_NODE
                 }
                 steps {
                     script {
-                        zapScanStatus = 'ERROR'
+                        zapPackagedScanStatus = 'ERROR'
 
                         def status = sh(
                             script: '''
@@ -1783,7 +1814,7 @@ ZAP_NODE
                 process.exit(0);      
                             
                 } catch (error) {
-                    console.erro('ZAP report error: ' + error.message);
+                    console.error('ZAP report error: ' + error.message);
                     process.exit(1);
                 }
             
@@ -1806,37 +1837,6 @@ ZAP_NODE
 
                         echo "ZAP Security: ${zapPackagedSecurityStatus}"
                     }
-                }
-            }
-            stage('Start Packaged Frontend') {
-                steps {
-                    sh '''
-                        set -eu
-
-                        docker rm -f sapatos-frontend-packaged 2>/dev/null || true
-
-                        docker run -d \
-                            --name sapatos-frontend-packaged \
-                            --network sapatos-test-net \
-                            sapatos-frontend:${BUILD_NUMBER}
-
-                        echo "Waiting for packaged frontend..."
-
-                        for i in $(seq 1 30); do
-                            if docker exec sapatos-frontend-packaged \
-                                wget -qO- http://127.0.0.1:80/health; then
-
-                                echo "Packaged frontend is ready"
-                                exit 0
-                            fi
-
-                            sleep 2
-                        done
-
-                        echo "Packaged frontend did not become ready"
-                        docker logs sapatos-frontend-packaged
-                        exit 1
-                    '''
                 }
             }
             stage('Generate Qa Dashboard') {
