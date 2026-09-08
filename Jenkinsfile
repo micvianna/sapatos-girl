@@ -13,6 +13,8 @@ def trivyApplicationImageScanStatus = 'NOT_RUN'
 def trivyApplicationImageSecurityStatus = 'NOT_RUN'
 def sastScanStatus = 'NOT_RUN'
 def sastSecurityStatus = 'NOT_RUN'
+def zapScanStatus = 'NOT_RUN'
+def zapSecurityStatus = 'NOT_RUN'
 
 
 pipeline {
@@ -44,6 +46,8 @@ pipeline {
                         trivyApplicationImageSecurityStatus = 'NOT_RUN'
                         sastScanStatus = 'NOT_RUN'
                         sastSecurityStatus = 'NOT_RUN'
+                        zapScanStatus = 'NOT_RUN'
+                        zapSecurityStatus = 'NOT_RUN'
                     }
                     echo 'Jenkis funcionando corretamente!'
                 }
@@ -1456,6 +1460,176 @@ pipeline {
                             trivyImageSecurityStatus = 'ERROR'
                             echo 'Trivy CI Image Security: ERROR'
                         }
+                    }
+                }
+            }
+            stage(''){
+                options {
+                    timeout(time: 15, unit: 'MINUTES')
+                }
+                steps {
+                    script {
+                        zapScanStatus = 'ERROR'
+
+                        def status = sh(
+                            script: '''
+                                set -eu
+
+                                mkdir -p "$WORKSPACE/reports/security"
+
+                                rm -f "$WORKSPACE/reports/security/zap-scan.json"
+                                rm -f "$WORKSPACE/reports/security/zap-scan.html"
+
+                                case "$WORKSPACE" in
+                                    /var/jenkins_home/*)
+                                        relative_workspace="${WORKSPACE#/var/jenkins_home/}"
+                                        ;;
+                                    *)
+                                        echo "Unexpected Jenkins workspace"
+                                        exit 3
+                                        ;;
+                                esac
+
+                                docker run -rm \
+                                    --name sapatos-zap-test \
+                                    --user 1000:1000 \
+                                    --network sapatos-zap-net \
+                                    -v jenkins_home:/zap/wrk:rw \
+                                    -w /zap/wrk \
+                                    ghcr.io/zaproxy/zaproxy:stable \
+                                    zap-baseline.py \
+                                    --autooff \
+                                    -t http://sapatos-frontend-test:3000 \
+                                    -m 1 \
+                                    -T 5 \
+                                    -J "$relative_workspace/reports/security/zap-frontend.json" \
+                                    -r "$relative_workspace/reports/security/zap-frontend.html" 
+                            ''',
+                            returnStatus: true
+                        )
+
+                        if (status in [0, 1, 2]) {
+                            zapScanStatus = 'COMPLETED'
+                        } else {
+                            zapScanStatus = 'ERROR'
+                        }
+
+                        echo "ZAP Scan: ${zapScanStatus}"
+                        echo "ZAP exit code: ${status}"
+                    }
+                }
+            }
+            stage('Analyze ZAP Report') {
+                steps {
+                    script {
+                        if (zapScanStatus != 'COMPLETED') {
+                            zapSecurityStatus = 'ERROR'
+                        } else {
+                            def status = sh(
+                                script: '''
+                                    docker run --rm -i \
+                                        --user 1000:1000 \
+                                        -v jenkins_home:/var/jenkins_home \
+                                        -w "$WORKSPACE" \
+                                        node:22-alpine \
+                                        node - <<'ZAP_NODE'
+
+                const fs = require('fs');
+
+                try {
+                    const html = fs.readFileSync(
+                        'reports/security/zap-frontend.html',
+                        'utf8'
+                    );
+
+                    if (!html.trim() {
+                        throw new Error('Empty HTML report');
+                    }
+
+                    const report = JSON.parse(
+                        fs.readFileSync(
+                            'report/security/zap-frontend.json',
+                            'utf8'
+                        )
+                    );
+
+                    if (
+                        !Array.isArray(report.site) ||
+                        report.site.length === 0
+                    ) {
+                        throw new Error('Missing scanned sites');
+                    }
+
+                    const target = report.site.filter(site =>
+                        site['@host'] === 'sapatos-fronend-test' &&
+                        String(site[@'port']) === '3000'
+                    );
+
+                    if (target.length === 0) {
+                        throw new Error('Expected frontend absent from report');
+                    }
+
+                    const counts = [0, 0, 0, 0];
+
+                    for (const site of report.size) {
+                        if (!Array.isArray(site.alerts)) {
+                            throw new Error('Invalid alerts field);
+                    }
+                    
+                        for (const alert of sites.alerts) {
+                            const risk = String(alert.riskcode);
+                            
+                            if (!/^[0-3]$/.test(risk)) {
+                                throw new Error('Unkown risk code: ' + risk);
+                            }
+                            
+                            counst[Number(risk)]++;
+                        }
+                    }
+
+                console.log('');
+                console.log('======= ZAP SECURITY SUMMARY =======');
+                console.log(`Info   : ${counts[0]}`);
+                console.log(`Low    : ${counts[1]}`);
+                console.log(`Medium : ${counts[2]}`);
+                console.log(`High   : ${counts[3]}`);
+
+                if (counts[3] > 0) {
+                    console.log('ZAP SECURITY: FAILED');
+                    process.exit(2);    
+                }
+                
+                if (counts[2] > 0) {
+                    console.log('ZAP SECURITY: WARNING');
+                    process.exit(3);    
+                }
+
+                console.log('ZAP SECURITY: PASSED');
+                process.exit(0);      
+                            )
+                } catch (error) {
+                    console.erro('ZAP report error: ' + error.message);
+                    process.exit(1);
+                }
+
+                ZAP_NODE
+                                ''',
+                                returnStatus: true
+                            )
+
+                            if (status == 0) {
+                                zapSecurityStatus = 'PASSED'
+                            } else if (status == 2) {
+                                zapSecurityStatus = 'FAILED'
+                            } else if (status == 3) {
+                                zapSecurityStatus = 'WARNING'
+                            } else {
+                                zapSecurityStatus = 'ERROR'
+                                zapScanStatus = 'ERROR'
+                            }
+                        }
+
+                        echo "ZAP Security: ${zapSecurityStatus}"
                     }
                 }
             }
