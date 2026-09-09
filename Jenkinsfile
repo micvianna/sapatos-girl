@@ -243,12 +243,12 @@ pipeline {
                         docker run --rm \
                             --user 1000:1000 \
                             -v jenkins_home:/var/jenkins_home \
-                            -w "$WORKSPACE/backend"
+                            -w "$WORKSPACE/backend" \
                             node:22-alpine \
                             npm run test:coverage
 
                         test -s "$WORKSPACE/reports/coverage/backend/coverage-summary.json"
-                        test -s "$WORKSPACE/reports/coverage/backend/index.html
+                        test -s "$WORKSPACE/reports/coverage/backend/index.html"
 
                         echo "BACKEND UNIT TESTS AND COVERAGE: COMPLETED"
                 ''' 

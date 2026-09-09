@@ -1,7 +1,7 @@
 module.exports = {
     testEnvironment: 'node',
 
-    testMath: [
+    testMatch: [
         '<rootDir>/test/**/*.test.js'
     ],
 
@@ -11,7 +11,7 @@ module.exports = {
 
     coverageDirectory: '<rootDir>/../reports/coverage/backend',
 
-    coverageReports: [
+    coverageReporters: [
         'text',
         'html',
         'lcov',
