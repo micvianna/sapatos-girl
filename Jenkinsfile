@@ -157,6 +157,41 @@ pipeline {
                     }
                 }
             }
+            stage('Validate ZAP Analyzer') {
+                steps {
+                    sh '''
+                        set -eu
+
+                        echo "Checking ZAP analyzer files..."
+
+                        if [ ! -s scripts/analyze-zap.js ]; then
+                            echo "ERROR: scripts/analyze-zap.js is missing or empty"
+                            exit 1
+                        fi
+
+                        if [ ! -s scripts/test-analyze-zap.js ]; then
+                            echo "ERROR: scripts/test-analyze-zap.js is missing or empty"
+                            exit 1
+                        fi
+
+                        docker run --rm \
+                            --user 1000:1000 \
+                            -v jenkins_home:/var/jenkins_home \
+                            -w "$WORKSPACE" \
+                            node:22-alpine \
+                            sh -c '
+                                set -eu
+
+                                node --check scripts/analyze-zap.js
+                                node --check scripts/test-analyze-zap.js
+
+                                node scripts/test-analyze-zap.js
+                            '
+
+                        echo "ZAP ANALYZER TESTS: PASSED"
+                    '''
+                }
+            }
             stage('Cleanup Previous Environment') {
                 steps {
                       sh '''
@@ -1605,92 +1640,16 @@ pipeline {
                         } else {
                             def status = sh(
                                 script: '''
-                                    docker run --rm -i \
+                                    docker run --rm \
                                         --user 1000:1000 \
                                         -v jenkins_home:/var/jenkins_home \
                                         -w "$WORKSPACE" \
                                         node:22-alpine \
-                                        node - <<'ZAP_NODE'
-
-                const fs = require('fs');
-
-                try {
-                    const html = fs.readFileSync(
-                        'reports/security/zap-frontend.html',
-                        'utf8'
-                    );
-
-                    if (!html.trim()) {
-                        throw new Error('Empty HTML report');
-                    }
-
-                    const report = JSON.parse(
-                        fs.readFileSync(
-                            'reports/security/zap-frontend.json',
-                            'utf8'
-                        )
-                    );
-
-                    if (
-                        !Array.isArray(report.site) ||
-                        report.site.length === 0
-                    ) {
-                        throw new Error('Missing scanned sites');
-                    }
-
-                    const target = report.site.filter(site =>
-                        site['@host'] === 'sapatos-frontend-test' &&
-                        String(site['@port']) === '3000'
-                    );
-
-                    if (target.length === 0) {
-                        throw new Error('Expected frontend absent from report');
-                    }
-
-                    const counts = [0, 0, 0, 0];
-
-                    for (const site of report.site) {
-                        if (!Array.isArray(site.alerts)) {
-                            throw new Error('Invalid alerts field');
-                    }
-                    
-                        for (const alert of site.alerts) {
-                            const risk = String(alert.riskcode);
-                            
-                            if (!/^[0-3]$/.test(risk)) {
-                                throw new Error('Unkown risk code: ' + risk);
-                            }
-                            
-                            counts[Number(risk)]++;
-                        }
-                    }
-
-                console.log('');
-                console.log('======= ZAP SECURITY SUMMARY =======');
-                console.log(`Info   : ${counts[0]}`);
-                console.log(`Low    : ${counts[1]}`);
-                console.log(`Medium : ${counts[2]}`);
-                console.log(`High   : ${counts[3]}`);
-
-                if (counts[3] > 0) {
-                    console.log('ZAP SECURITY: FAILED');
-                    process.exit(2);    
-                }
-                
-                if (counts[2] > 0) {
-                    console.log('ZAP SECURITY: WARNING');
-                    process.exit(3);    
-                }
-
-                console.log('ZAP SECURITY: PASSED');
-                process.exit(0);      
-                            
-                } catch (error) {
-                    console.error('ZAP report error: ' + error.message);
-                    process.exit(1);
-                }
-            
-ZAP_NODE
+                                        node scripts/analyze-zap.js \
+                                        reports/security/zap-frontend.json \
+                                        reports/security/zap-frontend.html \
+                                        sapatos-frontend-test \
+                                        3000
                                 ''',
                                 returnStatus: true
                             )
@@ -1706,7 +1665,7 @@ ZAP_NODE
                                 zapScanStatus = 'ERROR'
                             }
                         }
-
+                        echo "ZAP Scan: ${zapScanStatus}"
                         echo "ZAP Security: ${zapSecurityStatus}"
                     }
                 }
@@ -1806,92 +1765,16 @@ ZAP_NODE
                         } else {
                             def status = sh(
                                 script: '''
-                                    docker run --rm -i \
+                                    docker run --rm \
                                         --user 1000:1000 \
                                         -v jenkins_home:/var/jenkins_home \
                                         -w "$WORKSPACE" \
                                         node:22-alpine \
-                                        node - <<'ZAP_NODE'
-
-                const fs = require('fs');
-
-                try {
-                    const html = fs.readFileSync(
-                        'reports/security/zap-packaged.html',
-                        'utf8'
-                    );
-
-                    if (!html.trim()) {
-                        throw new Error('Empty HTML report');
-                    }
-
-                    const report = JSON.parse(
-                        fs.readFileSync(
-                            'reports/security/zap-packaged.json',
-                            'utf8'
-                        )
-                    );
-
-                    if (
-                        !Array.isArray(report.site) ||
-                        report.site.length === 0
-                    ) {
-                        throw new Error('Missing scanned sites');
-                    }
-
-                    const target = report.site.filter(site =>
-                        site['@host'] === 'sapatos-frontend-packaged' &&
-                        String(site['@port']) === '80'
-                    );
-
-                    if (target.length === 0) {
-                        throw new Error('Expected frontend absent from report');
-                    }
-
-                    const counts = [0, 0, 0, 0];
-
-                    for (const site of report.site) {
-                        if (!Array.isArray(site.alerts)) {
-                            throw new Error('Invalid alerts field');
-                    }
-                    
-                        for (const alert of site.alerts) {
-                            const risk = String(alert.riskcode);
-                            
-                            if (!/^[0-3]$/.test(risk)) {
-                                throw new Error('Unkown risk code: ' + risk);
-                            }
-                            
-                            counts[Number(risk)]++;
-                        }
-                    }
-
-                console.log('');
-                console.log('======= ZAP SECURITY SUMMARY =======');
-                console.log(`Info   : ${counts[0]}`);
-                console.log(`Low    : ${counts[1]}`);
-                console.log(`Medium : ${counts[2]}`);
-                console.log(`High   : ${counts[3]}`);
-
-                if (counts[3] > 0) {
-                    console.log('ZAP SECURITY: FAILED');
-                    process.exit(2);    
-                }
-                
-                if (counts[2] > 0) {
-                    console.log('ZAP SECURITY: WARNING');
-                    process.exit(3);    
-                }
-
-                console.log('ZAP SECURITY: PASSED');
-                process.exit(0);      
-                            
-                } catch (error) {
-                    console.error('ZAP report error: ' + error.message);
-                    process.exit(1);
-                }
-            
-ZAP_NODE
+                                        node scripts/analyze-zap.js \
+                                        reports/security/zap-packaged.json \
+                                        reports/security/zap-packaged.html \
+                                        sapatos-frontend-packaged \
+                                        80
                                 ''',
                                 returnStatus: true
                             )
@@ -1907,8 +1790,8 @@ ZAP_NODE
                                 zapPackagedScanStatus = 'ERROR'
                             }
                         }
-
-                        echo "ZAP Security: ${zapPackagedSecurityStatus}"
+                        echo "ZAP Packaged Scan: ${zapPackagedScanStatus}"
+                        echo "ZAP Security Security: ${zapPackagedSecurityStatus}"
                     }
                 }
             }
