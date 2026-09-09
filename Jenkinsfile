@@ -229,6 +229,31 @@ pipeline {
                     }
                 }
             }
+            stage('Backend Unit Tests and Coverage') {
+                steps {
+                    sh '''
+                        set -eu
+
+                        echo "Preparing backend coverage reports..."
+
+                        mkdir -p "$WORKSPACE/reports/coverage"
+
+                        rm -rf "$WORKSPACE/reports/coverage/backend"
+
+                        docker run --rm \
+                            --user 1000:1000 \
+                            -v jenkins_home:/var/jenkins_home \
+                            -w "$WORKSPACE/backend"
+                            node:22-alpine \
+                            npm run test:coverage
+
+                        test -s "$WORKSPACE/reports/coverage/backend/coverage-summary.json"
+                        test -s "$WORKSPACE/reports/coverage/backend/index.html
+
+                        echo "BACKEND UNIT TESTS AND COVERAGE: COMPLETED"
+                ''' 
+                }
+            }
             stage('frontend: Install dependencies') {
                 steps {
                     dir('frontend') {
@@ -1948,6 +1973,11 @@ pipeline {
                     artifacts: 'reports/security/zap-packaged.html',
                     allowEmptyArchive: true
                 )
+
+                archiveArtifacts(
+                    artifacts: 'reports/coverage/backend/**/*',
+                    allowEmptyArchive: true
+                )
                 
                 publishHTML(target: [
                     reportDir: 'reports/mochawesome',
@@ -2007,6 +2037,15 @@ pipeline {
                     reportDir: 'reports/security',
                     reportFiles: 'zap-packaged.html',
                     reportName: 'ZAP Frontend Empacotado',
+                    keepAll: true,
+                    alwaysLinkToLastBuild: true,
+                    allowMissing: true
+                ])
+
+                publishHTML(target: [
+                    reportDir: 'reports/coverage/backend',
+                    reportFiles: 'index.html',
+                    reportName: 'Backend Unit Test Coverage',
                     keepAll: true,
                     alwaysLinkToLastBuild: true,
                     allowMissing: true
