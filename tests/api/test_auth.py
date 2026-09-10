@@ -109,3 +109,55 @@ def test_returned_jwt_identifies_user(test_user, decoded_auth_token):
 def test_returned_jwt_rejects_wrong_secret(auth_token):
     with pytest.raises(jwt.InvalidSignatureError):
         jwt.decode(auth_token, "segredo-incorreto", algorithms=["HS256"])
+
+
+def test_reset_de_senha_exige_email(api_client, base_url):
+    response = api_client.post(
+        f"{base_url}/api/auth/reset/request",
+        json={},
+        timeout=REQUEST_TIMEOUT,
+    )
+
+    assert response.status_code == 400
+    assert response.json()["error"] == "Email é obrigatório"
+
+
+def test_reset_de_senha_nao_revela_email_desconhecido(api_client, base_url):
+    response = api_client.post(
+        f"{base_url}/api/auth/reset/request",
+        json={"email": f"ausente-{uuid.uuid4().hex}@example.com"},
+        timeout=REQUEST_TIMEOUT,
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "message": "Se o email estiver cadastrado, você receberá instruções para redefinir sua senha."
+    }
+
+
+@pytest.mark.parametrize(
+    "payload, mensagem_esperada",
+    [
+        ({"novaSenha": "SenhaNova123!"}, "Token e nova senha são obrigatórios"),
+        ({"token": "token-de-teste"}, "Token e nova senha são obrigatórios"),
+        (
+            {"token": "token-de-teste", "novaSenha": "12345"},
+            "A senha deve ter pelo menos 6 caracteres",
+        ),
+        (
+            {"token": "token-invalido", "novaSenha": "SenhaNova123!"},
+            "Token inválido ou expirado",
+        ),
+    ],
+)
+def test_confirmacao_de_reset_rejeita_dados_invalidos(
+    api_client, base_url, payload, mensagem_esperada
+):
+    response = api_client.post(
+        f"{base_url}/api/auth/reset/confirm",
+        json=payload,
+        timeout=REQUEST_TIMEOUT,
+    )
+
+    assert response.status_code == 400
+    assert response.json()["error"] == mensagem_esperada

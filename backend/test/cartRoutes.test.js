@@ -46,6 +46,13 @@ const putHandlers = Object.fromEntries(
     ])
 );
 
+const deleteHandlers = Object.fromEntries(
+    router.delete.mock.calls.map(([route, middleware, handler]) => [
+        route,
+        handler
+    ])
+);
+
 function createResponse() {
     return {
         status: jest.fn().mockReturnThis(),
@@ -458,6 +465,187 @@ describe('Rota de carrinho — atualizar quantidade', () => {
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.json).toHaveBeenCalledWith({
             error: 'Erro ao atualizar quantidade'
+        });
+    });
+});
+describe('Rota de carrinho — remover item', () => {
+    beforeEach(() => {
+        pool.query.mockReset();
+        validateUuid.mockReset();
+
+        validateUuid.mockReturnValue(true);
+
+        jest.spyOn(console, 'error').mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    test('rejeita remoção com UUID inválido', async () => {
+        validateUuid.mockReturnValue(false);
+
+        const res = createResponse();
+
+        await deleteHandlers['/:itemId'](
+            {
+                params: { itemId: 'id-invalido' },
+                userId: 'user-id'
+            },
+            res
+        );
+
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({
+            error: 'Item do carrinho inválido'
+        });
+
+        expect(pool.query).not.toHaveBeenCalled();
+    });
+
+    test('retorna 404 quando item não existe ou pertence a outro usuário', async () => {
+        pool.query.mockResolvedValueOnce({ rows: [] });
+
+        const res = createResponse();
+
+        await deleteHandlers['/:itemId'](
+            {
+                params: {
+                    itemId: '11111111-1111-4111-8111-111111111111'
+                },
+                userId: 'user-id'
+            },
+            res
+        );
+
+        expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.json).toHaveBeenCalledWith({
+            error: 'Item do carrinho não encontrado'
+        });
+    });
+
+    test('remove item pertencente ao usuário autenticado', async () => {
+        pool.query.mockResolvedValueOnce({
+            rows: [{ id: 'item-id' }]
+        });
+
+        const res = createResponse();
+
+        await deleteHandlers['/:itemId'](
+            {
+                params: {
+                    itemId: '11111111-1111-4111-8111-111111111111'
+                },
+                userId: 'user-id'
+            },
+            res
+        );
+
+        expect(pool.query).toHaveBeenCalledWith(
+            expect.stringContaining('DELETE FROM itens_carrinho'),
+            [
+                '11111111-1111-4111-8111-111111111111',
+                'user-id'
+            ]
+        );
+
+        expect(res.json).toHaveBeenCalledWith({
+            message: 'Item removido do carrinho'
+        });
+    });
+
+    test('retorna 500 quando o banco falha ao remover item', async () => {
+        pool.query.mockRejectedValueOnce(
+            new Error('Simulated database failure')
+        );
+
+        const res = createResponse();
+
+        await deleteHandlers['/:itemId'](
+            {
+                params: {
+                    itemId: '11111111-1111-4111-8111-111111111111'
+                },
+                userId: 'user-id'
+            },
+            res
+        );
+
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({
+            error: 'Erro ao remover item'
+        });
+    });
+});
+
+describe('Rota de carrinho — limpar', () => {
+    beforeEach(() => {
+        pool.query.mockReset();
+
+        jest.spyOn(console, 'error').mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    test('retorna sucesso mesmo quando não existe carrinho ativo', async () => {
+        pool.query.mockResolvedValueOnce({ rows: [] });
+
+        const res = createResponse();
+
+        await deleteHandlers['/limpar'](
+            { userId: 'user-id' },
+            res
+        );
+
+        expect(pool.query).toHaveBeenCalledTimes(1);
+
+        expect(res.json).toHaveBeenCalledWith({
+            message: 'Carrinho esvaziado com sucesso'
+        });
+    });
+
+    test('remove os itens quando existe carrinho ativo', async () => {
+        pool.query
+            .mockResolvedValueOnce({
+                rows: [{ id: 'cart-id' }]
+            })
+            .mockResolvedValueOnce({ rows: [] });
+
+        const res = createResponse();
+
+        await deleteHandlers['/limpar'](
+            { userId: 'user-id' },
+            res
+        );
+
+        expect(pool.query).toHaveBeenNthCalledWith(
+            2,
+            'DELETE FROM itens_carrinho WHERE carrinho_id = $1',
+            ['cart-id']
+        );
+
+        expect(res.json).toHaveBeenCalledWith({
+            message: 'Carrinho esvaziado com sucesso'
+        });
+    });
+
+    test('retorna 500 quando o banco falha ao limpar carrinho', async () => {
+        pool.query.mockRejectedValueOnce(
+            new Error('Simulated database failure')
+        );
+
+        const res = createResponse();
+
+        await deleteHandlers['/limpar'](
+            { userId: 'user-id' },
+            res
+        );
+
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({
+            error: 'Erro ao limpar carrinho'
         });
     });
 });

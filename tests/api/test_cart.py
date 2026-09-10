@@ -153,3 +153,84 @@ def test_does_not_update_another_users_cart_item(
     )
 
     assert response.status_code == 404
+
+
+@pytest.mark.parametrize("endpoint", ["produto-invalido", "item-invalido"])
+def test_carrinho_rejeita_identificador_malformado(
+    api_client, base_url, auth_headers, endpoint
+):
+    if endpoint == "produto-invalido":
+        response = api_client.post(
+            f"{base_url}/api/cart/adicionar",
+            headers=auth_headers,
+            json={"produtoId": endpoint, "quantidade": 1},
+            timeout=REQUEST_TIMEOUT,
+        )
+    else:
+        response = api_client.delete(
+            f"{base_url}/api/cart/{endpoint}",
+            headers=auth_headers,
+            timeout=REQUEST_TIMEOUT,
+        )
+
+    assert response.status_code == 400
+
+
+def test_limpa_itens_do_carrinho_do_usuario_autenticado(
+    api_client, base_url, auth_headers, cart_item
+):
+    response = api_client.delete(
+        f"{base_url}/api/cart/limpar",
+        headers=auth_headers,
+        timeout=REQUEST_TIMEOUT,
+    )
+
+    assert response.status_code == 200
+    assert response.json()["message"] == "Carrinho esvaziado com sucesso"
+
+    cart_response = api_client.get(
+        f"{base_url}/api/cart", headers=auth_headers, timeout=REQUEST_TIMEOUT
+    )
+    assert cart_response.status_code == 200
+    assert cart_response.json()["itens"] == []
+    assert cart_response.json()["quantidade"] == 0
+    assert cart_item["id"] not in [item["id"] for item in cart_response.json()["itens"]]
+
+
+def test_nao_remove_item_do_carrinho_de_outro_usuario(
+    api_client, base_url, created_product, test_user
+):
+    owner_headers = {"Authorization": f"Bearer {test_user['token']}"}
+    add_response = api_client.post(
+        f"{base_url}/api/cart/adicionar",
+        headers=owner_headers,
+        json={"produtoId": created_product["id"], "quantidade": 1},
+        timeout=REQUEST_TIMEOUT,
+    )
+    assert add_response.status_code == 200, add_response.text
+
+    owner_cart = api_client.get(
+        f"{base_url}/api/cart", headers=owner_headers, timeout=REQUEST_TIMEOUT
+    )
+    item_id = owner_cart.json()["itens"][0]["id"]
+
+    another_user = make_test_user()
+    register_response = api_client.post(
+        f"{base_url}/api/auth/register",
+        json=another_user,
+        timeout=REQUEST_TIMEOUT,
+    )
+    assert register_response.status_code == 201, register_response.text
+
+    response = api_client.delete(
+        f"{base_url}/api/cart/{item_id}",
+        headers={"Authorization": f"Bearer {register_response.json()['token']}"},
+        timeout=REQUEST_TIMEOUT,
+    )
+
+    assert response.status_code == 404
+
+    owner_cart_after_attempt = api_client.get(
+        f"{base_url}/api/cart", headers=owner_headers, timeout=REQUEST_TIMEOUT
+    )
+    assert [item["id"] for item in owner_cart_after_attempt.json()["itens"]] == [item_id]
