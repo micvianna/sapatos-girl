@@ -24,10 +24,16 @@ jest.mock('uuid', () => ({
     v4: jest.fn()
 }));
 
+jest.mock('crypto', () => ({
+    randomBytes: jest.fn(),
+    createHash: jest.fn()
+}));
+
 const { pool } = require('../src/config/database');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
+const crypto = require('crypto');
 
 const router = require('../src/routes/auth');
 
@@ -53,12 +59,23 @@ describe('Rotas de cadastro e login', () => {
         bcrypt.hash.mockReset();
         bcrypt.compare.mockReset();
         jwt.sign.mockReset();
+        crypto.randomBytes.mockReset();
+        crypto.createHash.mockReset();
         uuidv4.mockReset();
 
         bcrypt.genSalt.mockResolvedValue('simulated-salt');
         bcrypt.hash.mockResolvedValue('simulated-hash');
         jwt.sign.mockReturnValue('simulated-token');
         uuidv4.mockReturnValue('simulated-user-id');
+
+        crypto.randomBytes.mockReturnValue({
+            toString: jest.fn().mockReturnValue('simulated-reset-token')
+        });
+
+        crypto.createHash.mockReturnValue({
+            update: jest.fn().mockReturnThis(),
+            digest: jest.fn().mockReturnValue('simulated-token-hash')
+        });
 
         jest.spyOn(console, 'error').mockImplementation(() => {});
     });
@@ -352,4 +369,283 @@ describe('Rotas de cadastro e login', () => {
         });
         expect(jwt.sign).not.toHaveBeenCalled();
     });
+describe('Reset de senha', () => {
+    test('solicitação de reset rejeita email ausente', async () => {
+        const res = createResponse();
+
+        await handlers['/reset/request'](
+            { body: {} },
+            res
+        );
+
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({
+            error: 'Email é obrigatório'
+        });
+
+        expect(pool.query).not.toHaveBeenCalled();
+    });
+
+    test('solicitação de reset não revela email inexistente', async () => {
+        pool.query.mockResolvedValueOnce({ rows: [] });
+
+        const res = createResponse();
+
+        await handlers['/reset/request'](
+            {
+                body: {
+                    email: 'missing@example.com'
+                }
+            },
+            res
+        );
+
+        expect(res.json).toHaveBeenCalledWith({
+            message: 'Se o email estiver cadastrado, você receberá instruções para redefinir sua senha.'
+        });
+
+        expect(crypto.randomBytes).not.toHaveBeenCalled();
+        expect(pool.query).toHaveBeenCalledTimes(1);
+    });
+
+    test('solicitação de reset cria token para usuário existente', async () => {
+        pool.query
+            .mockResolvedValueOnce({
+                rows: [{ id: 'user-id' }]
+            })
+            .mockResolvedValueOnce({ rows: [] })
+            .mockResolvedValueOnce({ rows: [] });
+
+        const res = createResponse();
+
+        await handlers['/reset/request'](
+            {
+                body: {
+                    email: 'ana@example.com'
+                }
+            },
+            res
+        );
+
+        expect(crypto.randomBytes).toHaveBeenCalledWith(32);
+        expect(crypto.createHash).toHaveBeenCalledWith(
+            'sha256'
+        );
+
+        expect(pool.query).toHaveBeenNthCalledWith(
+            2,
+            expect.stringContaining(
+                'UPDATE password_reset_tokens'
+            ),
+            ['user-id']
+        );
+
+        expect(pool.query).toHaveBeenNthCalledWith(
+            3,
+            expect.stringContaining(
+                'INSERT INTO password_reset_tokens'
+            ),
+            [
+                'simulated-user-id',
+                'user-id',
+                'simulated-token-hash'
+            ]
+        );
+
+        expect(res.json).toHaveBeenCalledWith({
+            message: 'Se o email estiver cadastrado, você receberá instruções para redefinir sua senha.'
+        });
+    });
+
+    test('solicitação de reset retorna token apenas em desenvolvimento', async () => {
+        const previousNodeEnv = process.env.NODE_ENV;
+        process.env.NODE_ENV = 'development';
+
+        pool.query
+            .mockResolvedValueOnce({
+                rows: [{ id: 'user-id' }]
+            })
+            .mockResolvedValueOnce({ rows: [] })
+            .mockResolvedValueOnce({ rows: [] });
+
+        const res = createResponse();
+
+        try {
+            await handlers['/reset/request'](
+                {
+                    body: {
+                        email: 'ana@example.com'
+                    }
+                },
+                res
+            );
+
+            expect(res.json).toHaveBeenCalledWith({
+                message: 'Token de reset gerado (modo desenvolvimento).',
+                resetToken: 'simulated-reset-token'
+            });
+        } finally {
+            if (previousNodeEnv === undefined) {
+                delete process.env.NODE_ENV;
+            } else {
+                process.env.NODE_ENV = previousNodeEnv;
+            }
+        }
+    });
+
+    test('solicitação de reset retorna 500 quando o banco falha', async () => {
+        pool.query.mockRejectedValueOnce(
+            new Error('Simulated database failure')
+        );
+
+        const res = createResponse();
+
+        await handlers['/reset/request'](
+            {
+                body: {
+                    email: 'ana@example.com'
+                }
+            },
+            res
+        );
+
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({
+            error: 'Erro ao processar solicitação de reset'
+        });
+    });
+
+    test.each([
+        ['token ausente', { novaSenha: '123456' }],
+        ['nova senha ausente', { token: 'reset-token' }]
+    ])('confirmação de reset rejeita %s', async (description, body) => {
+        const res = createResponse();
+
+        await handlers['/reset/confirm']({ body }, res);
+
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({
+            error: 'Token e nova senha são obrigatórios'
+        });
+
+        expect(pool.query).not.toHaveBeenCalled();
+    });
+
+    test('confirmação de reset rejeita senha menor que seis caracteres', async () => {
+        const res = createResponse();
+
+        await handlers['/reset/confirm'](
+            {
+                body: {
+                    token: 'reset-token',
+                    novaSenha: '12345'
+                }
+            },
+            res
+        );
+
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({
+            error: 'A senha deve ter pelo menos 6 caracteres'
+        });
+
+        expect(pool.query).not.toHaveBeenCalled();
+    });
+
+    test('confirmação de reset rejeita token inválido ou expirado', async () => {
+        pool.query.mockResolvedValueOnce({ rows: [] });
+
+        const res = createResponse();
+
+        await handlers['/reset/confirm'](
+            {
+                body: {
+                    token: 'reset-token',
+                    novaSenha: 'new-password'
+                }
+            },
+            res
+        );
+
+        expect(crypto.createHash).toHaveBeenCalledWith(
+            'sha256'
+        );
+
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({
+            error: 'Token inválido ou expirado'
+        });
+
+        expect(bcrypt.hash).not.toHaveBeenCalled();
+    });
+
+    test('confirmação de reset atualiza senha e inutiliza o token', async () => {
+        pool.query
+            .mockResolvedValueOnce({
+                rows: [{
+                    id: 'reset-id',
+                    usuario_id: 'user-id'
+                }]
+            })
+            .mockResolvedValueOnce({ rows: [] })
+            .mockResolvedValueOnce({ rows: [] });
+
+        const res = createResponse();
+
+        await handlers['/reset/confirm'](
+            {
+                body: {
+                    token: 'reset-token',
+                    novaSenha: 'new-password'
+                }
+            },
+            res
+        );
+
+        expect(bcrypt.genSalt).toHaveBeenCalledWith(10);
+        expect(bcrypt.hash).toHaveBeenCalledWith(
+            'new-password',
+            'simulated-salt'
+        );
+
+        expect(pool.query).toHaveBeenNthCalledWith(
+            2,
+            'UPDATE usuarios SET senha = $1 WHERE id = $2',
+            ['simulated-hash', 'user-id']
+        );
+
+        expect(pool.query).toHaveBeenNthCalledWith(
+            3,
+            'UPDATE password_reset_tokens SET used = true WHERE id = $1',
+            ['reset-id']
+        );
+
+        expect(res.json).toHaveBeenCalledWith({
+            message: 'Senha redefinida com sucesso'
+        });
+    });
+
+    test('confirmação de reset retorna 500 quando o banco falha', async () => {
+        pool.query.mockRejectedValueOnce(
+            new Error('Simulated database failure')
+        );
+
+        const res = createResponse();
+
+        await handlers['/reset/confirm'](
+            {
+                body: {
+                    token: 'reset-token',
+                    novaSenha: 'new-password'
+                }
+            },
+            res
+        );
+
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({
+            error: 'Erro ao redefinir a senha'
+        });
+    });
+});
 });
