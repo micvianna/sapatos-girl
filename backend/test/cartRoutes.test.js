@@ -32,6 +32,13 @@ const postHandlers = Object.fromEntries(
     ])
 );
 
+const getHandlers = Object.fromEntries(
+    router.get.mock.calls.map(([route, middleware, handler]) => [
+        route,
+        handler
+    ])
+);
+
 function createResponse() {
     return {
         status: jest.fn().mockReturnThis(),
@@ -215,6 +222,96 @@ describe('Rota de carrinho — adicionar produto', () => {
 
         expect(res.json).toHaveBeenCalledWith({
             message: 'Produto adicionado ao carrinho'
+        });
+    });
+});
+
+describe('Rota de carrinho — visualizar', () => {
+    beforeEach(() => {
+        pool.query.mockReset();
+
+        jest.spyOn(console, 'error').mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    test('retorna carrinho vazio com total zero', async () => {
+        pool.query.mockResolvedValueOnce({ rows: [] });
+
+        const res = createResponse();
+
+        await getHandlers['/'](
+            { userId: 'user-id' },
+            res
+        );
+
+        expect(pool.query).toHaveBeenCalledWith(
+            expect.stringContaining('FROM itens_carrinho'),
+            ['user-id']
+        );
+
+        expect(res.json).toHaveBeenCalledWith({
+            itens: [],
+            total: '0.00',
+            quantidade: 0
+        });
+    });
+
+    test('retorna itens, total e quantidade do carrinho', async () => {
+        pool.query.mockResolvedValueOnce({
+            rows: [
+                {
+                    id: 'item-1',
+                    produto_id: 'product-1',
+                    nome: 'Tênis',
+                    preco: 199.90,
+                    quantidade: 2,
+                    tamanho: '38',
+                    cor: 'Preta'
+                },
+                {
+                    id: 'item-2',
+                    produto_id: 'product-2',
+                    nome: 'Sandália',
+                    preco: 50,
+                    quantidade: 1,
+                    tamanho: '37',
+                    cor: 'Bege'
+                }
+            ]
+        });
+
+        const res = createResponse();
+
+        await getHandlers['/'](
+            { userId: 'user-id' },
+            res
+        );
+
+        expect(res.json).toHaveBeenCalledWith({
+            itens: expect.any(Array),
+            total: '449.80',
+            quantidade: 3
+        });
+    });
+
+    test('retorna 500 quando ocorre erro ao buscar carrinho', async () => {
+        pool.query.mockRejectedValueOnce(
+            new Error('Simulated database failure')
+        );
+
+        const res = createResponse();
+
+        await getHandlers['/'](
+            { userId: 'user-id' },
+            res
+        );
+
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({
+            error: 'Erro ao buscar carrinho'
         });
     });
 });
