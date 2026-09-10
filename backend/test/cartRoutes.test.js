@@ -39,6 +39,13 @@ const getHandlers = Object.fromEntries(
     ])
 );
 
+const putHandlers = Object.fromEntries(
+    router.put.mock.calls.map(([route, middleware, handler]) => [
+        route,
+        handler
+    ])
+);
+
 function createResponse() {
     return {
         status: jest.fn().mockReturnThis(),
@@ -312,6 +319,145 @@ describe('Rota de carrinho — visualizar', () => {
         expect(res.status).toHaveBeenCalledWith(500);
         expect(res.json).toHaveBeenCalledWith({
             error: 'Erro ao buscar carrinho'
+        });
+    });
+});
+describe('Rota de carrinho — atualizar quantidade', () => {
+    beforeEach(() => {
+        pool.query.mockReset();
+        validateUuid.mockReset();
+
+        validateUuid.mockReturnValue(true);
+
+        jest.spyOn(console, 'error').mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    test('rejeita item com UUID inválido', async () => {
+        validateUuid.mockReturnValue(false);
+
+        const res = createResponse();
+
+        await putHandlers['/:itemId'](
+            {
+                params: { itemId: 'id-invalido' },
+                body: { quantidade: 2 },
+                userId: 'user-id'
+            },
+            res
+        );
+
+        expect(res.status).toHaveBeenCalledWith(400);
+        expect(res.json).toHaveBeenCalledWith({
+            error: 'Item do carrinho inválido'
+        });
+
+        expect(pool.query).not.toHaveBeenCalled();
+    });
+
+    test.each([0, -1, 1.5, '2'])(
+        'rejeita quantidade inválida: %p',
+        async (quantidade) => {
+            const res = createResponse();
+
+            await putHandlers['/:itemId'](
+                {
+                    params: {
+                        itemId: '11111111-1111-4111-8111-111111111111'
+                    },
+                    body: { quantidade },
+                    userId: 'user-id'
+                },
+                res
+            );
+
+            expect(res.status).toHaveBeenCalledWith(400);
+            expect(res.json).toHaveBeenCalledWith({
+                error: 'Quantidade inválida'
+            });
+
+            expect(pool.query).not.toHaveBeenCalled();
+        }
+    );
+
+    test('retorna 404 quando o item não pertence ao usuário', async () => {
+        pool.query.mockResolvedValueOnce({ rows: [] });
+
+        const res = createResponse();
+
+        await putHandlers['/:itemId'](
+            {
+                params: {
+                    itemId: '11111111-1111-4111-8111-111111111111'
+                },
+                body: { quantidade: 2 },
+                userId: 'user-id'
+            },
+            res
+        );
+
+        expect(res.status).toHaveBeenCalledWith(404);
+        expect(res.json).toHaveBeenCalledWith({
+            error: 'Item do carrinho não encontrado'
+        });
+    });
+
+    test('atualiza quantidade de item pertencente ao usuário', async () => {
+        pool.query.mockResolvedValueOnce({
+            rows: [{ id: 'item-id' }]
+        });
+
+        const res = createResponse();
+
+        await putHandlers['/:itemId'](
+            {
+                params: {
+                    itemId: '11111111-1111-4111-8111-111111111111'
+                },
+                body: { quantidade: 3 },
+                userId: 'user-id'
+            },
+            res
+        );
+
+        expect(pool.query).toHaveBeenCalledWith(
+            expect.stringContaining('UPDATE itens_carrinho'),
+            [
+                3,
+                '11111111-1111-4111-8111-111111111111',
+                'user-id'
+            ]
+        );
+
+        expect(res.json).toHaveBeenCalledWith({
+            message: 'Quantidade atualizada'
+        });
+    });
+
+    test('retorna 500 quando o banco falha na atualização', async () => {
+        pool.query.mockRejectedValueOnce(
+            new Error('Simulated database failure')
+        );
+
+        const res = createResponse();
+
+        await putHandlers['/:itemId'](
+            {
+                params: {
+                    itemId: '11111111-1111-4111-8111-111111111111'
+                },
+                body: { quantidade: 3 },
+                userId: 'user-id'
+            },
+            res
+        );
+
+        expect(res.status).toHaveBeenCalledWith(500);
+        expect(res.json).toHaveBeenCalledWith({
+            error: 'Erro ao atualizar quantidade'
         });
     });
 });
