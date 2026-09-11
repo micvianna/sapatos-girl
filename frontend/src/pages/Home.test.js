@@ -82,3 +82,20 @@ test('mostra confirmação de pedido em análise', async () => {
   expect(await screen.findByTestId('order-success')).toHaveClass('toast-analise');
   expect(screen.getByText('checkout.orderUnderReview')).toBeVisible();
 });
+
+test('mostra as duas vitrines e navega pelas categorias restantes', async () => {
+  const itens = [{ id: '1' }, { id: '2' }, { id: '3' }, { id: '4' }, { id: '5' }, { id: '6' }, { id: '7' }, { id: '8' }];
+  axios.get.mockResolvedValueOnce({ data: { itens } });
+  renderizarHome();
+  expect(await screen.findAllByTestId('produto')).toHaveLength(8);
+  fireEvent.click(screen.getByText('home.sandálias'));
+  fireEvent.click(screen.getByText('home.sapatilhas'));
+  fireEvent.click(screen.getByText('home.bolsas'));
+  fireEvent.click(screen.getByText('common.viewAll'));
+  fireEvent.click(screen.getByText('common.discover'));
+  fireEvent.click(screen.getAllByText('home.instagramLink')[0]);
+  expect(navigate).toHaveBeenCalledWith('/products?category=sandalias');
+  expect(navigate).toHaveBeenCalledWith('/products?category=sapatilhas');
+  expect(navigate).toHaveBeenCalledWith('/products?category=bolsas');
+  expect(navigate).toHaveBeenCalledWith('/products');
+});

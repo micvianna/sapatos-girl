@@ -99,3 +99,16 @@ test('abre o mini carrinho e mostra a quantidade dos itens', () => {
   fireEvent.click(screen.getByTestId('cart-toggle'));
   expect(openCart).toHaveBeenCalledTimes(1);
 });
+
+test('navega para página inicial ao clicar na marca', () => {
+  renderizarCabecalho();
+  fireEvent.click(screen.getByText('ATALAIA'));
+  expect(navigate).toHaveBeenCalledWith('/');
+});
+
+test('fecha a busca pelo botão de fechar sem pesquisar', async () => {
+  const { container } = renderizarCabecalho();
+  fireEvent.click(container.querySelector('.search-toggle'));
+  fireEvent.click(container.querySelector('.close-search'));
+  await waitFor(() => expect(screen.queryByPlaceholderText('header.searchPlaceholder')).not.toBeInTheDocument());
+});

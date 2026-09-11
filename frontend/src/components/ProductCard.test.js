@@ -115,3 +115,20 @@ test('não renderiza cartão quando a API falha ao buscar o produto', async () =
   expect(console.error).toHaveBeenCalledWith('Erro ao buscar produto:', expect.any(Error));
   console.error.mockRestore();
 });
+
+test('redireciona para login quando a wishlist não autoriza a ação', async () => {
+  prepararProduto({ token: 'token' });
+  axios.post.mockRejectedValue({ response: { status: 401 } });
+  fireEvent.click(await screen.findByLabelText('wishlist.addToFavorites'));
+  await waitFor(() => expect(navigate).toHaveBeenCalledWith('/login'));
+});
+
+test('mantém cartão visível quando ocorre erro desconhecido ao adicionar', async () => {
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+  prepararProduto();
+  addToCart.mockRejectedValue(new Error('falha'));
+  fireEvent.click(await screen.findByTestId('add-to-cart'));
+  await waitFor(() => expect(console.error).toHaveBeenCalledWith('Erro ao adicionar ao carrinho:', expect.any(Error)));
+  expect(screen.getByTestId('product-card')).toBeInTheDocument();
+  console.error.mockRestore();
+});
