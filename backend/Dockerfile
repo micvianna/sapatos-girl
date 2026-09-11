@@ -28,4 +28,4 @@ EXPOSE 5000
 
 USER node
 
-CMD ["npm", "src/server.js"]
+CMD ["npm", "start"]

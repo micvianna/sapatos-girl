@@ -1,0 +1,71 @@
+name: sapatos-lab
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    env_file:
+      - path: .env.lab
+        required: true
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required in .env.lab}
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required in .env.lab}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required in .env.lab}
+    volumes:
+      - sapatos_lab_postgres_data:/var/lib/postgresql/data
+      - ../database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    networks:
+      - sapatos_lab_net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+
+  backend:
+    build:
+      context: ../backend
+    restart: unless-stopped
+    env_file:
+      - path: .env.lab
+        required: true
+    environment:
+      PORT: "5000"
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_NAME: ${DB_NAME:?DB_NAME is required in .env.lab}
+      DB_USER: ${DB_USER:?DB_USER is required in .env.lab}
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD is required in .env.lab}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required in .env.lab}
+      JWT_EXPIRE: ${JWT_EXPIRE:?JWT_EXPIRE is required in .env.lab}
+      CORS_ORIGIN: ${CORS_ORIGIN:?CORS_ORIGIN is required in .env.lab}
+    ports:
+      - "127.0.0.1:5001:5000"
+    networks:
+      - sapatos_lab_net
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ../frontend
+      args:
+        REACT_APP_API_URL: /api
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:3001:80"
+    networks:
+      - sapatos_lab_net
+    depends_on:
+      - backend
+
+networks:
+  sapatos_lab_net:
+    name: sapatos-lab-net
+    driver: bridge
+
+volumes:
+  sapatos_lab_postgres_data:
+    name: sapatos-lab-postgres-data
