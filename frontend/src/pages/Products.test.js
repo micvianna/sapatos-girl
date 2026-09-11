@@ -36,6 +36,7 @@ test('mostra produtos retornados pela API e quantidade', async () => {
   axios.get.mockResolvedValue({ data: [{ id: '1' }, { id: '2' }] });
   renderizarProdutos();
   expect(await screen.findAllByTestId('produto-card')).toHaveLength(2);
+  await waitFor(() => expect(screen.queryByText('common.loading')).not.toBeInTheDocument());
   expect(screen.getByTestId('products-count')).toHaveTextContent('2 products.pieces');
 });
 
@@ -43,6 +44,7 @@ test('mostra estado vazio e permite conhecer mais produtos', async () => {
   axios.get.mockResolvedValue({ data: [] });
   renderizarProdutos();
   fireEvent.click(await screen.findByText('products.discoverMore'));
+  await waitFor(() => expect(screen.queryByText('common.loading')).not.toBeInTheDocument());
   expect(navigate).toHaveBeenCalledWith('/products');
 });
 
@@ -50,6 +52,7 @@ test('envia busca, categoria, preço e ordenação para a API', async () => {
   axios.get.mockResolvedValue({ data: [] });
   const { container } = renderizarProdutos('?category=botas&search=couro');
   await screen.findByText('products.noResults');
+  await waitFor(() => expect(screen.queryByText('common.loading')).not.toBeInTheDocument());
   fireEvent.change(container.querySelector('[name="preco_min"]'), { target: { value: '100' } });
   fireEvent.change(container.querySelector('[name="preco_max"]'), { target: { value: '300' } });
   fireEvent.change(container.querySelector('[name="sort"]'), { target: { value: 'preco_desc' } });
@@ -66,6 +69,7 @@ test('limpa filtros e navega para a listagem completa', async () => {
   axios.get.mockResolvedValue({ data: [] });
   renderizarProdutos('?category=botas');
   fireEvent.click(await screen.findByText('products.clearFilters'));
+  await waitFor(() => expect(screen.queryByText('common.loading')).not.toBeInTheDocument());
   expect(navigate).toHaveBeenCalledWith('/products');
 });
 
@@ -73,9 +77,11 @@ test('atualiza filtros quando a URL muda', async () => {
   axios.get.mockResolvedValue({ data: [] });
   const tela = renderizarProdutos('?category=botas');
   await screen.findByText('products.clearFilters');
+  await waitFor(() => expect(screen.queryByText('common.loading')).not.toBeInTheDocument());
   location = { search: '?search=bolsa' };
   tela.rerender(<Products />);
   await waitFor(() => expect(axios.get).toHaveBeenLastCalledWith(expect.stringContaining('busca=bolsa')));
+  await screen.findByText('products.noResults');
 });
 
 test('mantém a tela de produtos quando a API falha', async () => {
@@ -83,5 +89,6 @@ test('mantém a tela de produtos quando a API falha', async () => {
   axios.get.mockRejectedValue(new Error('falhou'));
   renderizarProdutos();
   expect(await screen.findByText('products.noResults')).toBeVisible();
+  await waitFor(() => expect(screen.queryByText('common.loading')).not.toBeInTheDocument());
   console.error.mockRestore();
 });

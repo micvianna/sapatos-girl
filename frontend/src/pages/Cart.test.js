@@ -15,9 +15,9 @@ let updateQuantity;
 let clearCart;
 const item = { id: 'item-1', nome: 'Bota', imagem: '/bota.jpg', tamanho: '38', cor: 'Preto', preco: 100, quantidade: 2 };
 
-function renderizarCarrinho({ token = 'token', items = [item], total = 200, erroAoCarregar = false } = {}) {
+function renderizarCarrinho({ token = 'token', items = [item], total = 200, erroAoCarregar = false, carregamentoPendente = false } = {}) {
   navigate = jest.fn();
-  fetchCart = erroAoCarregar ? jest.fn().mockRejectedValue(new Error('erro carga')) : jest.fn().mockResolvedValue();
+  fetchCart = carregamentoPendente ? jest.fn().mockReturnValue(new Promise(() => {})) : erroAoCarregar ? jest.fn().mockRejectedValue(new Error('erro carga')) : jest.fn().mockResolvedValue();
   removeFromCart = jest.fn().mockResolvedValue();
   updateQuantity = jest.fn().mockResolvedValue();
   clearCart = jest.fn().mockResolvedValue();
@@ -42,7 +42,7 @@ test('redireciona visitante para login sem carregar carrinho', () => {
 });
 
 test('mostra carregamento enquanto carrega o carrinho', () => {
-  renderizarCarrinho();
+  renderizarCarrinho({ carregamentoPendente: true });
   expect(screen.getByText('common.loading')).toBeVisible();
 });
 
@@ -53,8 +53,9 @@ test('mostra carrinho vazio e permite voltar aos produtos', async () => {
   expect(navigate).toHaveBeenCalledWith('/products');
 });
 
-test('volta para os produtos pelo botão superior', () => {
+test('volta para os produtos pelo botão superior', async () => {
   renderizarCarrinho();
+  await screen.findByText('Bota');
   fireEvent.click(document.querySelector('.back-button'));
   expect(navigate).toHaveBeenCalledWith('/products');
 });
@@ -124,7 +125,6 @@ test('limpa carrinho apenas após confirmação', async () => {
 
 test('informa erros de carregamento, remoção, alteração e limpeza', async () => {
   const { container } = renderizarCarrinho();
-  fetchCart.mockRejectedValue(new Error('erro carga'));
   removeFromCart.mockRejectedValue(new Error('erro remoção'));
   updateQuantity.mockRejectedValue(new Error('erro alteração'));
   clearCart.mockRejectedValue(new Error('erro limpeza'));

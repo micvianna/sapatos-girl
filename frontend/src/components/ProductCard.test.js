@@ -103,7 +103,15 @@ test('remove produto já favoritado', async () => {
   await waitFor(() => expect(axios.delete).toHaveBeenCalled());
 });
 
-test('não renderiza cartão quando a API não encontra o produto', async () => {
-  prepararProduto({ respostaProduto: null });
+test('não renderiza cartão quando a API falha ao buscar o produto', async () => {
+  jest.spyOn(console, 'error').mockImplementation(() => {});
+  navigate = jest.fn();
+  useNavigate.mockReturnValue(navigate);
+  useAuthStore.mockReturnValue({ token: null });
+  useCartStore.mockImplementation((selector) => selector({ addToCart: jest.fn() }));
+  axios.get.mockRejectedValue(new Error('Produto não encontrado'));
+  render(<ProductCard productId="produto-1" />);
   await waitFor(() => expect(screen.queryByTestId('product-card')).not.toBeInTheDocument());
+  expect(console.error).toHaveBeenCalledWith('Erro ao buscar produto:', expect.any(Error));
+  console.error.mockRestore();
 });
