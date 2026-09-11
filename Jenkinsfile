@@ -270,6 +270,35 @@ pipeline {
                     }
                 }
             }
+            stage('') {
+                steps {
+                    sh '''
+                        set -eu
+
+                        echo "Preparing frontend coverage reports..."
+
+                        mkdir -p "$WORKSPACE/reports/coverage"
+
+                        rm -rf "$WORKSPACE/reports/coverage/frontend"
+                        rm -rf "$WORKSPACE/frontend/coverage"
+
+                        docker run --rm \
+                            --user 1000:1000 \
+                            -v jenkins_home:/var/jenkins_home \
+                            -w "$WORKSPACE/frontend" \
+                            node:22-alpine \
+                            npm run test:coverage
+
+                        test -s "$WORKSPACE/frontend/coverage/coverage-summary.json"
+                        test -s "$WORKSPACE/frontend/coverage/index.html"
+
+                        mv "$WORKSPACE/frontend/coverage" \
+                            "$WORKSPACE/reports/coverage/frontend"
+                        
+                        echo "FRONTEND UNIT TESTES AND COVERAGE: COMPLETED"
+                    '''
+                }
+            }
             // instal test database
             stage('Start PostgreSQL') {
                 steps {
@@ -1978,6 +2007,11 @@ pipeline {
                     artifacts: 'reports/coverage/backend/**/*',
                     allowEmptyArchive: true
                 )
+
+                archiveArtifacts(
+                    artifacts: 'reports/coverage/frontend/**/*',
+                    allowEmptyArchive: true
+                )
                 
                 publishHTML(target: [
                     reportDir: 'reports/mochawesome',
@@ -2046,6 +2080,15 @@ pipeline {
                     reportDir: 'reports/coverage/backend',
                     reportFiles: 'index.html',
                     reportName: 'Backend Unit Test Coverage',
+                    keepAll: true,
+                    alwaysLinkToLastBuild: true,
+                    allowMissing: true
+                ])
+
+                publishHTML(target: [
+                    reportDir: 'reports/coverage/frontend',
+                    reportFiles: 'index.html',
+                    reportName: 'Frontend Unit Test Coverage',
                     keepAll: true,
                     alwaysLinkToLastBuild: true,
                     allowMissing: true
