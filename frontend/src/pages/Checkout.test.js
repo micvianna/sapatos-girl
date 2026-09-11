@@ -75,6 +75,39 @@ test('envia pedido completo e retorna para home com a resposta', async () => {
   expect(navigate).toHaveBeenCalledWith('/', { state: { orderSuccess: true, emAnalise: true, prazoEntrega: '2 dias', descontoPix: 10 } });
 });
 
+test('envia pedido aceito sem dados opcionais de análise', async () => {
+  axios.post.mockResolvedValue({ data: {} });
+  const { container } = renderizarCheckout();
+  preencher(container);
+
+  fireEvent.submit(container.querySelector('form'));
+
+  await waitFor(() => expect(navigate).toHaveBeenCalledWith('/', {
+    state: {
+      orderSuccess: true,
+      emAnalise: false,
+      prazoEntrega: undefined,
+      descontoPix: undefined
+    }
+  }));
+});
+
+test('seleciona boleto como forma de pagamento', () => {
+  const { container } = renderizarCheckout();
+  const boleto = container.querySelector('[value="boleto"]');
+
+  fireEvent.click(boleto);
+
+  expect(boleto).toBeChecked();
+  expect(boleto.closest('label')).toHaveClass('selected');
+});
+
+test('não exibe tamanho nem cor quando o item não possui essas informações', () => {
+  const { container } = renderizarCheckout({ items: [{ ...item, tamanho: '', cor: '' }] });
+
+  expect(container.querySelector('.item-details-checkout p')).toHaveTextContent(/^\s*$/);
+});
+
 test('mostra erro retornado pela API', async () => {
   axios.post.mockRejectedValue({ response: { data: { error: 'Estoque indisponível' } } });
   const { container } = renderizarCheckout();

@@ -54,6 +54,14 @@ test('renderiza nome, imagem, preço e opções iniciais do produto', async () =
   expect(screen.getByText('R$ 199,90')).toBeVisible();
 });
 
+test('adiciona produto sem opções usando tamanho e cor vazios', async () => {
+  prepararProduto({ respostaProduto: { ...produto, tamanhos: null, cores: null } });
+
+  fireEvent.click(await screen.findByTestId('add-to-cart'));
+
+  await waitFor(() => expect(addToCart).toHaveBeenCalledWith('produto-1', 1, '', ''));
+});
+
 test('navega para o detalhe ao clicar no cartão', async () => {
   prepararProduto();
   fireEvent.click(await screen.findByTestId('product-card'));
@@ -121,6 +129,36 @@ test('redireciona para login quando a wishlist não autoriza a ação', async ()
   axios.post.mockRejectedValue({ response: { status: 401 } });
   fireEvent.click(await screen.findByLabelText('wishlist.addToFavorites'));
   await waitFor(() => expect(navigate).toHaveBeenCalledWith('/login'));
+});
+
+test('mantém o estado da wishlist quando a consulta falha', async () => {
+  prepararProduto({ token: 'token' });
+  axios.get.mockImplementation((url) => {
+    if (url.includes('/wishlist/check/')) return Promise.reject(new Error('Falha na wishlist'));
+    return Promise.resolve({ data: produto });
+  });
+
+  expect(await screen.findByLabelText('wishlist.addToFavorites')).toHaveAttribute('aria-pressed', 'false');
+});
+
+test('mantém a wishlist quando a alteração falha sem resposta da API', async () => {
+  prepararProduto({ token: 'token' });
+  axios.post.mockRejectedValue(new Error('Falha ao favoritar'));
+
+  fireEvent.click(await screen.findByLabelText('wishlist.addToFavorites'));
+
+  await waitFor(() => expect(screen.getByLabelText('wishlist.addToFavorites')).toBeEnabled());
+  expect(navigate).not.toHaveBeenCalled();
+});
+
+test('mantém a wishlist quando a API responde um erro diferente de não autorizado', async () => {
+  prepararProduto({ token: 'token' });
+  axios.post.mockRejectedValue({ response: { status: 500 } });
+
+  fireEvent.click(await screen.findByLabelText('wishlist.addToFavorites'));
+
+  await waitFor(() => expect(screen.getByLabelText('wishlist.addToFavorites')).toBeEnabled());
+  expect(navigate).not.toHaveBeenCalled();
 });
 
 test('mantém cartão visível quando ocorre erro desconhecido ao adicionar', async () => {

@@ -83,6 +83,16 @@ test('redireciona ao login se a API recusar a inclusão', async () => {
   await waitFor(() => expect(navigate).toHaveBeenCalledWith('/login'));
 });
 
+test('mantém o produto quando a inclusão falha com outro status', async () => {
+  renderizarDetalhe();
+  addToCart.mockRejectedValue({ response: { status: 500 } });
+
+  fireEvent.click(await screen.findByText('product.addToBag'));
+
+  await waitFor(() => expect(screen.getByText('product.addToBag')).toBeEnabled());
+  expect(navigate).not.toHaveBeenCalled();
+});
+
 test('mostra produto inexistente quando a consulta falha', async () => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
   axios.get.mockRejectedValue(new Error('não encontrado'));

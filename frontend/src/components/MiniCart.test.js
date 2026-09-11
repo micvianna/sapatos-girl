@@ -76,6 +76,15 @@ test('não diminui item que já possui uma unidade', () => {
   expect(updateQuantity).not.toHaveBeenCalled();
 });
 
+test('diminui item que possui mais de uma unidade', () => {
+  renderizarMiniCarrinho({ items: [item] });
+  const botoes = screen.getByTestId('cart-item').querySelectorAll('.minicart-qty button');
+
+  fireEvent.click(botoes[0]);
+
+  expect(updateQuantity).toHaveBeenCalledWith('item-1', 1);
+});
+
 test('fecha no botão de fechar e ao clicar no fundo', () => {
   const { container } = renderizarMiniCarrinho({ items: [item] });
   fireEvent.click(container.querySelector('.minicart-close'));
@@ -95,8 +104,25 @@ test('não fecha quando o clique no fundo vem de um elemento filho', () => {
   expect(closeCart).not.toHaveBeenCalled();
 });
 
+test('não fecha quando o evento recebido pelo fundo aponta para outro elemento', () => {
+  const { container } = renderizarMiniCarrinho({ items: [item] });
+  const fundo = container.querySelector('.minicart-backdrop');
+
+  fireEvent.click(fundo, {
+    target: { classList: { contains: () => false } }
+  });
+
+  expect(closeCart).not.toHaveBeenCalled();
+});
+
 test('não mostra tamanho nem cor quando o item não possui essas informações', () => {
   const { container } = renderizarMiniCarrinho({ items: [{ ...item, tamanho: '', cor: '' }] });
+  expect(container.querySelector('.minicart-meta')).toBeEmptyDOMElement();
+});
+
+test('não mostra tamanho nem cor quando as informações não foram enviadas', () => {
+  const { container } = renderizarMiniCarrinho({ items: [{ ...item, tamanho: null, cor: null }] });
+
   expect(container.querySelector('.minicart-meta')).toBeEmptyDOMElement();
 });
 

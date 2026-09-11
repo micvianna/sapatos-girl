@@ -1,12 +1,13 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import Home from './Home';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 jest.mock('axios');
 jest.mock('react-router-dom', () => ({ useNavigate: jest.fn(), useLocation: jest.fn() }));
-jest.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key) => key }) }));
+let mockT = (key) => key;
+jest.mock('react-i18next', () => ({ useTranslation: () => ({ t: (key) => mockT(key) }) }));
 jest.mock('../components/ProductCard', () => ({ productId }) => <div data-testid="produto">{productId}</div>);
 
 let navigate;
@@ -20,6 +21,7 @@ function renderizarHome(state = {}) {
 
 beforeEach(() => {
   jest.clearAllMocks();
+  mockT = (key) => key;
   window.scrollTo = jest.fn();
 });
 
@@ -41,6 +43,15 @@ test('busca produtos comuns quando não há destaques', async () => {
   axios.get.mockResolvedValueOnce({ data: { itens: [] } }).mockResolvedValueOnce({ data: [{ id: 'fallback' }] });
   renderizarHome();
   expect(await screen.findByText('fallback')).toBeInTheDocument();
+  expect(axios.get).toHaveBeenCalledTimes(2);
+});
+
+test('busca produtos comuns quando a resposta de destaques não possui itens', async () => {
+  axios.get.mockResolvedValueOnce({ data: {} }).mockResolvedValueOnce({ data: [{ id: 'fallback-sem-itens' }] });
+
+  renderizarHome();
+
+  expect(await screen.findByText('fallback-sem-itens')).toBeInTheDocument();
   expect(axios.get).toHaveBeenCalledTimes(2);
 });
 
@@ -81,6 +92,47 @@ test('mostra confirmação de pedido em análise', async () => {
   renderizarHome({ orderSuccess: true, emAnalise: true });
   expect(await screen.findByTestId('order-success')).toHaveClass('toast-analise');
   expect(screen.getByText('checkout.orderUnderReview')).toBeVisible();
+});
+
+test('mostra confirmação aprovada sem prazo e sem desconto', async () => {
+  axios.get.mockResolvedValueOnce({ data: { itens: [] } }).mockResolvedValueOnce({ data: [] });
+
+  renderizarHome({ orderSuccess: true });
+
+  expect(await screen.findByTestId('order-success')).toHaveClass('toast-success');
+  expect(screen.queryByText(/checkout.estimatedDelivery/)).not.toBeInTheDocument();
+  expect(screen.queryByText(/checkout.pixDiscountApplied/)).not.toBeInTheDocument();
+});
+
+test('usa estado vazio quando a rota não fornece estado', async () => {
+  axios.get.mockResolvedValueOnce({ data: { itens: [] } }).mockResolvedValueOnce({ data: [] });
+
+  renderizarHome(null);
+
+  expect(await screen.findByText('home.mustHaves')).toBeInTheDocument();
+  expect(screen.queryByTestId('order-success')).not.toBeInTheDocument();
+});
+
+test('fecha automaticamente a confirmação do pedido após dez segundos', async () => {
+  jest.useFakeTimers();
+  axios.get.mockReturnValue(new Promise(() => {}));
+
+  renderizarHome({ orderSuccess: true });
+  expect(await screen.findByTestId('order-success')).toBeInTheDocument();
+
+  act(() => jest.advanceTimersByTime(10000));
+
+  expect(screen.getByTestId('order-success')).toHaveStyle('opacity: 0');
+  jest.useRealTimers();
+});
+
+test('usa o texto padrão de novidade quando a tradução está vazia', async () => {
+  mockT = (key) => (key === 'common.new' ? '' : key);
+  axios.get.mockResolvedValueOnce({ data: { itens: [] } }).mockResolvedValueOnce({ data: [] });
+
+  renderizarHome();
+
+  expect(await screen.findByText('New')).toBeInTheDocument();
 });
 
 test('mostra as duas vitrines e navega pelas categorias restantes', async () => {
