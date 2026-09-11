@@ -21,8 +21,9 @@ if [[ ! "$APPROVED_SHA" =~ ^[0-9a-fA-F]{40}$ ]]; then
     fail 'o SHA deve conter exatamente 40 caracteres hexadecimais'
 fi
 
-SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
-REPO_ROOT="$(cd -- "$SCRIPT_DIR/.." && pwd)
+SCRIPT_DIR="$(dirname -- "${BASH_SOURCE[0]}")"
+SCRIPT_DIR="$(cd -- "${SCRIPT_DIR}" && pwd -P)"
+REPO_ROOT="$(cd -- "${SCRIPT_DIR}/.." && pwd -P)"
 DEPLOY_DIR="$REPO_ROOT/deploy"
 ENV_FILE="$DEPLOY_DIR/.env.lab"
 COMPOSE_FILE="$DEPLOY_DIR/docker-compose.lab.yml"
