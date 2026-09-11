@@ -143,17 +143,31 @@ describe('businessRules', () => {
       expect(result).toHaveProperty('prazoEntrega');
     });
 
-    it('should return sameDay: true and Same-Day delivery text for Grande SP before noon', () => {
-      // This test depends on whether it's before noon
-      const now = new Date();
-      const isBeforeNoonNow = now.getHours() < 12;
+    it('should return Same-Day for Grande SP before noon', () => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date('2026-01-01T10:00:00.000Z'));
 
-      const result = calcDeliveryEstimate('são paulo', 'SP');
-      expect(result.sameDay).toBe(isBeforeNoonNow);
-      if (isBeforeNoonNow) {
-        expect(result.prazoEntrega).toBe('Same-Day (até 21h00)');
-      } else {
-        expect(result.prazoEntrega).toBe('Padrão (3-7 dias úteis)');
+      try {
+        expect(calcDeliveryEstimate('são paulo', 'SP')).toEqual({
+          sameDay: true,
+          prazoEntrega: 'Same-Day (até 21h00)',
+        });
+      } finally {
+        jest.useRealTimers();
+      }
+    });
+
+    it('should return standard delivery for Grande SP after noon', () => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date('2026-01-01T18:00:00.000Z'));
+
+      try {
+        expect(calcDeliveryEstimate('são paulo', 'SP')).toEqual({
+          sameDay: false,
+          prazoEntrega: 'Padrão (3-7 dias úteis)',
+        });
+      } finally {
+        jest.useRealTimers();
       }
     });
 
