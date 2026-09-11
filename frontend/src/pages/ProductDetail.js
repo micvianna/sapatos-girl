@@ -40,8 +40,8 @@ export default function ProductDetail() {
   }, [id]);
 
   const handleAddToCart = async () => {
-    if (product.estoque === 0 || !token) {
-      if (!token) navigate('/login');
+    if (!token) {
+      navigate('/login');
       return;
     }
     setAddingToCart(true);

@@ -66,8 +66,6 @@ export default function ProductCard({ productId }) {
       navigate('/login');
       return;
     }
-    if (wishlistLoading) return;
-
     setWishlistLoading(true);
     try {
       if (favorited) {
@@ -90,8 +88,6 @@ export default function ProductCard({ productId }) {
 
   const handleAddToCart = async (e) => {
     e.stopPropagation(); // Avoid triggering card navigation
-    if (product.estoque === 0) return;
-
     setAddingToCart(true);
     try {
       await addToCart(productId, 1, selectedSize, selectedColor);

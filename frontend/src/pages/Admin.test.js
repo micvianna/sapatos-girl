@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -136,6 +136,36 @@ test('alterna a permissão de usuário comum, recarrega a lista e mostra sucesso
   expect(screen.getByText('Permissão atualizada!')).toBeInTheDocument();
 });
 
+test('mostra erro quando não consegue alterar a permissão do usuário', async () => {
+  const user = userEvent.setup();
+  prepararAdministrador();
+  axios.patch.mockRejectedValue(new Error('Falha ao alterar permissão'));
+
+  render(<Admin />);
+  await user.click(screen.getByTestId('tab-users'));
+  await screen.findByText('Cliente Teste');
+  await user.click(screen.getByRole('button', { name: 'Tornar Admin' }));
+
+  expect(await screen.findByText('Erro ao atualizar.')).toBeInTheDocument();
+});
+
+test('remove o feedback administrativo após três segundos', async () => {
+  jest.useFakeTimers();
+  prepararAdministrador();
+  const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime });
+
+  render(<Admin />);
+  await user.click(screen.getByTestId('tab-users'));
+  await screen.findByText('Cliente Teste');
+  await user.click(screen.getByRole('button', { name: 'Tornar Admin' }));
+  await screen.findByText('Permissão atualizada!');
+
+  act(() => jest.advanceTimersByTime(3000));
+
+  expect(screen.queryByText('Permissão atualizada!')).not.toBeInTheDocument();
+  jest.useRealTimers();
+});
+
 test('não exclui usuário quando a confirmação é cancelada', async () => {
   const user = userEvent.setup();
   prepararAdministrador();
@@ -168,6 +198,20 @@ test('exclui usuário confirmado, recarrega a lista e mostra sucesso', async () 
   ));
   await waitFor(() => expect(axios.get.mock.calls.filter(([url]) => url.endsWith('/admin/users'))).toHaveLength(2));
   expect(screen.getByText('Usuário removido!')).toBeInTheDocument();
+});
+
+test('mostra erro quando não consegue remover usuário confirmado', async () => {
+  const user = userEvent.setup();
+  prepararAdministrador();
+  window.confirm.mockReturnValue(true);
+  axios.delete.mockRejectedValue(new Error('Falha ao remover usuário'));
+
+  render(<Admin />);
+  await user.click(screen.getByTestId('tab-users'));
+  await screen.findByText('Cliente Teste');
+  await user.click(screen.getAllByRole('button', { name: '✕ Remover' })[1]);
+
+  expect(await screen.findByText('Erro ao remover usuário.')).toBeInTheDocument();
 });
 
 test('carrega produtos e altera a avaliação por estrelas', async () => {

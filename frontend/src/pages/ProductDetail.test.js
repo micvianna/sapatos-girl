@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import ProductDetail from './ProductDetail';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -61,6 +61,19 @@ test('adiciona produto autenticado ao carrinho', async () => {
   fireEvent.click(await screen.findByText('product.addToBag'));
   await waitFor(() => expect(addToCart).toHaveBeenCalledWith('produto-1', 1, '37', 'Preto'));
   expect(await screen.findByText('product.addedToBag')).toBeInTheDocument();
+});
+
+test('remove a confirmação de produto adicionado após dois segundos', async () => {
+  jest.useFakeTimers();
+  renderizarDetalhe();
+
+  fireEvent.click(await screen.findByText('product.addToBag'));
+  expect(await screen.findByText('product.addedToBag')).toBeInTheDocument();
+
+  act(() => jest.advanceTimersByTime(2000));
+
+  expect(screen.getByText('product.addToBag')).toBeInTheDocument();
+  jest.useRealTimers();
 });
 
 test('redireciona visitante para login ao tentar adicionar', async () => {
