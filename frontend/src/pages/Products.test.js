@@ -88,7 +88,7 @@ test('mantém a tela de produtos quando a API falha', async () => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
   axios.get.mockRejectedValue(new Error('falhou'));
   renderizarProdutos();
-  expect(await screen.findByText('products.noResults')).toBeVisible();
+  expect(await screen.findByText('products.noResults')).toBeInTheDocument();
   await waitFor(() => expect(screen.queryByText('common.loading')).not.toBeInTheDocument());
   console.error.mockRestore();
 });

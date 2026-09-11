@@ -1,8 +1,5 @@
--- Criar banco de dados
-CREATE DATABASE sapatos_ecommerce;
-
--- Usar o banco de dados
-\c sapatos_ecommerce;
+-- Execute este schema conectado ao banco sapatos_ecommerce.
+-- A criação do banco pertence ao ambiente (Docker, PostgreSQL local ou CI).
 
 -- Tabela de usuários
 CREATE TABLE usuarios (
