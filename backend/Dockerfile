@@ -23,7 +23,6 @@ COPY --from=dependencies /app/node_modules ./node_modules
 COPY src ./src
 COPY package*.json ./
 
-RUN rm -rf /usr/local/lib/node_modules/npm
 EXPOSE 5000
 
 USER node
