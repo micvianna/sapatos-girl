@@ -81,8 +81,8 @@ test('mostra e fecha confirmação de pedido aprovado com prazo e desconto pix',
   axios.get.mockResolvedValueOnce({ data: { itens: [] } }).mockResolvedValueOnce({ data: [] });
   renderizarHome({ orderSuccess: true, prazoEntrega: 'amanhã', descontoPix: 10 });
   expect(await screen.findByTestId('order-success')).toHaveClass('toast-success');
-  expect(screen.getByText(/checkout.estimatedDelivery amanhã/)).toBeVisible();
-  expect(screen.getByText(/R\$ 10.00/)).toBeVisible();
+  await waitFor(() => expect(screen.getByText(/checkout.estimatedDelivery amanhã/)).toBeVisible());
+  await waitFor(() => expect(screen.getByText(/R\$ 10.00/)).toBeVisible());
   fireEvent.click(document.querySelector('.toast-close'));
   await waitFor(() => expect(screen.queryByTestId('order-success')).not.toBeInTheDocument());
 });
