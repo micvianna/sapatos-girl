@@ -1,0 +1,78 @@
+pipeline {
+    agent any
+
+    options {
+        timestamps()
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '20'))
+    }
+
+    parameters {
+        string(
+            name: 'APPROVED_SHA',
+            defaultValue: '',
+            trim: true,
+            description: 'SHA completo (40 caracteres) de um commit já aprovado na CI'
+        )
+    }
+
+    environment {
+        DEPLOY_HOST = '163.176.235.18'
+        DEPLOY_USER = 'sapatos-deploy'
+    }
+
+    stages {
+        stage('Validar SHA') {
+            steps {
+                script {
+                    def sha = params.APPROVED_SHA?.trim()?.toLowerCase()
+
+                    if (!(sha ==~ /^[0-9a-f]{40}$/)) {
+                        error('APPROVED_SHA deve conter exatamente 40 caracteres hexadecimais.')
+                    }
+
+                    env.DEPLOY_SHA = sha
+                    echo "SHA solicitado: ${env.DEPLOY_SHA}"
+                }
+            }
+        }
+
+        stage('Aprovação manual') {
+            steps {
+                timeout(time: 15, unit: 'MINUTES') {
+                    input(
+                        message: "Autorizar deploy do SHA ${env.DEPLOY_SHA} para lab-sapatos?",
+                        ok: 'Autorizar deploy'
+                    )
+                }
+            }
+        }
+
+        stage('Deploy do laboratório') {
+            steps {
+                sshagent(credentials: ['sapatos-lab-deploy-ssh']) {
+                    sh '''#!/usr/bin/env bash
+                        set -euo pipefail
+
+                        ssh \
+                            -o BatchMode=yes \
+                            -o IdentitiesOnly=yes \
+                            -o StrictHostKeyChecking=yes \
+                            "${DEPLOY_USER}@${DEPLOY_HOST}" \
+                            "deploy ${DEPLOY_SHA}"
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Deploy concluído para o SHA ${env.DEPLOY_SHA}."
+        }
+
+        failure {
+            echo 'Deploy não concluído. Consulte o log; não desabilite as proteções SSH.'
+        }
+    }
+}
