@@ -1,0 +1,4 @@
+# Caches gerados pelos scanners não fazem parte de imagens da aplicação.
+.trivy-cache/
+.trivy-image-cache/
+.trivy-app-image-cache/
