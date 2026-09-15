@@ -2104,6 +2104,17 @@ pipeline {
                     docker rm -f sapatos-frontend-packaged 2>/dev/null || true
                     docker rm -f sapatos-zap-packaged 2>/dev/null || true
                 '''
+                sh '''#!/usr/bin/env bash
+                    set -u
+
+                    if ! TRIVY_CACHE_ROOT="$WORKSPACE" \
+                        TRIVY_CACHE_VOLUME="jenkins_home" \
+                        TRIVY_CACHE_LIMIT_BYTES="3221225472" \
+                        DRY_RUN="true" \
+                        script/cleanup-trivy-cache.sh; then
+                        echo "WARNING: Trivy cache maintenance failed; CI result is preserved."
+                    fi
+                '''
             }
             failure {
                 mail to: 'michelrviana@gmail.com',
