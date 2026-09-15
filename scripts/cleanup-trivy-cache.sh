@@ -5,6 +5,7 @@ CACHE_ROOT="${TRIVY_CACHE_ROOT:?TRIVY_CACHE_ROOT is required}"
 LIMIT_BYTES="${TRIVY_CACHE_LIMIT_BYTES:-3221225472}"
 DRY_RUN="${DRY_RUN:-true}"
 CLEANER_IMAGE="${TRIVY_CLEANER_IMAGE:-alpine:3.21}"
+CACHE_VOLUME="${TRIVY_CACHE_VOLUME:-jenkins_home}"
 
 CACHE_NAMES=(
     ".trivy-image-cache"
@@ -17,7 +18,7 @@ fail() {
     exit 1
 }
 
-[[ "$CACHE_ROOT" == /var/jenkins_home/workspace/ ]] \
+[[ "$CACHE_ROOT" == /var/jenkins_home/workspace/* ]] \
     || fail 'TRIVY_CACHE_ROOT must be inside /var/jenkins_home/workspace'
 
 [[ "$LIMIT_BYTES" =~ ^[0-9]+$ ]] \
@@ -26,39 +27,44 @@ fail() {
 [[ "$DRY_RUN" == "true" || "$DRY_RUN" == "false" ]] \
     || fail 'DRY_RUN must be true or false'
 
+[[ "$CACHE_VOLUME" =~ ^[A-Za-z0-9][A-Za-z0-9_.-]*$ ]] \
+    || fail 'TRIVY_CACHE_VOLUME has an invalid name'
+
 docker info >/dev/null
 
 cache_size_bytes() {
     local cache_name="$1"
 
     docker run --rm \
-    -v "${CACHE_ROOT}:/workspace:ro" \
-    "$CLEANER_IMAGE" \
-    sh -ceu '
-        cache_name="$1"
-        cache_path="/workspace/$cache_name"
+        -e "CACHE_ROOT=$CACHE_ROOT" \
+        -v "${CACHE_VOLUME}:/var/jenkins_home:ro" \
+        "$CLEANER_IMAGE" \
+        sh -ceu '
+            cache_name="$1"
+            cache_path="${CACHE_ROOT}/$cache_name"
 
-        if [ ! -e "$cache_path" ]; then
-            echo 0
-            exit 0
-        fi
+            if [ ! -e "$cache_path" ]; then
+                echo 0
+                exit 0
+            fi
 
-        [ ! -L "$cache_path" ] || exit 74
-        [ -d "$cache_path" ] || exit 75
+            [ ! -L "$cache_path" ] || exit 74
+            [ -d "$cache_path" ] || exit 75
 
-        du -sk "$cache_path" | awk "{ print \$1 * 1024}"
-    ' "$cache_name"
+            du -sk "$cache_path" | awk "{ print \$1 * 1024 }"
+        ' sh "$cache_name"
 }
 
 remove_cache() {
     local cache_name="$1"
 
     docker run --rm \
-        -v "${CACHE_ROOT}:/workspace" \
+        -e "CACHE_ROOT=$CACHE_ROOT" \
+        -v "${CACHE_VOLUME}:/var/jenkins_home" \
         "$CLEANER_IMAGE" \
         sh -ceu '
             cache_name="$1"
-            cache_path="/workspace/$cache_name"
+            cache_path="${CACHE_ROOT}/$cache_name"
 
             [ ! -e "$cache_path" ] && exit 0
             [ ! -L "$cache_path" ] || exit 74
@@ -70,8 +76,8 @@ remove_cache() {
 
 total_bytes=0
 
-for cache_name in "${CACHE_NAME[@]}"; do
-    cache_bytes="$(cache_size_bytes "$cacje_name")"
+for cache_name in "${CACHE_NAMES[@]}"; do
+    cache_bytes="$(cache_size_bytes "$cache_name")"
     total_bytes=$((total_bytes + cache_bytes))
     printf '%s: %s bytes\n' "$cache_name" "$cache_bytes"
 done
@@ -84,17 +90,17 @@ if (( total_bytes <= LIMIT_BYTES )); then
     exit 0
 fi
 
-printf 'Threshold exceeded. \n'
+printf 'Threshold exceeded.\n'
 
-for cache_name in "${CACHE_NAME[@]}"; do
+for cache_name in "${CACHE_NAMES[@]}"; do
     cache_bytes="$(cache_size_bytes "$cache_name")"
 
     (( total_bytes > LIMIT_BYTES )) || break
-    (( cache_-bytes > 0 )) || continue
+    (( cache_bytes > 0 )) || continue
 
     if [[ "$DRY_RUN" == "true" ]]; then
         printf 'DRY RUN: would remove %s (%s bytes)\n' \
-            "$cache_name" "cache_bytes"
+            "$cache_name" "$cache_bytes"
     else
         printf 'Removing %s (%s bytes)\n' "$cache_name" "$cache_bytes"
         remove_cache "$cache_name"
