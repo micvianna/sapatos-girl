@@ -56,7 +56,6 @@ pipeline {
 
                         ssh \
                             -o BatchMode=yes \
-                            -o IdentitiesOnly=yes \
                             -o StrictHostKeyChecking=yes \
                             "${DEPLOY_USER}@${DEPLOY_HOST}" \
                             "deploy ${DEPLOY_SHA}"
