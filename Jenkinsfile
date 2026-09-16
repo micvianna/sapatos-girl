@@ -58,6 +58,21 @@ pipeline {
                         zapSecurityStatus = 'NOT_RUN'
                         zapPackagedScanStatus = 'NOT_RUN'
                         zapPackagedSecurityStatus = 'NOT_RUN'
+
+                    def ciScope = "${env.JOB_NAME}-${env.BUILD_NUMBER}"
+                        .toLowerCase()
+                        .replaceAll(/[^a-z0-9_.-]/, '-')
+                    
+                    env.CI_NETWORK = "sapatos-test-net-${ciScope}"
+                    env.CI_POSTGRES = "sapatos-postgres-test-${ciScope}"
+                    env.CI_BACKEND = "sapatos-backend-test-${ciScope}"
+                    env.CI_FRONTEND = "sapatos-frontend-test-${ciScope}"
+                    env.CI_ZAP = "sapatos-zap-test-${ciScope}"
+                    env.CI_FRONTEND_PACKAGED = "sapatos-frontend-packaged-${ciScope}"
+                    env.CI_ZAP_PACKAGED = "sapatos-zap-packaged-${ciScope}"
+                    env.CI_JMETER_IMAGE = "sapatos-jmeter:${ciScope}"
+                    env.CI_BACKEND_IMAGE = "sapatos-backend:${ciScope}"
+                    env.CI_FRONTEND_IMAGE = "sapatos-frontend:${ciScope}"
                     }
                     echo 'Jenkis funcionando corretamente!'
                 }
@@ -197,9 +212,9 @@ pipeline {
                       sh '''
                         echo "Removing containers from previous build..."
                         
-                        docker rm -f sapatos-frontend-test 2>/dev/null || true
-                        docker rm -f sapatos-backend-test 2>/dev/null || true
-                        docker rm -f sapatos-postgres-test 2>/dev/null || true
+                        docker rm -f "$CI_FRONTEND" 2>/dev/null || true
+                        docker rm -f "$CI_BACKEND" 2>/dev/null || true
+                        docker rm -f "$CI_POSTGRES" 2>/dev/null || true
                         
                         echo "Removing old test reports..."
                         rm -f "$WORKSPACE"/reports/*.xml
@@ -209,8 +224,8 @@ pipeline {
 
                         echo "Preparing Docker network..."
 
-                        docker network inspect sapatos-test-net >/dev/null 2>/dev/null || \
-                        docker network create sapatos-test-net
+                        docker network inspect "$CI_NETWORK" >/dev/null 2>/dev/null || \
+                        docker network create "$CI_NETWORK"
                     '''
                   }
             }
@@ -303,11 +318,11 @@ pipeline {
             stage('Start PostgreSQL') {
                 steps {
                     sh '''
-                        docker rm -f sapatos-postgres-test 2>/dev/null || true
+                        docker rm -f "$CI_POSTGRES" 2>/dev/null || true
                         
                         docker run -d \
-                          --name sapatos-postgres-test \
-                          --network sapatos-test-net \
+                          --name "$CI_POSTGRES" \
+                          --network "$CI_NETWORK" \
                           -e POSTGRES_DB=sapatos_ecommerce \
                           -e POSTGRES_USER=postgres \
                           -e POSTGRES_PASSWORD="$DB_PASSWORD" \
@@ -322,7 +337,7 @@ pipeline {
                         echo "Wainting for PostgresSQL..."
 
                         for i in $(seq 1 30); do
-                            if docker exec sapatos-postgres-test \
+                            if docker exec "$CI_POSTGRES" \
                                 pg_isready -U postgres -d sapatos_ecommerce; then
 
                                 echo "PostgreSQL is ready"
@@ -334,7 +349,7 @@ pipeline {
                         done
 
                         echo "PostgreSQL did not become ready"
-                        docker logs sapatos-postgres-test
+                        docker logs "$CI_POSTGRES"
                         exit 1
 
                     '''
@@ -343,7 +358,7 @@ pipeline {
             stage('Apply Database Schema') {
                 steps {
                     sh '''
-                        docker exec -i sapatos-postgres-test \
+                        docker exec -i "$CI_POSTGRES" \
                         psql -U postgres -d sapatos_ecommerce \
                         < database/schema.sql
                     '''
@@ -352,7 +367,7 @@ pipeline {
             stage('Verify Database Schema') {
                 steps {
                     sh '''
-                        docker exec sapatos-postgres-test \
+                        docker exec "$CI_POSTGRES" \
                           psql -U postgres -d sapatos_ecommerce -c "\\dt"
                     '''    
                 }
@@ -360,21 +375,21 @@ pipeline {
             stage('Start Backend') {
                 steps {
                     sh '''
-                        docker rm -f sapatos-backend-test 2>/dev/null || true
+                        docker rm -f "$CI_BACKEND" 2>/dev/null || true
                         
                         docker run -d \
-                          --name sapatos-backend-test \
+                          --name "$CI_BACKEND" \
                           --user 1000:1000 \
-                          --network sapatos-test-net \
+                          --network "$CI_NETWORK" \
                           -e PORT=5000 \
-                          -e DB_HOST=sapatos-postgres-test \
+                          -e DB_HOST="$CI_POSTGRES" \
                           -e DB_PORT=5432 \
                           -e DB_NAME=sapatos_ecommerce \
                           -e DB_USER=postgres \
                           -e DB_PASSWORD="$DB_PASSWORD" \
                           -e JWT_SECRET="$JWT_SECRET" \
                           -e JWT_EXPIRE=7d \
-                          -e CORS_ORIGIN=http://localhost:3000,http://sapatos-frontend-test:3000 \
+                          -e CORS_ORIGIN=http://localhost:3000,"http://${CI_FRONTEND}:3000" \
                           -v jenkins_home:/var/jenkins_home \
                           -w "$WORKSPACE/backend" \
                           node:22-alpine \
@@ -388,7 +403,7 @@ pipeline {
                         echo "Wainting for backend..."
 
                         for i in $(seq 1 30); do
-                            if docker exec sapatos-backend-test \
+                            if docker exec "$CI_BACKEND" \
                                 wget -qO- http://localhost:5000/api/health > /dev/null 2>&1; then
                                 
                                 echo "Backend is ready"
@@ -400,7 +415,7 @@ pipeline {
                         done
                         
                         echo "Backend did not start in time"
-                        docker logs sapatos-backend-test
+                        docker logs "$CI_BACKEND"
                         exit 1
                     '''
                 }
@@ -408,13 +423,13 @@ pipeline {
             stage('Start Frontend') {
                 steps {
                     sh '''
-                        docker rm -f sapatos-frontend-test 2>/dev/null || true
+                        docker rm -f "$CI_FRONTEND" 2>/dev/null || true
                         
                         docker run -d \
-                          --name sapatos-frontend-test \
+                          --name "$CI_FRONTEND" \
                           --user 1000:1000 \
-                          --network sapatos-test-net \
-                          -e REACT_APP_API_URL=http://sapatos-backend-test:5000 \
+                          --network "$CI_NETWORK" \
+                          -e REACT_APP_API_URL=http://"$CI_BACKEND":5000 \
                           -v jenkins_home:/var/jenkins_home \
                           -w "$WORKSPACE/frontend" \
                           node:22-alpine \
@@ -428,7 +443,7 @@ pipeline {
                         echo "Wainting for frontend..."
                         
                         for i in $(seq 1 30); do
-                            if docker exec sapatos-frontend-test \
+                            if docker exec "$CI_FRONTEND" \
                                 wget -qO- http://127.0.0.1:3000 > /dev/null 2>&1; then
                                 
                                 echo "Frontend is ready"
@@ -440,7 +455,7 @@ pipeline {
                         done
                         
                         echo "Frontend did not start in time"
-                        docker logs sapatos-frontend-test
+                        docker logs "$CI_FRONTEND"
                         exit 1
                     '''
                 }
@@ -456,9 +471,9 @@ pipeline {
             
                                 docker run --rm \
                                   --user 1000:1000 \
-                                  --network sapatos-test-net \
-                                  -e API_BASE_URL=http://sapatos-backend-test:5000 \
-                                  -e FRONTEND_ORIGIN=http://sapatos-frontend-test:3000 \
+                                  --network "$CI_NETWORK" \
+                                  -e API_BASE_URL=http://"$CI_BACKEND":5000 \
+                                  -e FRONTEND_ORIGIN="http://${CI_FRONTEND}:3000" \
                                   -e JWT_SECRET="$JWT_SECRET" \
                                   -v jenkins_home:/var/jenkins_home \
                                   -w "$WORKSPACE" \
@@ -499,10 +514,10 @@ pipeline {
             
                                 docker run --rm \
                                   --user 1000:1000 \
-                                  --network sapatos-test-net \
-                                  -e API_BASE_URL=http://sapatos-backend-test:5000 \
+                                  --network "$CI_NETWORK" \
+                                  -e API_BASE_URL=http://"$CI_BACKEND":5000 \
                                   -e JWT_SECRET="$JWT_SECRET" \
-                                  -e DB_HOST=sapatos-postgres-test \
+                                  -e DB_HOST="$CI_POSTGRES" \
                                   -e DB_PORT=5432 \
                                   -e DB_NAME=sapatos_ecommerce \
                                   -e DB_USER=postgres \
@@ -550,9 +565,9 @@ pipeline {
             
                                     docker run --rm \
                                       --user 1000:1000 \
-                                      --network sapatos-test-net \
-                                      -e FRONTEND_BASE_URL=http://sapatos-frontend-test:3000 \
-                                      -e CYPRESS_API_BASE_URL=http://sapatos-backend-test:5000 \
+                                      --network "$CI_NETWORK" \
+                                      -e FRONTEND_BASE_URL="http://${CI_FRONTEND}:3000" \
+                                      -e CYPRESS_API_BASE_URL=http://"$CI_BACKEND":5000 \
                                       -v jenkins_home:/var/jenkins_home \
                                       -w "$PWD" \
                                       --entrypoint sh \
@@ -596,7 +611,7 @@ pipeline {
                         cat performance/Dockerfile.jmeter || true
 
                         docker build \
-                            -t sapatos-jmeter \
+                            -t "$CI_JMETER_IMAGE" \
                             -f performance/Dockerfile.jmeter \
                              .
                     '''
@@ -616,11 +631,11 @@ pipeline {
 
                                 docker run --rm \
                                     --user 1000:1000 \
-                                    --network sapatos-test-net \
+                                    --network "$CI_NETWORK" \
                                     -e HOME=/tmp \
                                     -v jenkins_home:/var/jenkins_home \
                                     -w "$WORKSPACE" \
-                                    sapatos-jmeter \
+                                    "$CI_JMETER_IMAGE" \
                                     -n \
                                     -t performance/smoke-performance.jmx \
                                     -l reports/jmeter/results.jtl \
@@ -1174,13 +1189,13 @@ pipeline {
 
                         echo "Building backend image..."
                         docker build \
-                            -t sapatos-backend:${BUILD_NUMBER} \
+                            -t "$CI_BACKEND_IMAGE" \
                             ./backend
 
                         echo "Building frontend image..."
                         docker build \
                             --build-arg REACT_APP_API_URL=/api \
-                            -t sapatos-frontend:${BUILD_NUMBER} \
+                            -t "$CI_FRONTEND_IMAGE" \
                             ./frontend
 
                         echo "Application images built successfully."
@@ -1224,11 +1239,11 @@ pipeline {
                                     }
 
                                     scan_app_image \
-                                        "sapatos-backend:${BUILD_NUMBER}" \
+                                        "$CI_BACKEND_IMAGE" \
                                         "trivy-app-backend.json"
 
                                     scan_app_image \
-                                        "sapatos-frontend:${BUILD_NUMBER}" \
+                                        "$CI_FRONTEND_IMAGE" \
                                         "trivy-app-frontend.json"
                                 ''',
                                 returnStatus: true
@@ -1252,7 +1267,8 @@ pipeline {
                                 script: '''
                                     docker run --rm -i \
                                         --user 1000:1000 \
-                                        -e BUILD_NUMBER="${BUILD_NUMBER}" \
+                                        -e CI_BACKEND_IMAGE="$CI_BACKEND_IMAGE" \
+                                        -e CI_FRONTEND_IMAGE="$CI_FRONTEND_IMAGE" \
                                         -v jenkins_home:/var/jenkins_home \
                                         -w "$WORKSPACE" \
                                         node:22-alpine \
@@ -1263,12 +1279,12 @@ pipeline {
                 const images = [
                     {
                         name: 'BACKEND',
-                        image: `sapatos-backend:${process.env.BUILD_NUMBER}`,
+                        image: process.env.CI_BACKEND_IMAGE,
                         file: 'reports/security/trivy-app-backend.json'
                     },
                     {
                         name: 'FRONTEND',
-                        image: `sapatos-frontend:${process.env.BUILD_NUMBER}`,
+                        image: process.env.CI_FRONTEND_IMAGE,
                         file: 'reports/security/trivy-app-frontend.json'
                     }
                 ];
@@ -1434,12 +1450,12 @@ pipeline {
                                         --exit-code 0 \
                                         "$IMAGE"
                                 }
-
+                                
                                 scan_image "node:22-alpine" "trivy-node.json"
                                 scan_image "postgres:16-alpine" "trivy-postgres.json"
                                 scan_image "cypress/included:16.0.0" "trivy-cypress.json"
                                 scan_image "python:3.12-slim" "trivy-python.json"
-                                scan_image "sapatos-jmeter" "trivy-jmeter.json"
+                                scan_image "$CI_JMETER_IMAGE" "trivy-jmeter.json"
                                 
                             ''',
                             returnStatus: true                        
@@ -1462,6 +1478,7 @@ pipeline {
                             script: '''
                                 docker run --rm -i \
                                     --user 1000:1000 \
+                                    -e CI_JMETER_IMAGE="$CI_JMETER_IMAGE" \
                                     -v jenkins_home:/var/jenkins_home \
                                     -w "$WORKSPACE" \
                                     node:22-alpine \
@@ -1492,7 +1509,7 @@ pipeline {
                 },
                 {
                     name: 'JMETER',
-                    image: 'sapatos-jmeter',
+                    image: process.env.CI_JMETER_IMAGE,
                     file: 'reports/security/trivy-jmeter.json'
                 }
             ];
@@ -1658,15 +1675,15 @@ pipeline {
                                 esac
 
                                 docker run --rm \
-                                    --name sapatos-zap-test \
+                                    --name "$CI_ZAP" \
                                     --user 1000:1000 \
-                                    --network sapatos-test-net \
+                                    --network "$CI_NETWORK" \
                                     -v jenkins_home:/zap/wrk:rw \
                                     -w /zap/wrk \
                                     ghcr.io/zaproxy/zaproxy:stable \
                                     zap-baseline.py \
                                     --autooff \
-                                    -t http://sapatos-frontend-test:3000 \
+                                    -t "http://${CI_FRONTEND}:3000" \
                                     -m 1 \
                                     -T 5 \
                                     -J "$relative_workspace/reports/security/zap-frontend.json" \
@@ -1702,7 +1719,7 @@ pipeline {
                                         node scripts/analyze-zap.js \
                                         reports/security/zap-frontend.json \
                                         reports/security/zap-frontend.html \
-                                        sapatos-frontend-test \
+                                        "$CI_FRONTEND" \
                                         3000
                                 ''',
                                 returnStatus: true
@@ -1729,17 +1746,17 @@ pipeline {
                     sh '''
                         set -eu
 
-                        docker rm -f sapatos-frontend-packaged 2>/dev/null || true
+                        docker rm -f "$CI_FRONTEND_PACKAGED" 2>/dev/null || true
 
                         docker run -d \
-                            --name sapatos-frontend-packaged \
-                            --network sapatos-test-net \
-                            sapatos-frontend:${BUILD_NUMBER}
+                            --name "$CI_FRONTEND_PACKAGED" \
+                            --network "$CI_NETWORK" \
+                            "$CI_FRONTEND_IMAGE"
 
                         echo "Waiting for packaged frontend..."
 
                         for i in $(seq 1 30); do
-                            if docker exec sapatos-frontend-packaged \
+                            if docker exec "$CI_FRONTEND_PACKAGED" \
                                 wget -qO- http://127.0.0.1:80/health; then
 
                                 echo "Packaged frontend is ready"
@@ -1750,7 +1767,7 @@ pipeline {
                         done
 
                         echo "Packaged frontend did not become ready"
-                        docker logs sapatos-frontend-packaged
+                        docker logs "$CI_FRONTEND_PACKAGED"
                         exit 1
                     '''
                 }
@@ -1783,15 +1800,15 @@ pipeline {
                                 esac
 
                                 docker run --rm \
-                                    --name sapatos-zap-packaged \
+                                    --name "$CI_ZAP_PACKAGED" \
                                     --user 1000:1000 \
-                                    --network sapatos-test-net \
+                                    --network "$CI_NETWORK" \
                                     -v jenkins_home:/zap/wrk:rw \
                                     -w /zap/wrk \
                                     ghcr.io/zaproxy/zaproxy:stable \
                                     zap-baseline.py \
                                     --autooff \
-                                    -t http://sapatos-frontend-packaged:80 \
+                                    -t "http://${CI_FRONTEND_PACKAGED}:80" \
                                     -m 1 \
                                     -T 5 \
                                     -J "$relative_workspace/reports/security/zap-packaged.json" \
@@ -1827,7 +1844,7 @@ pipeline {
                                         node scripts/analyze-zap.js \
                                         reports/security/zap-packaged.json \
                                         reports/security/zap-packaged.html \
-                                        sapatos-frontend-packaged \
+                                        "$CI_FRONTEND_PACKAGED" \
                                         80
                                 ''',
                                 returnStatus: true
@@ -2097,12 +2114,18 @@ pipeline {
                 sh '''
                     echo "Cleaning test environment..."
 
-                    docker rm -f sapatos-frontend-test 2>/dev/null || true
-                    docker rm -f sapatos-backend-test 2>/dev/null || true
-                    docker rm -f sapatos-postgres-test 2>/dev/null || true
-                    docker rm -f sapatos-zap-test 2>/dev/null || true
-                    docker rm -f sapatos-frontend-packaged 2>/dev/null || true
-                    docker rm -f sapatos-zap-packaged 2>/dev/null || true
+                    docker rm -f "$CI_FRONTEND" 2>/dev/null || true
+                    docker rm -f "$CI_BACKEND" 2>/dev/null || true
+                    docker rm -f "$CI_POSTGRES" 2>/dev/null || true
+                    docker rm -f "$CI_ZAP" 2>/dev/null || true
+                    docker rm -f "$CI_FRONTEND_PACKAGED" 2>/dev/null || true
+                    docker rm -f "$CI_ZAP_PACKAGED" 2>/dev/null || true
+                    docker network rm "$CI_NETWORK" 2>/dev/null || true
+                    docker image rm -f \
+                        "$CI_BACKEND_IMAGE" \
+                        "$CI_FRONTEND_IMAGE" \
+                        "$CI_JMETER_IMAGE" \
+                        2>/dev/null || true
                 '''
                 sh '''#!/usr/bin/env bash
                     set -u
