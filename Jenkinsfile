@@ -2116,6 +2116,58 @@ pipeline {
                     fi
                 '''
             }
+            success {
+                withCredentials([
+                    string(
+                        credentialsId: 'github-sapatos-commit-status',
+                        variable: 'GITHUB_STATUS_TOKEN'
+                    )
+                ]) {
+                    sh '''#!/usr/bin/env bash
+                        set-euo pipefail
+                        set +x
+
+                        commit_sha="$(git rev-parse HEAD)"
+
+                        curl --fail --silent --show-error \
+                            --request POST \
+                            --header "Accept: application/vnd.github+json" \
+                            --header "Authorization: Bearer ${GITHUB_STATUS_TOKEN}" \
+                            --header "Content-Type: application/json" \
+                            --header "X-GitHub-Api-Version: 2022-11-28" \
+                            --data "$(printf \
+                                '{"state":"success","context":"ci/teste-pipeline","descripition":"Jenkins CI passed","target_url":"%s"}' \
+                                "$BUILD_URL")" \
+                            "https://api.github.com/repos/micvianna/sapatos-girl/statuses/${commit_sha}"
+                    '''
+                }
+            }
+            unsuccessful {
+                withCredentials([
+                    string(
+                        credentialsId: 'github-sapatos-commit-status',
+                        variable: 'GITHUB_STATUS_TOKEN'
+                    )
+                ]) {
+                    sh '''#!/usr/bin/env bash
+                        set -euo pipefail
+                        set +x
+
+                        commit_sha="$(git rev-parse HEAD)"
+
+                        curl --fail --silent --show-error \
+                            --request POST \
+                            --header "Accept: application/vnd.github+json" \
+                            --header "Authorization: Bearer ${GITHUB_STATUS_TOKEN}" \
+                            --header "Content-Type: application/json" \
+                            --header "X-GitHub-Api-Version: 2022-11-28" \
+                            --data "$(printf \
+                                '{"state":"failure","context":"ci/teste-pipeline","descripition":"Jenkins CI failed","target_url":"%s"}' \
+                                "$BUILD_URL")" \
+                            "https://api.github.com/repos/micvianna/sapatos-girl/statuses/${commit_sha}"
+                    '''
+                }
+            }
             failure {
                 mail to: 'michelrviana@gmail.com',
                      subject: "Falha: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
