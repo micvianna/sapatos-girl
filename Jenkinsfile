@@ -2147,7 +2147,7 @@ pipeline {
                     )
                 ]) {
                     sh '''#!/usr/bin/env bash
-                        set-euo pipefail
+                        set -euo pipefail
                         set +x
 
                         commit_sha="$(git rev-parse HEAD)"
