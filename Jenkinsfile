@@ -2110,7 +2110,7 @@ pipeline {
                     if ! TRIVY_CACHE_ROOT="$WORKSPACE" \
                         TRIVY_CACHE_VOLUME="jenkins_home" \
                         TRIVY_CACHE_LIMIT_BYTES="3221225472" \
-                        DRY_RUN="true" \
+                        DRY_RUN="false" \
                         bash scripts/cleanup-trivy-cache.sh; then
                         echo "WARNING: Trivy cache maintenance failed; CI result is preserved."
                     fi
