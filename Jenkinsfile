@@ -100,8 +100,7 @@ pipeline {
             // access github and perform checkout  
             stage('Checkout') {
                 steps {
-                    git branch: 'main',
-                        url: 'https://github.com/micvianna/sapatos-girl.git'
+                    checkout scm
                 }
             }
             stage('Validate ZAP Gate Policy') {
