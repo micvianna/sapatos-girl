@@ -189,4 +189,4 @@ Contribuições são bem-vindas! Abra uma issue ou faça um pull request.
 
 ---
 
-**ShoeStyle** - Onde o estilo encontra o conforto 👠✨
+**ShoeStyle** - Onde o estilo encontra o conforto 👠 ✨
