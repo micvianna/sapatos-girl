@@ -2158,7 +2158,7 @@ pipeline {
                             --header "Content-Type: application/json" \
                             --header "X-GitHub-Api-Version: 2022-11-28" \
                             --data "$(printf \
-                                '{"state":"success","context":"ci/teste-pipeline","descripition":"Jenkins CI passed","target_url":"%s"}' \
+                                '{"state":"success","context":"ci/teste-pipeline","description":"Jenkins CI passed","target_url":"%s"}' \
                                 "$BUILD_URL")" \
                             "https://api.github.com/repos/micvianna/sapatos-girl/statuses/${commit_sha}"
                     '''
